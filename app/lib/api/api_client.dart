@@ -1,0 +1,162 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
+import '../config.dart';
+import '../models/itinerary.dart';
+import '../models/spot.dart';
+import '../models/trip.dart';
+import '../models/weather.dart';
+
+/// 서버가 돌려준 오류(또는 서버에 닿지 못한 상황)를 한국어 메시지로 담습니다.
+class ApiException implements Exception {
+  final String message;
+  final int? statusCode; // 서버에 닿지 못했으면 null
+
+  const ApiException(this.message, {this.statusCode});
+
+  bool get isUnauthorized => statusCode == 401;
+
+  @override
+  String toString() => message;
+}
+
+/// 로그인한 사용자의 액세스 토큰을 돌려주는 함수. 로그아웃 상태면 null.
+typedef TokenProvider = String? Function();
+
+/// 서버(FastAPI)와 말하는 곳. docs/api.md 의 주소를 하나씩 메서드로 만들었습니다.
+/// [client] 를 밖에서 넣을 수 있게 해 두면 테스트에서 가짜 서버를 꽂을 수 있습니다.
+class ApiClient {
+  final http.Client _client;
+  final String baseUrl;
+  final TokenProvider? tokenProvider;
+
+  ApiClient({http.Client? client, String? baseUrl, this.tokenProvider})
+      : _client = client ?? http.Client(),
+        baseUrl = baseUrl ?? Config.apiUrl;
+
+  // ---- 공개 주소 ----
+
+  Future<Meta> getMeta() async => Meta.fromJson(await _get('/meta') as Map<String, dynamic>);
+
+  Future<SpotPage> getSpots({
+    String? q,
+    String? theme,
+    String? area,
+    String? category,
+    bool? indoor,
+    int page = 1,
+    int size = 20,
+  }) async {
+    // 비어 있는 조건은 아예 보내지 않습니다.
+    final query = <String, String>{
+      if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
+      if (theme != null && theme.isNotEmpty) 'theme': theme,
+      if (area != null && area.isNotEmpty) 'area': area,
+      if (category != null && category.isNotEmpty) 'category': category,
+      if (indoor != null) 'indoor': indoor.toString(),
+      'page': '$page',
+      'size': '$size',
+    };
+    return SpotPage.fromJson(await _get('/spots', query: query) as Map<String, dynamic>);
+  }
+
+  Future<Spot> getSpot(int id) async => Spot.fromJson(await _get('/spots/$id') as Map<String, dynamic>);
+
+  Future<Weather> getWeather() async => Weather.fromJson(await _get('/weather') as Map<String, dynamic>);
+
+  Future<PlanResult> plan({
+    required String message,
+    int days = 2,
+    String? companions,
+    String? startDate,
+  }) async {
+    final body = <String, dynamic>{
+      'message': message,
+      'days': days,
+      if (companions != null && companions.isNotEmpty) 'companions': companions,
+      if (startDate != null && startDate.isNotEmpty) 'start_date': startDate,
+    };
+    return PlanResult.fromJson(await _send('POST', '/agent/plan', body: body) as Map<String, dynamic>);
+  }
+
+  // ---- 로그인이 필요한 주소 ----
+
+  Future<Map<String, dynamic>> getMe() async => await _get('/me') as Map<String, dynamic>;
+
+  Future<List<Spot>> getFavorites() async {
+    final list = await _get('/me/favorites') as List;
+    return list.map((e) => Spot.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<void> addFavorite(int spotId) async {
+    await _send('POST', '/me/favorites', body: {'spot_id': spotId});
+  }
+
+  Future<void> removeFavorite(int spotId) async {
+    await _send('DELETE', '/me/favorites/$spotId');
+  }
+
+  Future<List<Trip>> getTrips() async {
+    final list = await _get('/me/trips') as List;
+    return list.map((e) => Trip.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<Trip> saveTrip({required String title, required List<ItineraryDay> itinerary}) async {
+    final body = {'title': title, 'itinerary': itinerary.map((d) => d.toJson()).toList()};
+    return Trip.fromJson(await _send('POST', '/me/trips', body: body) as Map<String, dynamic>);
+  }
+
+  Future<void> deleteTrip(int id) async {
+    await _send('DELETE', '/me/trips/$id');
+  }
+
+  // ---- 공통 처리 ----
+
+  Future<dynamic> _get(String path, {Map<String, String>? query}) => _send('GET', path, query: query);
+
+  Future<dynamic> _send(String method, String path, {Map<String, String>? query, Object? body}) async {
+    final uri = Uri.parse('$baseUrl$path').replace(queryParameters: (query == null || query.isEmpty) ? null : query);
+    final request = http.Request(method, uri);
+    request.headers['Accept'] = 'application/json';
+    if (body != null) {
+      request.headers['Content-Type'] = 'application/json; charset=utf-8';
+      request.body = jsonEncode(body);
+    }
+    // 로그인 상태면 토큰을 붙입니다. 공개 주소에 붙어도 서버는 무시합니다.
+    final token = tokenProvider?.call();
+    if (token != null && token.isNotEmpty) {
+      request.headers['Authorization'] = 'Bearer $token';
+    }
+
+    final http.Response response;
+    try {
+      response = await http.Response.fromStream(await _client.send(request).timeout(const Duration(seconds: 60)));
+    } catch (_) {
+      // 서버가 꺼져 있거나 주소가 틀린 경우. 앱이 죽지 않고 안내 문구를 보여 주게 합니다.
+      throw const ApiException('서버에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.');
+    }
+
+    // 한글이 깨지지 않도록 바이트를 직접 UTF-8 로 풉니다.
+    final text = utf8.decode(response.bodyBytes);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      if (response.statusCode == 204 || text.isEmpty) return null;
+      return jsonDecode(text);
+    }
+    throw ApiException(_detailOf(text, response.statusCode), statusCode: response.statusCode);
+  }
+
+  /// 오류 본문 `{detail: "..."}` 에서 설명을 꺼냅니다. 모양이 다르면 기본 문구.
+  String _detailOf(String text, int status) {
+    try {
+      final json = jsonDecode(text);
+      if (json is Map && json['detail'] is String) return json['detail'] as String;
+    } catch (_) {}
+    if (status == 401) return '로그인이 필요해요.';
+    if (status == 404) return '찾을 수 없어요.';
+    if (status == 503) return '지금은 이 기능을 쓸 수 없어요. 잠시 후 다시 시도해 주세요.';
+    return '문제가 생겼어요. (오류 $status)';
+  }
+
+  void close() => _client.close();
+}

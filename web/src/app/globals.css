@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/*
+  디자인 토큰 — 브랜드를 바꾸려면 이 값 몇 개만 고치세요.
+  @theme 안에 --color-이름 으로 적으면 bg-이름, text-이름, border-이름 처럼 바로 쓸 수 있습니다.
+*/
+@theme {
+  --color-primary: #f26b1d; /* 감귤 오렌지: 주요 버튼, 선택된 칩 */
+  --color-primary-dark: #d4560f; /* 버튼 눌림·호버 */
+  --color-secondary: #0f766e; /* 바다 틸: 태그, 링크 */
+  --color-ink: #1f2430; /* 본문 글자 */
+  --color-muted: #6b7280; /* 보조 글자 */
+  --color-line: #e7e2da; /* 테두리 */
+  --color-sand: #faf7f2; /* 페이지 바탕 */
+  --color-surface: #ffffff; /* 카드 바탕 */
+
+  --radius-card: 16px;
+  --radius-pill: 999px;
+
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system, "Segoe UI",
+    "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+body {
+  background: var(--color-sand);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* 키보드로 이동할 때 포커스가 항상 보이게 합니다(접근성). */
+:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* 칩 가로 스크롤 줄에서 스크롤바를 숨깁니다. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 지도 핀(divIcon)에 쓰는 모양 */
+.jeju-pin {
+  background: var(--color-primary);
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.35);
+}
