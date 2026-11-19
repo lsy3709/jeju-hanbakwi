@@ -33,11 +33,10 @@ ThemeData buildTheme() {
     useMaterial3: true,
     colorScheme: scheme,
     scaffoldBackgroundColor: AppColors.sand,
-    // 글꼴은 시스템 기본을 씁니다(폰트 파일을 따로 넣지 않음).
-    textTheme: Typography.blackMountainView.apply(
-      bodyColor: AppColors.ink,
-      displayColor: AppColors.ink,
-    ),
+    // 글꼴은 앱에 함께 넣은 Pretendard 를 씁니다. (pubspec.yaml 의 fonts)
+    fontFamily: 'Pretendard',
+    // textTheme 은 따로 주지 않습니다. (기본 글자색은 위 colorScheme 의 onSurface 에서 옵니다)
+    // Typography.xxx 를 넣으면 그 안의 Roboto 글꼴이 fontFamily 를 덮어써 한글 너비가 틀어집니다.
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.sand,
       foregroundColor: AppColors.ink,
@@ -76,8 +75,10 @@ ThemeData buildTheme() {
       shape: const StadiumBorder(side: BorderSide(color: AppColors.line)),
       backgroundColor: AppColors.surface,
       selectedColor: AppColors.primary,
-      labelStyle: const TextStyle(color: AppColors.ink),
-      secondaryLabelStyle: const TextStyle(color: Colors.white),
+      // 칩 글자 스타일에는 글꼴과 크기를 꼭 함께 적습니다.
+      // 색만 적으면 칩이 기본 글꼴로 너비를 재서, 웹 실행에서 한글이 잘려 보입니다.
+      labelStyle: const TextStyle(fontFamily: 'Pretendard', fontSize: 14, color: AppColors.ink),
+      secondaryLabelStyle: const TextStyle(fontFamily: 'Pretendard', fontSize: 14, color: Colors.white),
       checkmarkColor: Colors.white,
       showCheckmark: false,
     ),

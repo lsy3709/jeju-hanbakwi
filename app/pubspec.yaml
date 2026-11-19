@@ -61,6 +61,14 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # 한글 글꼴을 앱에 함께 넣습니다. (이유는 assets/fonts/README.md)
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-Regular.otf
+        - asset: assets/fonts/Pretendard-Bold.otf
+          weight: 700
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

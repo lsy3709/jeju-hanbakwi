@@ -176,7 +176,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     child: ChoiceChip(
                       label: Text(t),
                       selected: _theme == t,
-                      labelStyle: TextStyle(color: _theme == t ? Colors.white : AppColors.ink),
                       // 같은 칩을 다시 누르면 선택 해제
                       onSelected: (on) {
                         setState(() => _theme = on ? t : null);

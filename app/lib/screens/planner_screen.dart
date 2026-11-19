@@ -199,7 +199,6 @@ class _PlannerScreenState extends State<PlannerScreen> {
                   ChoiceChip(
                     label: Text(c),
                     selected: _companion == c,
-                    labelStyle: TextStyle(color: _companion == c ? Colors.white : AppColors.ink),
                     // 다시 누르면 선택 해제(선택 사항이라서)
                     onSelected: (on) => setState(() => _companion = on ? c : null),
                   ),
