@@ -4,8 +4,11 @@
 확인:  http://localhost:8000/docs       (주소를 직접 눌러 볼 수 있는 화면)
 """
 
-from fastapi import Depends, FastAPI, HTTPException, Query, Response
+from pathlib import Path
+
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from auth import get_current_user
 from config import settings
@@ -27,6 +30,24 @@ app.add_middleware(
 )
 
 
+# 샘플 사진은 우리 서버가 직접 내줍니다. (api/static/photos/S001.jpg → /photos/S001.jpg)
+app.mount("/photos", StaticFiles(directory=Path(__file__).parent / "static" / "photos"), name="photos")
+
+
+def with_photo_address(spot: dict, request: Request) -> dict:
+    """DB 의 "/photos/S001.jpg" 같은 짧은 주소 앞에 이 서버의 주소를 붙입니다.
+
+    웹은 localhost:8000, 에뮬레이터는 10.0.2.2:8000 으로 이 서버를 부릅니다.
+    요청이 들어온 주소를 그대로 붙여 주면 각자 자기가 닿을 수 있는 주소로 사진을 받습니다.
+    바깥 사진(https://...)이나 사진이 없는 경우는 그대로 둡니다.
+    """
+    image_url = spot.get("image_url")
+    if not image_url or not image_url.startswith("/"):
+        return spot
+    base = settings.public_api_url or str(request.base_url).rstrip("/")
+    return {**spot, "image_url": base + image_url}  # 원본은 건드리지 않고 복사본을 돌려줍니다
+
+
 def get_weather_service():
     """날씨를 가져오는 함수. 테스트에서 가짜로 바꿔 끼울 수 있게 따로 둡니다."""
     return weather.get_weather
@@ -46,6 +67,7 @@ def meta():
 
 @app.get("/spots", response_model=SpotList)
 def list_spots(
+    request: Request,
     q: str | None = Query(default=None, max_length=50),
     theme: str | None = None,
     area: str | None = None,
@@ -56,15 +78,16 @@ def list_spots(
     repo=Depends(get_repo),
 ):
     items, total = repo.list_spots(q=q, theme=theme, area=area, category=category, indoor=indoor, page=page, size=size)
+    items = [with_photo_address(spot, request) for spot in items]
     return {"items": items, "total": total, "page": page, "size": size}
 
 
 @app.get("/spots/{spot_id}", response_model=Spot)
-def get_spot(spot_id: int, repo=Depends(get_repo)):
+def get_spot(spot_id: int, request: Request, repo=Depends(get_repo)):
     spot = repo.get_spot(spot_id)
     if spot is None:
         raise HTTPException(status_code=404, detail="관광지를 찾을 수 없습니다.")
-    return spot
+    return with_photo_address(spot, request)
 
 
 @app.get("/weather", response_model=Weather)
@@ -76,8 +99,10 @@ def get_weather(get_weather_fn=Depends(get_weather_service)):
 
 
 @app.post("/agent/plan", response_model=PlanResponse)
-def plan(request: PlanRequest, repo=Depends(get_repo), get_weather_fn=Depends(get_weather_service)):
-    return planner.plan_trip(request, repo, get_weather_fn)
+def plan(body: PlanRequest, request: Request, repo=Depends(get_repo), get_weather_fn=Depends(get_weather_service)):
+    result = planner.plan_trip(body, repo, get_weather_fn)
+    result["sources"] = [with_photo_address(spot, request) for spot in result["sources"]]
+    return result
 
 
 # ------------------------------------------------------------------ 로그인한 사람만
@@ -89,8 +114,8 @@ def me(user: User = Depends(get_current_user)):
 
 
 @app.get("/me/favorites", response_model=list[Spot])
-def list_favorites(user: User = Depends(get_current_user), repo=Depends(get_repo)):
-    return repo.list_favorites(user.id)
+def list_favorites(request: Request, user: User = Depends(get_current_user), repo=Depends(get_repo)):
+    return [with_photo_address(spot, request) for spot in repo.list_favorites(user.id)]
 
 
 @app.post("/me/favorites", status_code=201)

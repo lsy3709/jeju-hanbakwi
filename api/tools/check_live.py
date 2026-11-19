@@ -83,6 +83,14 @@ def check_public(client: httpx.Client) -> None:
     r, ms = call(client, "GET", "/spots/999999999")
     check("없는 관광지는 404", r.status_code == 404, ms=ms)
 
+    with_photo = next((s for s in items if s.get("image_url")), None)
+    if with_photo:
+        # 사진 주소는 완성된 주소(http...)로 와야 하고, 실제로 그림이 받아져야 합니다.
+        r = httpx.get(with_photo["image_url"], timeout=20, follow_redirects=True)
+        is_image = r.status_code == 200 and r.headers.get("content-type", "").startswith("image/")
+        check("사진이 실제로 받아진다", with_photo["image_url"].startswith("http") and is_image, with_photo["image_url"])
+        check("사진 출처가 함께 온다", bool(with_photo.get("image_credit")), with_photo.get("image_credit") or "")
+
     print("\n[3] 외부 서비스 — 날씨")
     r, ms = call(client, "GET", "/weather")
     if r.status_code == 200:

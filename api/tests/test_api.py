@@ -169,3 +169,50 @@ def test_cannot_see_or_delete_other_users_trip(client, login):
 
     login(ALICE)
     assert len(client.get("/me/trips").json()) == 1  # 지워지지 않았음
+
+
+# ---------------------------------------------------------------- 사진 주소
+
+def test_our_photos_get_full_address(client):
+    """DB 에는 "/photos/S001.jpg" 처럼 짧게 들어 있고, 응답에서는 서버 주소를 붙여 줍니다.
+    그래야 웹(localhost)과 에뮬레이터(10.0.2.2)가 각자 자기가 부른 서버에서 사진을 받습니다."""
+    first = client.get("/spots", params={"size": 1}).json()["items"][0]
+    assert first["image_url"] == "http://testserver/photos/S001.jpg"
+    assert client.get("/spots/1").json()["image_url"] == "http://testserver/photos/S001.jpg"
+
+
+def test_outside_photo_and_no_photo_are_left_alone(client, repo):
+    repo.spots[0]["image_url"] = "https://example.com/a.jpg"
+    repo.spots[1]["image_url"] = None
+    items = client.get("/spots", params={"size": 2}).json()["items"]
+    assert items[0]["image_url"] == "https://example.com/a.jpg"
+    assert items[1]["image_url"] is None
+
+
+def test_photo_address_in_favorites_and_plan(client, login):
+    login(ALICE)
+    client.post("/me/favorites", json={"spot_id": 1})
+    assert client.get("/me/favorites").json()[0]["image_url"].startswith("http://testserver/photos/")
+    plan = client.post("/agent/plan", json={"message": "성산일출봉을 포함한 일정", "days": 1}).json()
+    with_photo = [s for s in plan["sources"] if s["image_url"]]
+    assert with_photo and all(s["image_url"].startswith("http") for s in with_photo)
+
+
+def test_public_api_url_setting_wins(client, monkeypatch):
+    """배포 환경에서 주소가 http 로 잘못 잡힐 때를 대비해, 설정 값이 있으면 그것을 씁니다."""
+    from config import settings
+
+    monkeypatch.setattr(settings, "public_api_url", "https://api.example.com")
+    assert client.get("/spots/1").json()["image_url"] == "https://api.example.com/photos/S001.jpg"
+
+
+def test_photo_file_is_served(client):
+    response = client.get("/photos/S001.jpg")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/jpeg"
+    assert client.get("/photos/none.jpg").status_code == 404
+
+
+def test_repo_data_is_not_changed_by_response(client, repo):
+    client.get("/spots/1")
+    assert repo.spots[0]["image_url"] == "/photos/S001.jpg"

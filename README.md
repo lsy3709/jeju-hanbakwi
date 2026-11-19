@@ -125,7 +125,7 @@ python -m tools.sync_spots --types 12,14   # 관광지·문화시설만 받아 D
 원본에 **테마 태그 · 실내/실외 · 지역 · 한 줄 소개**를 붙이는 규칙은 [`api/transform.py`](api/transform.py) 에 있습니다.
 
 > 샘플 데이터(`api/data/sample_spots.json`)의 글은 수업용으로 직접 쓴 것이며 좌표와 주소는 대략값입니다. 실제 서비스에는 TourAPI 데이터를 쓰세요.
-> 샘플 사진은 위키미디어 공용의 공개 라이선스 사진이며 출처는 [docs/photo-credits.md](docs/photo-credits.md) 에 있습니다.
+> 샘플 사진(`api/static/photos/`)은 위키미디어 공용의 공개 라이선스 사진이며, 사진별 저작자와 라이선스는 [docs/photo-credits.md](docs/photo-credits.md) 에 있습니다. 사진은 우리 서버가 `/photos/...` 주소로 직접 내줍니다.
 
 ### 예시 찜·일정 넣기
 
