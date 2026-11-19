@@ -5,8 +5,15 @@
       "label": "1. 서버 실행 (api · localhost:8000)",
       "type": "shell",
       "command": ".venv/bin/python -m uvicorn main:app --reload",
-      "windows": { "command": ".venv\\Scripts\\python.exe -m uvicorn main:app --reload" },
-      "options": { "cwd": "${workspaceFolder}/api", "env": { "PYTHONUTF8": "1" } },
+      "windows": {
+        "command": ".venv\\Scripts\\python.exe -m uvicorn main:app --reload"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/api",
+        "env": {
+          "PYTHONUTF8": "1"
+        }
+      },
       "isBackground": true,
       "problemMatcher": []
     },
@@ -14,7 +21,9 @@
       "label": "2. 웹 실행 (web · localhost:3000)",
       "type": "shell",
       "command": "npm run dev",
-      "options": { "cwd": "${workspaceFolder}/web" },
+      "options": {
+        "cwd": "${workspaceFolder}/web"
+      },
       "isBackground": true,
       "problemMatcher": []
     },
@@ -22,7 +31,9 @@
       "label": "3. 앱 실행 - 크롬 (app)",
       "type": "shell",
       "command": "flutter run -d chrome --dart-define-from-file=env.json",
-      "options": { "cwd": "${workspaceFolder}/app" },
+      "options": {
+        "cwd": "${workspaceFolder}/app"
+      },
       "isBackground": true,
       "problemMatcher": []
     },
@@ -30,21 +41,33 @@
       "label": "3. 앱 실행 - 에뮬레이터 (app)",
       "type": "shell",
       "command": "flutter run --dart-define-from-file=env.json",
-      "options": { "cwd": "${workspaceFolder}/app" },
+      "options": {
+        "cwd": "${workspaceFolder}/app"
+      },
       "isBackground": true,
       "problemMatcher": []
     },
     {
       "label": "서버 + 웹 함께 실행",
-      "dependsOn": ["1. 서버 실행 (api · localhost:8000)", "2. 웹 실행 (web · localhost:3000)"],
+      "dependsOn": [
+        "1. 서버 실행 (api · localhost:8000)",
+        "2. 웹 실행 (web · localhost:3000)"
+      ],
       "problemMatcher": []
     },
     {
       "label": "검사: 서버 테스트 (pytest)",
       "type": "shell",
       "command": ".venv/bin/python -m pytest -q",
-      "windows": { "command": ".venv\\Scripts\\python.exe -m pytest -q" },
-      "options": { "cwd": "${workspaceFolder}/api", "env": { "PYTHONUTF8": "1" } },
+      "windows": {
+        "command": ".venv\\Scripts\\python.exe -m pytest -q"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/api",
+        "env": {
+          "PYTHONUTF8": "1"
+        }
+      },
       "group": "test",
       "problemMatcher": []
     },
@@ -52,7 +75,9 @@
       "label": "검사: 웹 (lint · 타입 · 테스트)",
       "type": "shell",
       "command": "npm run lint && npx tsc --noEmit && npm test",
-      "options": { "cwd": "${workspaceFolder}/web" },
+      "options": {
+        "cwd": "${workspaceFolder}/web"
+      },
       "group": "test",
       "problemMatcher": []
     },
@@ -60,7 +85,25 @@
       "label": "검사: 앱 (analyze · 테스트)",
       "type": "shell",
       "command": "flutter analyze && flutter test",
-      "options": { "cwd": "${workspaceFolder}/app" },
+      "options": {
+        "cwd": "${workspaceFolder}/app"
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "검사: 실측 점검 (켜져 있는 서버 + DB)",
+      "type": "shell",
+      "command": ".venv/bin/python -m tools.check_live --token local-dev-token",
+      "windows": {
+        "command": ".venv\\Scripts\\python.exe -m tools.check_live --token local-dev-token"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/api",
+        "env": {
+          "PYTHONUTF8": "1"
+        }
+      },
       "group": "test",
       "problemMatcher": []
     },
@@ -68,8 +111,15 @@
       "label": "데이터: 샘플 관광지 넣기",
       "type": "shell",
       "command": ".venv/bin/python -m tools.sync_spots --sample",
-      "windows": { "command": ".venv\\Scripts\\python.exe -m tools.sync_spots --sample" },
-      "options": { "cwd": "${workspaceFolder}/api", "env": { "PYTHONUTF8": "1" } },
+      "windows": {
+        "command": ".venv\\Scripts\\python.exe -m tools.sync_spots --sample"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/api",
+        "env": {
+          "PYTHONUTF8": "1"
+        }
+      },
       "problemMatcher": []
     }
   ]

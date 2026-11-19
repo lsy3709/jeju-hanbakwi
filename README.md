@@ -90,6 +90,19 @@ flutter run --dart-define-from-file=env.json
 3. 로컬에서 확인하는 주소: 웹 `http://localhost:3000` · 서버 `http://localhost:8000/docs`
 4. 앱은 `F5`(실행 및 디버그 > "앱 실행 (Flutter)")로도 실행할 수 있고, 저장하면 화면이 바로 바뀝니다.
 
+## 실측 점검 — 서버와 DB 가 정말 연결됐는지
+
+단위 테스트(`pytest`)는 가짜 DB 로 논리를 보고, 실측 점검은 **켜져 있는 서버를 실제로 불러** DB 와 외부 서비스까지 다녀온 결과를 봅니다.
+
+```bash
+cd api
+python -m tools.check_live                           # 로그인 없이 볼 수 있는 것
+python -m tools.check_live --token local-dev-token   # 로컬 Docker DB: 찜·일정 저장까지
+python -m tools.check_live --api https://내서버.vercel.app --skip-ai   # 배포한 서버
+```
+
+진짜 Supabase 를 쓸 때는 웹에서 구글 로그인한 뒤의 액세스 토큰을 `--token` 에 넣습니다. 찜·일정 점검은 만든 것을 스스로 지웁니다.
+
 ## 데이터 가져오기
 
 ```bash
