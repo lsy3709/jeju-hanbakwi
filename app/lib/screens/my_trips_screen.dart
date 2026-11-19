@@ -260,8 +260,7 @@ class _TripsTabState extends State<_TripsTab> {
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (context, i) {
         final trip = _trips[i];
-        // created_at 은 "2026-12-01T03:00:00+00:00" 모양이라 앞 10글자가 날짜입니다.
-        final date = trip.createdAt.length >= 10 ? trip.createdAt.substring(0, 10) : trip.createdAt;
+        final date = trip.savedDate;
         return Card(
           child: ExpansionTile(
             shape: const Border(),

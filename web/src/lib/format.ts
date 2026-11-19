@@ -49,11 +49,15 @@ export function dayTitle(day: number, date: string | null): string {
   return text ? `${day}일차 · ${text}` : `${day}일차`;
 }
 
-/** 저장 시각(ISO) → "2026년 12월 1일". 잘못된 값이면 빈 문자열. */
+/**
+ * 저장 시각(ISO) → "2026년 12월 1일". 잘못된 값이면 빈 문자열.
+ * 서버는 세계 표준시(UTC)로 시각을 주므로, 사용자 컴퓨터의 시간대로 바꿔서 날짜를 냅니다.
+ * (글자 앞 10자만 자르면 한국의 오전 9시 이전에 저장한 것이 하루 전으로 보입니다)
+ */
 export function formatSavedAt(iso: string): string {
-  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
-  if (!match) return "";
-  return `${match[1]}년 ${Number(match[2])}월 ${Number(match[3])}일`;
+  const saved = new Date(iso);
+  if (Number.isNaN(saved.getTime())) return "";
+  return `${saved.getFullYear()}년 ${saved.getMonth() + 1}월 ${saved.getDate()}일`;
 }
 
 /** 오늘 날짜를 "YYYY-MM-DD" 로(날짜 입력칸의 최소값용). 사용자 컴퓨터의 시간대 기준. */

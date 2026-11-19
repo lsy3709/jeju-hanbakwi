@@ -86,6 +86,15 @@ void main() {
       expect((back['items'] as List).single, {'time': '오전', 'spot_id': 12, 'title': '아쿠아플라넷 제주', 'reason': '실내 코스'});
     });
 
+    test('Trip.savedDate 는 내 기기 시간대의 날짜', () {
+      // 서버는 세계 표준시(UTC)로 시각을 줍니다. 기기 시간 12월 2일 0시 30분에 저장한 것은
+      // 한국에서는 UTC 로 12월 1일이라, 글자만 자르면 하루 전으로 보입니다.
+      final savedAt = DateTime(2026, 12, 2, 0, 30).toUtc().toIso8601String();
+      final trip = Trip(id: 1, title: 't', itinerary: const [], createdAt: savedAt);
+      expect(trip.savedDate, '2026-12-02');
+      expect(const Trip(id: 1, title: 't', itinerary: [], createdAt: '어제쯤').savedDate, '');
+    });
+
     test('Trip.fromJson', () {
       final trip = Trip.fromJson({
         'id': 3,
