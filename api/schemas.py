@@ -15,6 +15,8 @@ class Spot(BaseModel):
     lat: float | None = None
     lng: float | None = None
     image_url: str | None = None
+    image_credit: str | None = None       # 사진 출처 표시 (저작자 · 라이선스)
+    image_source_url: str | None = None   # 사진 원본 설명 쪽 주소
     overview: str = ""
     one_liner: str = ""
     theme_tags: list[str] = []

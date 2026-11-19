@@ -19,7 +19,7 @@ def test_spots_default_page(client):
     assert len(body["items"]) == 20
     assert body["total"] == 68
     first = body["items"][0]
-    assert set(first) == {"id", "title", "category", "area", "address", "lat", "lng", "image_url", "overview", "one_liner", "theme_tags", "indoor"}
+    assert set(first) == {"id", "title", "category", "area", "address", "lat", "lng", "image_url", "image_credit", "image_source_url", "overview", "one_liner", "theme_tags", "indoor"}
 
 
 def test_spots_paging(client):

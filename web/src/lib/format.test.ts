@@ -1,5 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { buildQuery, dayTitle, formatDate, formatSavedAt, pickFallbackTone, spotsQuery, todayString } from "./format";
+import { buildQuery, dayTitle, formatDate, formatSavedAt, photoCreditText, pickFallbackTone, spotsQuery, todayString } from "./format";
+
+describe("photoCreditText", () => {
+  it("사진과 출처가 있으면 '사진: …' 글자를 만든다", () => {
+    expect(photoCreditText({ image_url: "https://x/a.jpg", image_credit: "Jane Doe · CC BY-SA 4.0" })).toBe(
+      "사진: Jane Doe · CC BY-SA 4.0",
+    );
+  });
+  it("출처가 없으면 null", () => {
+    expect(photoCreditText({ image_url: "https://x/a.jpg", image_credit: null })).toBeNull();
+    expect(photoCreditText({ image_url: "https://x/a.jpg", image_credit: "  " })).toBeNull();
+  });
+  it("사진이 없으면(대체 그림) 출처가 있어도 null", () => {
+    expect(photoCreditText({ image_url: null, image_credit: "Jane Doe · CC BY-SA 4.0" })).toBeNull();
+  });
+});
 
 describe("buildQuery", () => {
   it("값이 있는 항목만 쿼리로 만든다", () => {

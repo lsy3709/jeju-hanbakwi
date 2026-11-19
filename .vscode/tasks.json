@@ -121,6 +121,21 @@
         }
       },
       "problemMatcher": []
+    },
+    {
+      "label": "데이터: 예시 찜·일정 넣기 (로컬 DB)",
+      "type": "shell",
+      "command": ".venv/bin/python -m tools.seed_demo --token local-dev-token",
+      "windows": {
+        "command": ".venv\\Scripts\\python.exe -m tools.seed_demo --token local-dev-token"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/api",
+        "env": {
+          "PYTHONUTF8": "1"
+        }
+      },
+      "problemMatcher": []
     }
   ]
 }

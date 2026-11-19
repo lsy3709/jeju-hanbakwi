@@ -110,6 +110,9 @@ def to_spot_row(raw: dict, source: str = "tourapi") -> dict | None:
         "lat": _number(raw, "mapy"),  # TourAPI 는 mapy = 위도, mapx = 경도
         "lng": _number(raw, "mapx"),
         "image_url": image or None,
+        # 사진이 있을 때만 출처를 싣습니다. 출처가 따로 오지 않는 TourAPI 사진은 한국관광공사로 적습니다.
+        "image_credit": (_text(raw, "image_credit") or ("한국관광공사" if source == "tourapi" else None)) if image else None,
+        "image_source_url": (_text(raw, "image_source_url") or None) if image else None,
         "overview": overview,
         "one_liner": make_one_liner(overview, category, area),
         "theme_tags": pick_theme_tags(title, overview),

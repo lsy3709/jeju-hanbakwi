@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { useCallback } from "react";
 import { MapPin, Sparkles } from "lucide-react";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { PhotoCredit } from "@/components/PhotoCredit";
 import { SpotImage } from "@/components/SpotImage";
 import { IndoorBadge } from "@/components/SpotCard";
 import { SpotMapView } from "@/components/SpotMapView";
@@ -31,6 +32,7 @@ export default function SpotDetailPage() {
   return (
     <article className="mx-auto max-w-3xl space-y-5">
       <SpotImage imageUrl={spot.image_url} title={spot.title} tags={spot.theme_tags} className="aspect-16/9 w-full rounded-card" />
+      <PhotoCredit spot={spot} />
 
       <div className="flex items-center gap-2 text-sm text-muted">
         <span>{spot.category}</span>

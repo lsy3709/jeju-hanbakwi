@@ -8,6 +8,8 @@ class Spot {
   final double lat;
   final double lng;
   final String? imageUrl; // 없을 수 있음 → 화면에서 대체 그림
+  final String? imageCredit; // 사진 저작자·라이선스. 있으면 상세에서 반드시 표시
+  final String? imageSourceUrl; // 사진 원본 설명 쪽 주소(앱은 링크로 열지 않고 보관만)
   final String overview;
   final String oneLiner;
   final List<String> themeTags;
@@ -22,6 +24,8 @@ class Spot {
     required this.lat,
     required this.lng,
     required this.imageUrl,
+    this.imageCredit,
+    this.imageSourceUrl,
     required this.overview,
     required this.oneLiner,
     required this.themeTags,
@@ -39,6 +43,8 @@ class Spot {
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
       imageUrl: json['image_url'] as String?,
+      imageCredit: json['image_credit'] as String?,
+      imageSourceUrl: json['image_source_url'] as String?,
       overview: (json['overview'] ?? '') as String,
       oneLiner: (json['one_liner'] ?? '') as String,
       themeTags: ((json['theme_tags'] ?? const []) as List).cast<String>(),

@@ -34,7 +34,7 @@
 
 ### 1. DB 만들기
 
-Supabase 대시보드 > SQL Editor 에 [`supabase/migrations/001_init.sql`](supabase/migrations/001_init.sql) 내용을 붙여 넣고 실행합니다.
+Supabase 대시보드 > SQL Editor 에 [`supabase/migrations/`](supabase/migrations) 의 SQL 파일을 **번호 순서대로**(001 → 002) 붙여 넣고 실행합니다.
 
 ### 2. 서버 (api)
 
@@ -44,7 +44,7 @@ python -m venv .venv
 .venv\Scripts\activate            # macOS·Linux: source .venv/bin/activate
 pip install -r requirements-dev.txt
 copy .env.example .env            # 그다음 .env 를 열어 값을 채웁니다
-python -m tools.sync_spots --sample   # 샘플 관광지 68건 넣기
+python -m tools.sync_spots --sample   # 샘플 관광지 68건 넣기 (사진 포함)
 uvicorn main:app --reload
 ```
 
@@ -124,7 +124,19 @@ python -m tools.sync_spots --types 12,14   # 관광지·문화시설만 받아 D
 
 원본에 **테마 태그 · 실내/실외 · 지역 · 한 줄 소개**를 붙이는 규칙은 [`api/transform.py`](api/transform.py) 에 있습니다.
 
-> 샘플 데이터(`api/data/sample_spots.json`)는 수업용으로 직접 쓴 것이며 좌표와 주소는 대략값입니다. 실제 서비스에는 TourAPI 데이터를 쓰세요.
+> 샘플 데이터(`api/data/sample_spots.json`)의 글은 수업용으로 직접 쓴 것이며 좌표와 주소는 대략값입니다. 실제 서비스에는 TourAPI 데이터를 쓰세요.
+> 샘플 사진은 위키미디어 공용의 공개 라이선스 사진이며 출처는 [docs/photo-credits.md](docs/photo-credits.md) 에 있습니다.
+
+### 예시 찜·일정 넣기
+
+"내 여행" 화면이 비어 있으면 만들거나 시연하기 어렵습니다. 로그인한 내 계정에 찜 6개와 일정 2개를 넣어 줍니다.
+
+```bash
+cd api
+python -m tools.seed_demo --token local-dev-token     # 로컬 Docker DB
+python -m tools.seed_demo --token <액세스 토큰>        # 진짜 Supabase
+python -m tools.seed_demo --token ... --clear         # 내 찜과 일정 모두 지우기
+```
 
 ## 구글 로그인 켜기
 

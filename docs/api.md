@@ -21,6 +21,8 @@
   "lat": 33.4581,
   "lng": 126.9426,
   "image_url": null,
+  "image_credit": null,
+  "image_source_url": null,
   "overview": "긴 소개 글",
   "one_liner": "한 줄 소개",
   "theme_tags": ["오름", "바다", "사진"],
@@ -29,6 +31,7 @@
 ```
 
 - `image_url` 은 `null` 일 수 있습니다(화면은 대체 그림을 보여 줍니다).
+- `image_credit` 은 사진의 저작자와 라이선스입니다(예: `"홍길동 · CC BY-SA 4.0"`). 값이 있으면 **상세 화면의 사진 아래에 반드시 보여 줍니다.** `image_source_url` 이 있으면 그 글자를 원본 쪽으로 가는 링크로 만듭니다. 둘 다 `null` 일 수 있습니다.
 - `category`: 관광지 · 문화시설 · 축제 · 레포츠 · 쇼핑 · 음식점
 - `area`: 제주시 · 서귀포시 · 동부 · 서부
 

@@ -96,6 +96,12 @@ class _SpotDetailScreenState extends State<SpotDetailScreen> {
             borderRadius: BorderRadius.circular(AppRadius.card),
             child: SpotImage(spot: spot, height: 240, iconSize: 64),
           ),
+          // 공개 라이선스 사진은 출처를 밝혀야 쓸 수 있어요. 사진이 없으면(대체 그림) 밝힐 출처도 없습니다.
+          if (spot.imageUrl != null && (spot.imageCredit?.trim().isNotEmpty ?? false))
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text('사진: ${spot.imageCredit!.trim()}', style: const TextStyle(fontSize: 12, color: AppColors.muted)),
+            ),
           const SizedBox(height: 16),
           Text('${spot.category} · ${spot.area}', style: const TextStyle(color: AppColors.secondary, fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),

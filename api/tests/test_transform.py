@@ -81,3 +81,28 @@ def test_one_liner():
     assert make_one_liner("", "관광지", "동부") == "동부에서 만나는 관광지"
     long = make_one_liner("가" * 100, "관광지", "동부")
     assert len(long) == 60 and long.endswith("…")
+
+
+# ---------------------------------------------------------------- 사진 출처
+
+def test_photo_credit_is_kept_when_given():
+    """샘플처럼 출처가 함께 온 사진은 그 출처를 그대로 싣습니다. (출처 표시는 라이선스의 조건)"""
+    row = to_spot_row(
+        {**RAW, "image_credit": "홍길동 · CC BY-SA 4.0", "image_source_url": "https://commons.wikimedia.org/wiki/File:X.jpg"},
+        source="sample",
+    )
+    assert row["image_credit"] == "홍길동 · CC BY-SA 4.0"
+    assert row["image_source_url"] == "https://commons.wikimedia.org/wiki/File:X.jpg"
+
+
+def test_tourapi_photo_gets_default_credit():
+    row = to_spot_row(RAW)  # TourAPI 원본에는 출처 칸이 없습니다
+    assert row["image_credit"] == "한국관광공사"
+    assert row["image_source_url"] is None
+
+
+def test_no_photo_means_no_credit():
+    row = to_spot_row({**RAW, "firstimage": "", "image_credit": "누군가"})
+    assert row["image_url"] is None
+    assert row["image_credit"] is None
+    assert row["image_source_url"] is None

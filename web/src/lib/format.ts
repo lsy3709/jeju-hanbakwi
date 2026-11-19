@@ -28,6 +28,16 @@ export function pickFallbackTone(tags: string[]): FallbackTone {
   return "sand";
 }
 
+/**
+ * 사진 아래에 보일 출처 글자("사진: 저작자 · 라이선스"). 보일 것이 없으면 null.
+ * 공개 라이선스 사진은 출처를 밝혀야 쓸 수 있습니다. 사진이 없어 대체 그림이 나올 때는 밝힐 출처도 없습니다.
+ */
+export function photoCreditText(spot: { image_url: string | null; image_credit: string | null }): string | null {
+  const credit = spot.image_credit?.trim();
+  if (!spot.image_url || !credit) return null;
+  return `사진: ${credit}`;
+}
+
 /** "2026-12-01" → "12월 1일 (화)". 날짜가 없거나 모양이 틀리면 null. */
 export function formatDate(date: string | null): string | null {
   if (!date) return null;

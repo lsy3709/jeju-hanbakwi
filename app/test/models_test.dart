@@ -23,6 +23,23 @@ void main() {
       expect(Spot.fromJson(spotJson()).imageUrl, isNull);
     });
 
+    test('image_credit, image_source_url 이 있으면 읽는다', () {
+      final json = spotJson(imageUrl: 'https://example.com/a.jpg');
+      json['image_credit'] = 'Jane Doe · CC BY-SA 4.0';
+      json['image_source_url'] = 'https://example.com/photo';
+      final spot = Spot.fromJson(json);
+      expect(spot.imageCredit, 'Jane Doe · CC BY-SA 4.0');
+      expect(spot.imageSourceUrl, 'https://example.com/photo');
+    });
+
+    test('image_credit, image_source_url 이 없거나 null 이면 null', () {
+      final spot = Spot.fromJson(spotJson()); // 두 칸이 아예 없는 응답
+      expect(spot.imageCredit, isNull);
+      expect(spot.imageSourceUrl, isNull);
+      final json = spotJson()..addAll({'image_credit': null, 'image_source_url': null});
+      expect(Spot.fromJson(json).imageCredit, isNull);
+    });
+
     test('lat/lng 가 정수로 와도 double 로 바뀐다', () {
       final json = spotJson();
       json['lat'] = 33;
