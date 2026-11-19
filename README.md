@@ -90,6 +90,16 @@ flutter run --dart-define-from-file=env.json
 3. 로컬에서 확인하는 주소: 웹 `http://localhost:3000` · 서버 `http://localhost:8000/docs`
 4. 앱은 `F5`(실행 및 디버그 > "앱 실행 (Flutter)")로도 실행할 수 있고, 저장하면 화면이 바로 바뀝니다.
 
+### 에뮬레이터가 바로 꺼질 때
+
+에뮬레이터 창이 떴다가 사라지면(로그에 `WHPX: Unexpected VP exit` 등), 저장된 상태를 쓰지 않고 새로 부팅합니다.
+
+```bash
+emulator -avd Pixel_4 -no-snapshot -gpu swiftshader_indirect
+```
+
+`emulator` 명령은 Android SDK 의 `emulator` 폴더에 있습니다. 그래도 안 되면 자기 안드로이드 폰을 USB 로 연결하거나 크롬으로 실행합니다.
+
 ## 실측 점검 — 서버와 DB 가 정말 연결됐는지
 
 단위 테스트(`pytest`)는 가짜 DB 로 논리를 보고, 실측 점검은 **켜져 있는 서버를 실제로 불러** DB 와 외부 서비스까지 다녀온 결과를 봅니다.
