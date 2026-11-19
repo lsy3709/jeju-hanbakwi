@@ -11,6 +11,10 @@ URL = "https://api.open-meteo.com/v1/forecast"
 CACHE_SECONDS = 600  # 10분 동안은 다시 묻지 않습니다 (속도 + 상대 서버 배려)
 _cache: dict = {"at": 0.0, "value": None}
 
+# 연결은 한 번만 만들어 두 지역을 이어서 받습니다. (매번 새로 만들면 지역마다 1초쯤 걸립니다)
+# 응답이 5초 넘게 없으면 포기합니다. 날씨가 없어도 일정은 짤 수 있기 때문입니다.
+_http = httpx.Client(timeout=5)
+
 
 class WeatherUnavailable(Exception):
     """날씨 서비스가 응답하지 않을 때."""
@@ -84,7 +88,7 @@ def get_weather() -> dict:
     areas = []
     try:
         for name, (lat, lng) in PLACES.items():
-            response = httpx.get(
+            response = _http.get(
                 URL,
                 params={
                     "latitude": lat,
@@ -93,7 +97,6 @@ def get_weather() -> dict:
                     "timezone": "Asia/Seoul",
                     "forecast_days": 4,
                 },
-                timeout=8,
             )
             response.raise_for_status()
             areas.append({"area": name, "days": parse_days(response.json())})

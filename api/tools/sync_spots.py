@@ -70,6 +70,23 @@ def fetch_overview(content_id: str) -> str:
     return str(items[0].get("overview") or "") if items else ""
 
 
+def to_rows(raw_items: list[dict], source: str) -> tuple[list[dict], int]:
+    """원본 목록 → DB 에 넣을 줄. 좌표가 없는 곳은 빼고, 몇 건을 뺐는지 함께 돌려줍니다.
+
+    좌표가 없으면 지도에 찍을 수 없고, 화면(웹·앱)은 좌표가 항상 숫자라고 믿고 만들어져 있습니다.
+    """
+    rows, skipped = [], 0
+    for item in raw_items:
+        row = to_spot_row(item, source=source)
+        if row is None:  # 받지 않는 유형이거나 이름이 없는 것
+            continue
+        if row["lat"] is None or row["lng"] is None:
+            skipped += 1
+            continue
+        rows.append(row)
+    return rows, skipped
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="관광 데이터 가져오기")
     parser.add_argument("--sample", action="store_true", help="샘플 데이터를 넣습니다")
@@ -96,8 +113,8 @@ def main() -> int:
         for item in raw_items[: args.overview]:
             item["overview"] = fetch_overview(str(item.get("contentid")))
 
-    rows = [row for row in (to_spot_row(item, source=source) for item in raw_items) if row]
-    print(f"원본 {len(raw_items)}건 → 넣을 수 있는 것 {len(rows)}건")
+    rows, skipped = to_rows(raw_items, source)
+    print(f"원본 {len(raw_items)}건 → 넣을 수 있는 것 {len(rows)}건" + (f" (좌표가 없어 뺀 것 {skipped}건)" if skipped else ""))
     for row in rows[:3]:
         print(f"  예) {row['title']} | {row['category']} | {row['area']} | {row['theme_tags']} | 실내={row['indoor']}")
 

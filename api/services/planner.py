@@ -9,10 +9,10 @@
 import json
 import logging
 import re
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 from config import settings
-from constants import AREAS, CATEGORIES, THEMES
+from constants import AREAS, CATEGORIES, THEMES, TIMES
 from schemas import PlanRequest
 from services.weather import WeatherUnavailable, is_rainy
 
@@ -26,6 +26,12 @@ COMPANION_THEMES = {
     "친구": ["체험", "바다", "시장"],
     "혼자": ["숲", "오름", "카페"],
 }
+
+# AI 에게 한 번 묻고 기다리는 최대 시간(밀리초). 넘으면 오류가 나고 규칙 방식으로 넘어갑니다.
+# 제한이 없으면 AI 가 멈췄을 때 끝없이 기다리다가, 배포 환경의 응답 시간 제한에 걸려 아무 답도 못 줍니다.
+AI_TIMEOUT_MS = 20_000
+
+KOREA = timezone(timedelta(hours=9))  # 한국 시간 = 세계 표준시 + 9시간 (서머타임 없음)
 
 # 규칙으로 짤 때 하루에 한 지역씩 돕니다.
 AREA_ORDER = ["동부", "서귀포시", "서부", "제주시"]
@@ -68,8 +74,17 @@ def weather_by_date(get_weather) -> dict[str, dict]:
     return {str(day["date"]): day for day in days}
 
 
+def korea_today(now: datetime | None = None) -> date:
+    """한국 기준 오늘 날짜.
+
+    date.today() 는 "서버가 있는 곳"의 날짜입니다. 배포한 서버는 세계 표준시로 돌기 때문에,
+    한국의 자정~오전 9시에는 어제 날짜가 나와 일정과 날씨가 하루씩 밀립니다.
+    """
+    return (now or datetime.now(timezone.utc)).astimezone(KOREA).date()
+
+
 def trip_dates(request: PlanRequest) -> list[date]:
-    start = request.start_date or date.today()
+    start = request.start_date or korea_today()
     return [start + timedelta(days=i) for i in range(request.days)]
 
 
@@ -80,9 +95,11 @@ def find_mentioned_spots(message: str, repo) -> list[dict]:
     compact = message.replace(" ", "")
     found = []
     for word in re.findall(r"[가-힣0-9A-Za-z·]{2,}", message)[:8]:
-        word = re.sub(r"(을|를|이|가|은|는|에|의|과|와|도|로|에서)$", "", word)
-        if len(word) < 2:
-            continue
+        # 낱말 끝의 조사를 뗍니다. 긴 것부터 적어야 "에서"가 "서"만 남지 않습니다.
+        trimmed = re.sub(r"(에서|이랑|하고|까지|을|를|이|가|은|는|에|의|과|와|도|로|랑)$", "", word)
+        # "우도"처럼 조사와 같은 글자로 끝나는 두 글자 이름은, 떼고 나면 한 글자가 됩니다. 그럴 땐 떼지 않습니다.
+        if len(trimmed) >= 2:
+            word = trimmed
         items, _ = repo.list_spots(q=word, size=5)
         for spot in items:
             if spot["title"].replace(" ", "") in compact and spot not in found:
@@ -94,13 +111,16 @@ def pick_spots(repo, themes, area, indoor, used: set, need: int, exclude_food=Tr
     """조건을 조금씩 풀어 가며 need 개를 고릅니다. → [(관광지, 고른 이유)]"""
     picked: list[tuple[dict, str]] = []
 
-    def take(items, reason):
+    def take(items, reason, allow_shopping=False):
         for spot in items:
             if len(picked) >= need:
                 return
             if spot["id"] in used:
                 continue
-            if exclude_food and spot["category"] in ("음식점", "쇼핑"):
+            if exclude_food and spot["category"] == "음식점":
+                continue
+            # 쇼핑(면세점·백화점 등)은 관광지 칸에 넣지 않습니다. 단, "시장"을 찾을 때는 시장이 쇼핑 분류라 허용합니다.
+            if exclude_food and spot["category"] == "쇼핑" and not allow_shopping:
                 continue
             used.add(spot["id"])
             picked.append((spot, reason))
@@ -108,7 +128,7 @@ def pick_spots(repo, themes, area, indoor, used: set, need: int, exclude_food=Tr
     rain_note = "비 예보가 있어 실내에서 즐길 수 있는 곳으로 골랐어요." if indoor else ""
     for theme in themes:
         items, _ = repo.list_spots(theme=theme, area=area, indoor=indoor, size=10)
-        take(items, rain_note or f"'{theme}' 테마에 맞는 곳이에요.")
+        take(items, rain_note or f"'{theme}' 테마에 맞는 곳이에요.", allow_shopping=(theme == "시장"))
     if len(picked) < need:
         items, _ = repo.list_spots(area=area, indoor=indoor, size=20)
         take(items, rain_note or f"{area} 동선에 맞춰 골랐어요.")
@@ -206,6 +226,8 @@ def build_plan_from_ai(data: dict, found: dict[int, dict], request: PlanRequest,
                 {"time": time_slot, "spot_id": spot_id, "title": spot["title"], "reason": str(raw.get("reason") or "")[:200]}
             )
         if items:
+            # AI 가 저녁을 오전보다 먼저 적어 보내기도 합니다. 화면은 받은 순서대로 그리므로 여기서 하루 순서로 맞춥니다.
+            items.sort(key=lambda item: TIMES.index(item["time"]))
             weather = forecast.get(str(dates[index]))
             itinerary.append(
                 {"day": index + 1, "date": dates[index], "weather": weather["label"] if weather else None, "items": items}
@@ -261,7 +283,7 @@ def ask_gemini(request: PlanRequest, repo, get_weather_fn, found: dict[int, dict
         f"기간: {request.days}일 ({dates[0]} 부터)\n"
         f"동행: {request.companions or '정해지지 않음'}"
     )
-    client = genai.Client(api_key=settings.gemini_api_key)
+    client = genai.Client(api_key=settings.gemini_api_key, http_options=types.HttpOptions(timeout=AI_TIMEOUT_MS))
     response = client.models.generate_content(
         model=settings.gemini_model,
         contents=prompt,

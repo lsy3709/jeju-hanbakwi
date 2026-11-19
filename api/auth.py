@@ -12,15 +12,19 @@ from config import settings
 from schemas import User
 
 
+# 연결은 한 번만 만들어 계속 씁니다. (repo.py 의 Supabase 연결과 같은 생각)
+# httpx.get(...) 을 그냥 부르면 부를 때마다 연결과 보안 설정을 새로 만들어 매번 0.2초쯤 더 걸립니다.
+_http = httpx.Client(timeout=5)
+
+
 def verify_token(token: str) -> User | None:
     """Supabase 에 토큰을 확인받습니다. 틀리거나 만료됐으면 None."""
     if not settings.supabase_url:
         return None
     try:
-        response = httpx.get(
+        response = _http.get(
             f"{settings.supabase_url}/auth/v1/user",
             headers={"apikey": settings.supabase_service_role_key, "Authorization": f"Bearer {token}"},
-            timeout=5,
         )
     except httpx.HTTPError:
         return None
