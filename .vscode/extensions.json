@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "dart-code.flutter",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss"
+  ]
+}
