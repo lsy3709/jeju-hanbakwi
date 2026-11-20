@@ -85,9 +85,6 @@ def test_me_routes_need_login(client):
         ("get", "/me/favorites"),
         ("post", "/me/favorites"),
         ("delete", "/me/favorites/1"),
-        ("get", "/me/trips"),
-        ("post", "/me/trips"),
-        ("delete", "/me/trips/1"),
     ]:
         response = getattr(client, method)(url)
         assert response.status_code == 401, url
@@ -132,45 +129,6 @@ def test_favorites_are_private(client, login):
     assert client.get("/me/favorites").json() == []
 
 
-ITINERARY = [
-    {"day": 1, "date": "2026-12-01", "weather": "맑음", "items": [{"time": "오전", "spot_id": 1, "title": "성산일출봉", "reason": "일출"}]}
-]
-
-
-def test_trips_flow(client, login):
-    login(ALICE)
-    saved = client.post("/me/trips", json={"title": "부모님과 제주", "itinerary": ITINERARY})
-    assert saved.status_code == 201
-    trip = saved.json()
-    assert trip["title"] == "부모님과 제주"
-    assert trip["itinerary"][0]["items"][0]["spot_id"] == 1
-    assert trip["itinerary"][0]["date"] == "2026-12-01"
-
-    assert [t["id"] for t in client.get("/me/trips").json()] == [trip["id"]]
-    assert client.delete(f"/me/trips/{trip['id']}").status_code == 204
-    assert client.get("/me/trips").json() == []
-
-
-def test_trip_validation(client, login):
-    login(ALICE)
-    assert client.post("/me/trips", json={"title": "", "itinerary": ITINERARY}).status_code == 422
-    assert client.post("/me/trips", json={"title": "제목", "itinerary": []}).status_code == 422
-    bad_time = [{"day": 1, "items": [{"time": "새벽", "spot_id": 1, "title": "x"}]}]
-    assert client.post("/me/trips", json={"title": "제목", "itinerary": bad_time}).status_code == 422
-
-
-def test_cannot_see_or_delete_other_users_trip(client, login):
-    login(ALICE)
-    trip_id = client.post("/me/trips", json={"title": "앨리스 일정", "itinerary": ITINERARY}).json()["id"]
-
-    login(BOB)
-    assert client.get("/me/trips").json() == []
-    assert client.delete(f"/me/trips/{trip_id}").status_code == 404
-
-    login(ALICE)
-    assert len(client.get("/me/trips").json()) == 1  # 지워지지 않았음
-
-
 # ---------------------------------------------------------------- 사진 주소
 
 def test_our_photos_get_full_address(client):
@@ -189,13 +147,10 @@ def test_outside_photo_and_no_photo_are_left_alone(client, repo):
     assert items[1]["image_url"] is None
 
 
-def test_photo_address_in_favorites_and_plan(client, login):
+def test_photo_address_in_favorites(client, login):
     login(ALICE)
     client.post("/me/favorites", json={"spot_id": 1})
     assert client.get("/me/favorites").json()[0]["image_url"].startswith("http://testserver/photos/")
-    plan = client.post("/agent/plan", json={"message": "성산일출봉을 포함한 일정", "days": 1}).json()
-    with_photo = [s for s in plan["sources"] if s["image_url"]]
-    assert with_photo and all(s["image_url"].startswith("http") for s in with_photo)
 
 
 def test_public_api_url_setting_wins(client, monkeypatch):

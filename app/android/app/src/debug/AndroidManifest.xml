@@ -1,6 +1,0 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- 개발 중 로컬 서버가 https 가 아닌 http 라서 평문 통신을 허용합니다.
-         보안상 debug 매니페스트에만 두고, 릴리스(main)에는 넣지 않습니다. -->
-    <application android:usesCleartextTraffic="true"/>
-</manifest>

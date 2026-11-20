@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildQuery, dayTitle, formatDate, formatSavedAt, photoCreditText, pickFallbackTone, spotsQuery, todayString, weatherText } from "./format";
+import { buildQuery, photoCreditText, pickFallbackTone, spotsQuery, weatherText } from "./format";
 
 describe("photoCreditText", () => {
   it("사진과 출처가 있으면 '사진: …' 글자를 만든다", () => {
@@ -33,23 +33,6 @@ describe("pickFallbackTone", () => {
   it("오름·숲은 green", () => expect(pickFallbackTone(["오름"])).toBe("green"));
   it("그 밖은 sand", () => expect(pickFallbackTone(["카페"])).toBe("sand"));
   it("태그가 없어도 sand", () => expect(pickFallbackTone([])).toBe("sand"));
-});
-
-describe("날짜 표시", () => {
-  it("요일을 붙인다", () => expect(formatDate("2026-12-01")).toBe("12월 1일 (화)"));
-  it("null 이면 null", () => expect(formatDate(null)).toBeNull());
-  it("일차 제목", () => {
-    expect(dayTitle(1, "2026-12-01")).toBe("1일차 · 12월 1일 (화)");
-    expect(dayTitle(2, null)).toBe("2일차");
-  });
-  it("저장 시각은 사용자 시간대의 날짜로 보여 준다", () => {
-    // 서버는 세계 표준시(UTC)로 시각을 줍니다. 한국 12월 2일 0시 30분은 UTC 로 12월 1일입니다.
-    // 글자 앞부분만 자르면 하루 전 날짜가 나오므로, 내 컴퓨터 시간대로 바꿔서 봐야 합니다.
-    const savedAt = new Date(2026, 11, 2, 0, 30).toISOString();
-    expect(formatSavedAt(savedAt)).toBe("2026년 12월 2일");
-  });
-  it("저장 시각이 이상하면 빈 문자열", () => expect(formatSavedAt("어제쯤")).toBe(""));
-  it("오늘 날짜 문자열", () => expect(todayString(new Date(2026, 0, 5))).toBe("2026-01-05"));
 });
 
 describe("weatherText", () => {

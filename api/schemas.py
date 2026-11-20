@@ -56,34 +56,6 @@ class Weather(BaseModel):
     areas: list[WeatherArea]
 
 
-class PlanRequest(BaseModel):
-    message: str = Field(min_length=1, max_length=500)
-    days: int = Field(default=2, ge=1, le=3)
-    companions: str | None = Field(default=None, max_length=20)
-    start_date: dt.date | None = None
-
-
-class PlanItem(BaseModel):
-    time: Literal["오전", "점심", "오후", "저녁"]
-    spot_id: int
-    title: str
-    reason: str = ""
-
-
-class PlanDay(BaseModel):
-    day: int
-    date: dt.date | None = None
-    weather: str | None = None
-    items: list[PlanItem]
-
-
-class PlanResponse(BaseModel):
-    mode: Literal["ai", "rule"]
-    answer: str
-    itinerary: list[PlanDay]
-    sources: list[Spot]
-
-
 class User(BaseModel):
     id: str
     email: str | None = None
@@ -93,23 +65,10 @@ class FavoriteIn(BaseModel):
     spot_id: int
 
 
-class TripIn(BaseModel):
-    title: str = Field(min_length=1, max_length=60)
-    itinerary: list[PlanDay] = Field(min_length=1, max_length=3)
-
-
-class Trip(BaseModel):
-    id: int
-    title: str
-    itinerary: list[PlanDay]
-    created_at: str
-
-
 class Status(BaseModel):
     """운영 확인용 응답. 키 값은 담지 않고 "있다/없다"만 담습니다."""
 
     database: Literal["ok", "error"]
     spots: int | None = None
-    ai: Literal["ai", "rule"]
     login: Literal["on", "off"]
     photos: int

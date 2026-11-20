@@ -28,26 +28,6 @@
       "problemMatcher": []
     },
     {
-      "label": "3. 앱 실행 - 크롬 (app)",
-      "type": "shell",
-      "command": "flutter run -d chrome --dart-define-from-file=env.json",
-      "options": {
-        "cwd": "${workspaceFolder}/app"
-      },
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
-      "label": "3. 앱 실행 - 에뮬레이터 (app)",
-      "type": "shell",
-      "command": "flutter run --dart-define-from-file=env.json",
-      "options": {
-        "cwd": "${workspaceFolder}/app"
-      },
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
       "label": "서버 + 웹 함께 실행",
       "dependsOn": [
         "1. 서버 실행 (api · localhost:8000)",
@@ -77,16 +57,6 @@
       "command": "npm run lint && npx tsc --noEmit && npm test",
       "options": {
         "cwd": "${workspaceFolder}/web"
-      },
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "검사: 앱 (analyze · 테스트)",
-      "type": "shell",
-      "command": "flutter analyze && flutter test",
-      "options": {
-        "cwd": "${workspaceFolder}/app"
       },
       "group": "test",
       "problemMatcher": []
@@ -123,7 +93,7 @@
       "problemMatcher": []
     },
     {
-      "label": "데이터: 예시 찜·일정 넣기 (로컬 DB)",
+      "label": "데이터: 예시 찜 넣기 (로컬 DB)",
       "type": "shell",
       "command": ".venv/bin/python -m tools.seed_demo --token local-dev-token",
       "windows": {

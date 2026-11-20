@@ -22,10 +22,6 @@ class Settings:
     supabase_url = _env("SUPABASE_URL").rstrip("/")
     supabase_service_role_key = _env("SUPABASE_SERVICE_ROLE_KEY")
 
-    # AI (없으면 규칙으로 일정을 짭니다)
-    gemini_api_key = _env("GEMINI_API_KEY")
-    gemini_model = _env("GEMINI_MODEL", "gemini-3.8-flash")
-
     # 한국관광공사 TourAPI (데이터 가져오기 도구에서만 씁니다)
     tour_api_key = _env("TOUR_API_KEY")
     tour_api_base = _env("TOUR_API_BASE", "https://apis.data.go.kr/B551011/KorService2").rstrip("/")

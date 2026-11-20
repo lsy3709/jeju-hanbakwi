@@ -16,8 +16,6 @@ class FakeRepo:
             row = to_spot_row(item, source="sample")
             self.spots.append({"id": index, **row})
         self.favorites: list[tuple[str, int]] = []
-        self.trips: list[dict] = []
-        self._trip_id = 0
 
     def list_spots(self, q=None, theme=None, area=None, category=None, indoor=None, page=1, size=20):
         items = self.spots
@@ -47,24 +45,6 @@ class FakeRepo:
 
     def remove_favorite(self, user_id, spot_id):
         self.favorites = [f for f in self.favorites if f != (user_id, spot_id)]
-
-    def list_trips(self, user_id):
-        return [self._public(t) for t in reversed(self.trips) if t["user_id"] == user_id]
-
-    def add_trip(self, user_id, title, itinerary):
-        self._trip_id += 1
-        trip = {"id": self._trip_id, "user_id": user_id, "title": title, "itinerary": itinerary, "created_at": "2026-12-01T00:00:00+00:00"}
-        self.trips.append(trip)
-        return self._public(trip)
-
-    def delete_trip(self, user_id, trip_id):
-        before = len(self.trips)
-        self.trips = [t for t in self.trips if not (t["user_id"] == user_id and t["id"] == trip_id)]
-        return len(self.trips) < before
-
-    @staticmethod
-    def _public(trip):
-        return {k: trip[k] for k in ("id", "title", "itinerary", "created_at")}
 
 
 def make_weather(first_day_rainy: bool):

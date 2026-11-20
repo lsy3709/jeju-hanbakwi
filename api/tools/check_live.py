@@ -6,12 +6,11 @@
 api 폴더에서 실행합니다. (서버가 먼저 켜져 있어야 합니다)
 
   python -m tools.check_live                              로그인 없이 볼 수 있는 것만
-  python -m tools.check_live --token local-dev-token      로컬 Docker DB 일 때 (찜·일정까지)
+  python -m tools.check_live --token local-dev-token      로컬 Docker DB 일 때 (찜까지)
   python -m tools.check_live --token <액세스 토큰>         진짜 Supabase 일 때
   python -m tools.check_live --api https://내서버.vercel.app   배포한 서버 점검
-  python -m tools.check_live --skip-ai                    AI 일정은 건너뛰기 (호출 한도 아끼기)
 
-찜·일정 점검은 만든 것을 스스로 지우고 끝납니다.
+찜 점검은 만든 것을 스스로 지우고 끝납니다.
 """
 
 import argparse
@@ -47,7 +46,7 @@ def check_public(client: httpx.Client) -> None:
     check(
         "연결 상태 /status",
         state.get("database") == "ok",
-        f"DB {state.get('database')}, 관광지 {state.get('spots')}건, 일정 방식 {state.get('ai')}, 로그인 {state.get('login')}, 사진 {state.get('photos')}장",
+        f"DB {state.get('database')}, 관광지 {state.get('spots')}건, 로그인 {state.get('login')}, 사진 {state.get('photos')}장",
         ms,
     )
 
@@ -110,32 +109,15 @@ def check_public(client: httpx.Client) -> None:
         check("날씨 (Open-Meteo)", False, f"응답 {r.status_code}", ms)
 
 
-def check_plan(client: httpx.Client) -> None:
-    print("\n[4] AI 일정")
-    r, ms = call(client, "POST", "/agent/plan", json={"message": "비가 와도 괜찮은 하루 코스", "days": 1}, timeout=120)
-    if r.status_code != 200:
-        check("일정 짜기", False, f"응답 {r.status_code}", ms)
-        return
-    plan = r.json()
-    spot_ids = {item["spot_id"] for day in plan["itinerary"] for item in day["items"]}
-    source_ids = {s["id"] for s in plan["sources"]}
-    check("일정 짜기", bool(spot_ids), f"방식 {plan['mode']}, 장소 {len(spot_ids)}곳", ms)
-    check("일정의 장소가 모두 DB 에 있는 곳", spot_ids <= source_ids)
-    if plan["mode"] == "rule":
-        print("     (AI 가 아니라 규칙으로 짠 일정입니다. GEMINI_API_KEY 와 서버 로그를 확인하세요)")
-    if ms > 25000:
-        print("     (25초를 넘었습니다. 배포 환경의 응답 시간 제한에 걸릴 수 있습니다)")
-
-
 def check_login(client: httpx.Client, token: str | None) -> None:
-    print("\n[5] 로그인이 필요한 주소")
+    print("\n[4] 로그인이 필요한 주소")
     r, ms = call(client, "GET", "/me")
     check("토큰이 없으면 401", r.status_code == 401, ms=ms)
     r, ms = call(client, "GET", "/me", headers={"Authorization": "Bearer not-a-real-token"})
     check("틀린 토큰이면 401", r.status_code == 401, ms=ms)
 
     if not token:
-        print("  (--token 이 없어 찜·일정 저장은 점검하지 않았습니다)")
+        print("  (--token 이 없어 찜은 점검하지 않았습니다)")
         return
 
     auth = {"Authorization": f"Bearer {token}"}
@@ -143,7 +125,7 @@ def check_login(client: httpx.Client, token: str | None) -> None:
     if not check("내 정보 /me", r.status_code == 200 and bool(r.json().get("id")), r.json().get("email", "") if r.status_code == 200 else f"응답 {r.status_code}", ms):
         return
 
-    print("\n[6] DB 연동 — 찜과 저장한 일정 (만들고, 확인하고, 지웁니다)")
+    print("\n[5] DB 연동 — 찜 (만들고, 확인하고, 지웁니다)")
     spot = client.get("/spots", params={"size": 1}).json()["items"][0]
     before = {s["id"] for s in client.get("/me/favorites", headers=auth).json()}
 
@@ -158,19 +140,6 @@ def check_login(client: httpx.Client, token: str | None) -> None:
         gone = all(s["id"] != spot["id"] for s in client.get("/me/favorites", headers=auth).json())
         check("찜 삭제", r.status_code == 204 and gone, ms=ms)
 
-    itinerary = [{"day": 1, "date": None, "weather": None, "items": [{"time": "오전", "spot_id": spot["id"], "title": spot["title"], "reason": "실측 점검"}]}]
-    r, ms = call(client, "POST", "/me/trips", json={"title": "실측 점검용 일정", "itinerary": itinerary}, headers=auth)
-    if check("일정 저장", r.status_code == 201, ms=ms):
-        trip_id = r.json()["id"]
-        r, ms = call(client, "GET", "/me/trips", headers=auth)
-        saved = next((t for t in r.json() if t["id"] == trip_id), None)
-        check("저장한 일정이 그대로 돌아온다", bool(saved) and saved["itinerary"][0]["items"][0]["spot_id"] == spot["id"], ms=ms)
-        r, ms = call(client, "DELETE", f"/me/trips/{trip_id}", headers=auth)
-        gone = all(t["id"] != trip_id for t in client.get("/me/trips", headers=auth).json())
-        check("일정 삭제", r.status_code == 204 and gone, ms=ms)
-        r, ms = call(client, "DELETE", f"/me/trips/{trip_id}", headers=auth)
-        check("이미 지운 일정은 404", r.status_code == 404, ms=ms)
-
 
 def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
@@ -178,15 +147,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="켜져 있는 서버 실측 점검")
     parser.add_argument("--api", default="http://localhost:8000", help="서버 주소")
     parser.add_argument("--token", default=None, help="로그인 토큰 (로컬 Docker DB 는 local-dev-token)")
-    parser.add_argument("--skip-ai", action="store_true", help="AI 일정 점검을 건너뜁니다")
     args = parser.parse_args()
 
     print(f"점검 대상: {args.api}")
     try:
         with httpx.Client(base_url=args.api.rstrip("/"), timeout=20) as client:
             check_public(client)
-            if not args.skip_ai:
-                check_plan(client)
             check_login(client, args.token)
     except httpx.ConnectError:
         print(f"\n❌ 서버에 연결할 수 없습니다: {args.api}\n   서버를 먼저 켜세요:  uvicorn main:app --reload")

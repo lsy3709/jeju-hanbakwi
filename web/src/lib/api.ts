@@ -3,15 +3,11 @@
 // 주소·응답 모양은 docs/api.md 를 따릅니다.
 import { spotsQuery } from "./format";
 import type {
-  Itinerary,
   Me,
   Meta,
-  PlanRequest,
-  PlanResponse,
   Spot,
   SpotList,
   SpotsParams,
-  Trip,
   Weather,
 } from "./types";
 
@@ -75,8 +71,6 @@ export const getMeta = () => request<Meta>("/meta");
 export const getSpots = (params: SpotsParams = {}) => request<SpotList>(`/spots${spotsQuery(params)}`);
 export const getSpot = (id: number | string) => request<Spot>(`/spots/${id}`);
 export const getWeather = () => request<Weather>("/weather");
-export const planTrip = (body: PlanRequest) =>
-  request<PlanResponse>("/agent/plan", { method: "POST", body });
 
 // ---------- 로그인이 필요한 주소 (token = Supabase 액세스 토큰) ----------
 export const getMe = (token: string) => request<Me>("/me", { token });
@@ -85,8 +79,3 @@ export const addFavorite = (token: string, spotId: number) =>
   request<{ spot_id: number }>("/me/favorites", { method: "POST", body: { spot_id: spotId }, token });
 export const removeFavorite = (token: string, spotId: number) =>
   request<void>(`/me/favorites/${spotId}`, { method: "DELETE", token });
-export const getTrips = (token: string) => request<Trip[]>("/me/trips", { token });
-export const saveTrip = (token: string, title: string, itinerary: Itinerary) =>
-  request<Trip>("/me/trips", { method: "POST", body: { title, itinerary }, token });
-export const deleteTrip = (token: string, id: number) =>
-  request<void>(`/me/trips/${id}`, { method: "DELETE", token });

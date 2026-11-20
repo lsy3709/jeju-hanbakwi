@@ -38,45 +38,6 @@ export function photoCreditText(spot: { image_url: string | null; image_credit: 
   return `사진: ${credit}`;
 }
 
-/** "2026-12-01" → "12월 1일 (화)". 날짜가 없거나 모양이 틀리면 null. */
-export function formatDate(date: string | null): string | null {
-  if (!date) return null;
-  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(date);
-  if (!match) return null;
-  const y = Number(match[1]);
-  const m = Number(match[2]);
-  const d = Number(match[3]);
-  // 시간대 때문에 하루가 밀리지 않도록 UTC 로 요일을 계산합니다.
-  const weekday = ["일", "월", "화", "수", "목", "금", "토"][
-    new Date(Date.UTC(y, m - 1, d)).getUTCDay()
-  ];
-  return `${m}월 ${d}일 (${weekday})`;
-}
-
-/** 일정 한 날의 제목: "1일차 · 12월 1일 (화)" (날짜가 없으면 "1일차"). */
-export function dayTitle(day: number, date: string | null): string {
-  const text = formatDate(date);
-  return text ? `${day}일차 · ${text}` : `${day}일차`;
-}
-
-/**
- * 저장 시각(ISO) → "2026년 12월 1일". 잘못된 값이면 빈 문자열.
- * 서버는 세계 표준시(UTC)로 시각을 주므로, 사용자 컴퓨터의 시간대로 바꿔서 날짜를 냅니다.
- * (글자 앞 10자만 자르면 한국의 오전 9시 이전에 저장한 것이 하루 전으로 보입니다)
- */
-export function formatSavedAt(iso: string): string {
-  const saved = new Date(iso);
-  if (Number.isNaN(saved.getTime())) return "";
-  return `${saved.getFullYear()}년 ${saved.getMonth() + 1}월 ${saved.getDate()}일`;
-}
-
-/** 오늘 날짜를 "YYYY-MM-DD" 로(날짜 입력칸의 최소값용). 사용자 컴퓨터의 시간대 기준. */
-export function todayString(now: Date = new Date()): string {
-  const mm = String(now.getMonth() + 1).padStart(2, "0");
-  const dd = String(now.getDate()).padStart(2, "0");
-  return `${now.getFullYear()}-${mm}-${dd}`;
-}
-
 /**
  * 날씨 한 줄 글자: "8° / 15° · 비 30%".
  * 서버는 기온·강수확률을 null 로 줄 수 있습니다. 값이 없는 조각은 "NaN°"나 "비 null%" 대신 통째로 뺍니다.

@@ -1,6 +1,6 @@
 # 제주 한 바퀴 — 웹 (Next.js)
 
-날씨와 취향에 맞는 제주 관광지를 찾고, AI가 일자별 여행 일정을 짜 주는 웹 화면입니다.
+날씨와 취향에 맞는 제주 관광지를 찾고 찜해 두는 웹 화면입니다.
 
 ## 실행 방법
 
@@ -33,10 +33,10 @@ npm run build         # 배포용 빌드
 
 | 폴더 | 역할 | 지켜야 할 것 |
 |---|---|---|
-| `app/` | 화면 경로. `page.tsx` 는 **조립만** 합니다(홈 `/`, `explore/`, `planner/`, `my/`, `spots/[id]/`). `layout.tsx` 는 공통 틀, `globals.css` 는 색·글꼴 토큰 | 상태·불러오기 로직은 `hooks/` 로 뺍니다 |
-| `components/` | **보여 주기만** 하는 화면 조각(헤더, 카드, 지도, 폼, 목록 …) | 서버를 부르지 않습니다. 예외: `AuthProvider`(로그인), `FavoriteButton`(찜) 은 기능이 본질이라 파일 맨 위 주석에 그렇게 적어 두었습니다 |
-| `hooks/` | 화면 상태와 데이터 불러오기를 담은 커스텀 훅 (`useAsync`, `useSpotSearch`, `usePlanner`, `useFavorites`, `useTrips`, `useHydrated`) | 화면(JSX)을 그리지 않습니다 |
-| `lib/` | React 와 무관한 순수 코드 (`api.ts` 서버 호출, `types.ts` 응답 모양, `format.ts` 글자 만들기, `exploreFilters.ts` 탐색 주소 ↔ 필터, `planDraft.ts` 일정 임시 보관, `spotList.ts`, `brand.ts` 이름·문구, `supabase.ts` 로그인) | 테스트(`*.test.ts`)를 곁에 둡니다 |
+| `app/` | 화면 경로. `page.tsx` 는 **조립만** 합니다(홈 `/`, `explore/`, `my/`, `spots/[id]/`). `layout.tsx` 는 공통 틀, `globals.css` 는 색·글꼴 토큰 | 상태·불러오기 로직은 `hooks/` 로 뺍니다 |
+| `components/` | **보여 주기만** 하는 화면 조각(헤더, 카드, 지도, 목록 …) | 서버를 부르지 않습니다. 예외: `AuthProvider`(로그인), `FavoriteButton`(찜) 은 기능이 본질이라 파일 맨 위 주석에 그렇게 적어 두었습니다 |
+| `hooks/` | 화면 상태와 데이터 불러오기를 담은 커스텀 훅 (`useAsync`, `useSpotSearch`, `useFavorites`, `useHydrated`) | 화면(JSX)을 그리지 않습니다 |
+| `lib/` | React 와 무관한 순수 코드 (`api.ts` 서버 호출, `types.ts` 응답 모양, `format.ts` 글자 만들기, `exploreFilters.ts` 탐색 주소 ↔ 필터, `spotList.ts`, `brand.ts` 이름·문구, `supabase.ts` 로그인) | 테스트(`*.test.ts`)를 곁에 둡니다 |
 
 **서버와 통하는 곳은 `lib/api.ts` 하나뿐입니다.** 화면은 `fetch` 를 직접 부르지 않고 `api.ts` 의 함수만 씁니다.
 
@@ -51,9 +51,5 @@ npm run build         # 배포용 빌드
 | 서버 주소 | `.env.local` 의 `NEXT_PUBLIC_API_URL` (코드는 고치지 않습니다. 배포 환경에서는 호스팅 서비스의 환경변수) |
 | 새 화면(경로) 추가 | `src/app/<경로>/page.tsx` 를 만들고(조립만), 메뉴에 넣으려면 `NAV_ITEMS` 에 한 줄 추가. 상태가 필요하면 `hooks/` 에 훅을 만들어 씁니다 |
 | 새 API 함수 추가 | 먼저 `docs/api.md` 를 고치고 → `lib/types.ts` 에 응답 모양 → `lib/api.ts` 에 함수 한 줄 → 화면은 훅을 거쳐 그 함수를 씁니다 |
-
-## 로그인 후 돌아오는 주소
-
-로그아웃 상태에서 AI 일정을 짜고 "저장"을 누르면 구글 로그인 뒤 **`/planner` 로 돌아오고**, 짜 둔 일정이 그대로 되살아납니다(브라우저 탭의 `sessionStorage` 에 30분 동안만 보관). 그래서 Supabase 대시보드의 **Authentication → URL Configuration → Redirect URLs** 에 `/my` 뿐 아니라 `/planner` 주소도 등록해야 합니다(예: `http://localhost:3000/planner`, 배포 주소의 `/planner`). 등록하지 않으면 로그인 뒤 엉뚱한 주소로 갑니다.
 
 전체 설명은 저장소 루트 README 참고.

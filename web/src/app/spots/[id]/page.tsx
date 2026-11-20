@@ -1,17 +1,16 @@
 "use client";
 
-// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 글 → 주소 → 지도 → 버튼 2개
+// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 글 → 주소 → 지도 → 찜 버튼
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback } from "react";
-import { MapPin, Sparkles } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { PhotoCredit } from "@/components/PhotoCredit";
 import { SpotImage } from "@/components/SpotImage";
 import { IndoorBadge } from "@/components/SpotCard";
 import { SpotMapView } from "@/components/SpotMapView";
 import { Empty, ErrorBox, Loading } from "@/components/States";
-import { btnPrimary } from "@/components/ui";
 import { getSpot } from "@/lib/api";
 import { buildQuery } from "@/lib/format";
 import { useAsync } from "@/hooks/useAsync";
@@ -75,10 +74,6 @@ export default function SpotDetailPage() {
 
       <div className="flex flex-wrap items-center gap-3">
         <FavoriteButton spotId={spot.id} />
-        <Link href={`/planner${buildQuery({ q: `${spot.title}을(를) 포함한 일정` })}`} className={btnPrimary}>
-          <Sparkles size={18} aria-hidden="true" />
-          이 장소로 일정 짜기
-        </Link>
       </div>
     </article>
   );

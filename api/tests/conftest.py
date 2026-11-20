@@ -20,8 +20,7 @@ BOB = User(id="00000000-0000-0000-0000-00000000000b", email="bob@example.com")
 
 @pytest.fixture(autouse=True)
 def no_real_keys(monkeypatch):
-    """테스트는 진짜 AI·Supabase 를 부르지 않습니다. (PC 에 키가 있어도 비웁니다)"""
-    monkeypatch.setattr(settings, "gemini_api_key", "")
+    """테스트는 진짜 Supabase 를 부르지 않습니다. (PC 에 키가 있어도 비웁니다)"""
     monkeypatch.setattr(settings, "supabase_url", "")
     monkeypatch.setattr(settings, "supabase_service_role_key", "")
 

@@ -28,8 +28,8 @@ export function LoginPanel({ next }: { next?: string }) {
   );
 }
 
-/** 로그인이 필요한 버튼(찜·저장)을 로그인 전에 눌렀을 때 띄우는 안내창 */
-/** next: 로그인 뒤 돌아올 경로(예: 플래너는 "/planner"). 생략하면 "/my". */
+/** 로그인이 필요한 버튼(찜)을 로그인 전에 눌렀을 때 띄우는 안내창 */
+/** next: 로그인 뒤 돌아올 경로(예: "/spots/3"). 생략하면 "/my". */
 export function LoginDialog({ message, next, onClose }: { message: string; next?: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>

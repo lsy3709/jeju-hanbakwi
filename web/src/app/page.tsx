@@ -1,16 +1,13 @@
 "use client";
 
-// 홈: 인사 + 검색바 → 날씨 배너 → 테마 칩 → "지금 가기 좋은 곳" → AI 플래너 안내
-import Link from "next/link";
+// 홈: 인사 + 검색바 → 날씨 배너 → 테마 칩 → "지금 가기 좋은 곳"
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { SpotCard } from "@/components/SpotCard";
 import { ThemeChips } from "@/components/ThemeChips";
 import { WeatherBanner } from "@/components/WeatherBanner";
 import { ErrorBox, Loading } from "@/components/States";
-import { btnPrimary } from "@/components/ui";
 import { BRAND } from "@/lib/brand";
 import { buildQuery } from "@/lib/format";
 import { getMeta, getSpots, getWeather } from "@/lib/api";
@@ -49,19 +46,6 @@ export default function HomePage() {
         <h2 className="text-lg font-bold">지금 가기 좋은 곳</h2>
         {/* 날씨 확인이 끝난 뒤에 불러옵니다. 날씨를 못 불러오면 비 안 오는 것으로 보고 실외 장소를 보여 줍니다. */}
         {weather.loading ? <Loading /> : <Recommended indoor={weather.data?.rainy_today ?? false} />}
-      </section>
-
-      <section className="flex flex-col items-start gap-3 rounded-card bg-primary/10 p-6 md:flex-row md:items-center md:justify-between">
-        <div className="space-y-1">
-          <h2 className="flex items-center gap-2 text-lg font-bold">
-            <Sparkles size={20} className="text-primary" aria-hidden="true" />
-            AI에게 일정 맡기기
-          </h2>
-          <p className="text-sm text-muted">누구와, 며칠 가는지만 알려 주세요. 날씨까지 고려해 일정을 짜 드려요.</p>
-        </div>
-        <Link href="/planner" className={btnPrimary}>
-          일정 짜러 가기
-        </Link>
       </section>
     </div>
   );

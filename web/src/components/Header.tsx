@@ -1,15 +1,14 @@
 "use client";
 
-// 넓은 화면: 위쪽 메뉴 / 768px 미만: 아래쪽 탭 4개
+// 넓은 화면: 위쪽 메뉴 / 768px 미만: 아래쪽 탭 3개
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Heart, Home, Sparkles, type LucideIcon } from "lucide-react";
+import { Compass, Heart, Home, type LucideIcon } from "lucide-react";
 import { BRAND, NAV_ITEMS } from "@/lib/brand";
 
 const ICONS: Record<(typeof NAV_ITEMS)[number]["icon"], LucideIcon> = {
   home: Home,
   compass: Compass,
-  sparkles: Sparkles,
   heart: Heart,
 };
 
@@ -52,7 +51,7 @@ export function Header() {
       {/* 좁은 화면에서만 보이는 하단 탭 */}
       <nav
         aria-label="하단 메뉴"
-        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-line bg-surface md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-line bg-surface md:hidden"
       >
         {NAV_ITEMS.map((item) => {
           const Icon = ICONS[item.icon];

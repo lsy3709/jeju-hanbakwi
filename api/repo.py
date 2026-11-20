@@ -8,7 +8,6 @@
   get_spot(spot_id) → 한 곳 또는 None
   upsert_spots(rows) → 넣은 개수
   list_favorites(user_id) / add_favorite(user_id, spot_id) / remove_favorite(user_id, spot_id)
-  list_trips(user_id) / add_trip(user_id, title, itinerary) / delete_trip(user_id, trip_id) → 지웠으면 True
 """
 
 import re
@@ -86,33 +85,6 @@ class SupabaseRepo:
 
     def remove_favorite(self, user_id: str, spot_id: int) -> None:
         self.db.table("favorites").delete().eq("user_id", user_id).eq("spot_id", spot_id).execute()
-
-    # ---------- 저장한 일정 ----------
-    # 모든 질의에 user_id 조건을 붙입니다. 서버는 비밀 키로 접속해 RLS 를 건너뛰므로,
-    # "내 것만" 보이게 하는 책임은 이 조건에 있습니다.
-    def list_trips(self, user_id: str):
-        result = (
-            self.db.table("trips")
-            .select("id, title, itinerary, created_at")
-            .eq("user_id", user_id)
-            .order("created_at", desc=True)
-            .execute()
-        )
-        return result.data
-
-    def add_trip(self, user_id: str, title: str, itinerary: list[dict]):
-        result = (
-            self.db.table("trips")
-            .insert({"user_id": user_id, "title": title, "itinerary": itinerary})
-            .execute()
-        )
-        row = result.data[0]
-        return {k: row[k] for k in ("id", "title", "itinerary", "created_at")}
-
-    def delete_trip(self, user_id: str, trip_id: int) -> bool:
-        """지웠으면 True. 내 일정이 아니거나 없으면 False."""
-        result = self.db.table("trips").delete().eq("user_id", user_id).eq("id", trip_id).execute()
-        return bool(result.data)
 
 
 def get_repo() -> SupabaseRepo:

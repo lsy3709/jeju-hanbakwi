@@ -17,22 +17,6 @@ export type Spot = {
   indoor: boolean;
 };
 
-export type ItineraryItem = {
-  time: "오전" | "점심" | "오후" | "저녁";
-  spot_id: number;
-  title: string;
-  reason: string;
-};
-
-export type ItineraryDay = {
-  day: number;
-  date: string | null;
-  weather: string | null;
-  items: ItineraryItem[];
-};
-
-export type Itinerary = ItineraryDay[];
-
 export type Meta = { themes: string[]; areas: string[]; categories: string[] };
 
 export type SpotList = { items: Spot[]; total: number; page: number; size: number };
@@ -62,33 +46,4 @@ export type Weather = {
   areas: { area: string; days: WeatherDay[] }[];
 };
 
-export type PlanRequest = {
-  message: string;
-  days?: number;
-  companions?: string;
-  start_date?: string;
-};
-
-/** 플래너 입력칸의 값(화면용). 서버로 보낼 때는 PlanRequest 로 바꿉니다. */
-export type PlanInput = {
-  message: string;
-  days: number;
-  companions: string; // "" = 고르지 않음
-  startDate: string; // "" = 고르지 않음
-};
-
-export type PlanResponse = {
-  mode: "ai" | "rule";
-  answer: string;
-  itinerary: Itinerary;
-  sources: Spot[];
-};
-
 export type Me = { id: string; email: string };
-
-export type Trip = {
-  id: number;
-  title: string;
-  itinerary: Itinerary;
-  created_at: string;
-};

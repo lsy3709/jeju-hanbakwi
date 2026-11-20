@@ -35,7 +35,6 @@ def status(repo=Depends(get_repo)):
     return {
         "database": database,  # DB 에 닿는지
         "spots": spots,  # 관광지 수 (0 이면 데이터를 아직 안 넣은 것)
-        "ai": "ai" if settings.gemini_api_key else "rule",  # 일정을 AI 로 짜는지, 규칙으로만 짜는지
         "login": "on" if settings.supabase_url and settings.supabase_service_role_key else "off",
         "photos": count_photos(),  # 서버에 들어 있는 사진 수
     }

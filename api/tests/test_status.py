@@ -3,25 +3,18 @@
 from config import settings
 
 
-def test_status_reports_what_is_connected(client, monkeypatch):
-    monkeypatch.setattr(settings, "gemini_api_key", "test-key")
+def test_status_reports_what_is_connected(client):
     body = client.get("/status").json()
     assert body["database"] == "ok"
     assert body["spots"] == 68
-    assert body["ai"] == "ai"
     assert body["login"] == "off"  # 테스트에서는 Supabase 주소가 비어 있음
     assert body["photos"] == 55
 
 
-def test_status_without_ai_key_says_rule(client):
-    assert client.get("/status").json()["ai"] == "rule"
-
-
 def test_status_never_shows_secret_values(client, monkeypatch):
-    monkeypatch.setattr(settings, "gemini_api_key", "super-secret-key")
     monkeypatch.setattr(settings, "supabase_service_role_key", "another-secret")
     text = client.get("/status").text
-    assert "super-secret-key" not in text and "another-secret" not in text
+    assert "another-secret" not in text
 
 
 def test_status_survives_a_broken_database(client):
