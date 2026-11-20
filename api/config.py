@@ -22,14 +22,6 @@ class Settings:
     supabase_url = _env("SUPABASE_URL").rstrip("/")
     supabase_service_role_key = _env("SUPABASE_SERVICE_ROLE_KEY")
 
-    # 한국관광공사 TourAPI (데이터 가져오기 도구에서만 씁니다)
-    tour_api_key = _env("TOUR_API_KEY")
-    tour_api_base = _env("TOUR_API_BASE", "https://apis.data.go.kr/B551011/KorService2").rstrip("/")
-
-    # 이 서버의 공개 주소. 보통은 비워 둡니다(요청이 들어온 주소를 그대로 씀).
-    # 배포 후 사진 주소가 http 로 잘못 나올 때만 "https://내서버.vercel.app" 처럼 넣습니다.
-    public_api_url = _env("PUBLIC_API_URL").rstrip("/")
-
     # 이 서버를 불러도 되는 화면 주소들(쉼표로 구분). 배포한 웹·앱 주소를 여기에 추가합니다.
     allowed_origins = [o.strip() for o in _env("ALLOWED_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
 

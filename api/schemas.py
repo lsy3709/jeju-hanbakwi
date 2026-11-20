@@ -1,8 +1,5 @@
 """주고받는 자료의 모양. docs/api.md 와 같아야 합니다."""
 
-import datetime as dt  # 필드 이름 date 와 겹치지 않게 dt 로 부릅니다
-from typing import Literal
-
 from pydantic import BaseModel, Field
 
 
@@ -34,31 +31,3 @@ class Meta(BaseModel):
     themes: list[str]
     areas: list[str]
     categories: list[str]
-
-
-class WeatherDay(BaseModel):
-    date: dt.date
-    label: str
-    icon: Literal["sun", "cloud", "rain", "snow", "fog"]
-    temp_min: float | None = None
-    temp_max: float | None = None
-    rain_prob: int | None = None
-
-
-class WeatherArea(BaseModel):
-    area: str
-    days: list[WeatherDay]
-
-
-class Weather(BaseModel):
-    rainy_today: bool
-    message: str
-    areas: list[WeatherArea]
-
-
-class Status(BaseModel):
-    """운영 확인용 응답. 키 값은 담지 않고 "있다/없다"만 담습니다."""
-
-    database: Literal["ok", "error"]
-    spots: int | None = None
-    photos: int

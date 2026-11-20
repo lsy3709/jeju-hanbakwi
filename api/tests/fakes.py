@@ -1,61 +1,50 @@
 """테스트용 가짜 DB. repo.SupabaseRepo 와 같은 함수를 메모리 안에서 흉내 냅니다."""
 
-import json
-from pathlib import Path
 
-from transform import to_spot_row
+def make_spot(spot_id: int, title: str, category: str, area: str, theme_tags: list[str], indoor: bool) -> dict:
+    """필드는 schemas.Spot 과 같습니다."""
+    return {
+        "id": spot_id,
+        "title": title,
+        "category": category,
+        "area": area,
+        "address": f"제주특별자치도 {title}",
+        "lat": 33.4,
+        "lng": 126.5,
+        "image_url": None,
+        "image_credit": None,
+        "image_source_url": None,
+        "overview": f"{title} 소개 글입니다.",
+        "one_liner": f"{title} 한 줄 소개입니다.",
+        "theme_tags": theme_tags,
+        "indoor": indoor,
+    }
 
-SAMPLE = Path(__file__).parent.parent / "data" / "sample_spots.json"
+
+# 테스트 안에 직접 적은 관광지 12건
+SPOTS = [
+    make_spot(1, "성산일출봉", "관광지", "동부", ["바다", "오름", "사진"], False),
+    make_spot(2, "만장굴", "관광지", "동부", [], True),
+    make_spot(3, "협재해수욕장", "관광지", "서부", ["바다", "아이와"], False),
+    make_spot(4, "천지연폭포", "관광지", "서귀포시", ["숲", "폭포"], False),
+    make_spot(5, "오설록 티뮤지엄", "문화시설", "서부", ["박물관", "카페"], True),
+    make_spot(6, "아쿠아플라넷 제주", "문화시설", "동부", ["아이와"], True),
+    make_spot(7, "국립제주박물관", "문화시설", "제주시", ["박물관", "체험", "역사", "아이와"], True),
+    make_spot(8, "사려니숲길", "관광지", "동부", ["숲"], False),
+    make_spot(9, "새별오름", "관광지", "서부", ["오름"], False),
+    make_spot(10, "카멜리아힐", "관광지", "서부", ["사진"], False),
+    make_spot(11, "동문재래시장", "쇼핑", "제주시", ["시장"], False),
+    make_spot(12, "흑돼지거리", "음식점", "제주시", [], False),
+]
 
 
 class FakeRepo:
     def __init__(self):
-        raw = json.loads(SAMPLE.read_text(encoding="utf-8"))
-        self.spots = []
-        for index, item in enumerate(raw, start=1):
-            row = to_spot_row(item, source="sample")
-            self.spots.append({"id": index, **row})
+        self.spots = [dict(spot) for spot in SPOTS]
 
-    def list_spots(self, q=None, theme=None, area=None, category=None, indoor=None, page=1, size=20):
-        items = self.spots
-        if q:
-            items = [s for s in items if q in s["title"] or q in s["one_liner"]]
-        if theme:
-            items = [s for s in items if theme in s["theme_tags"]]
-        if area:
-            items = [s for s in items if s["area"] == area]
-        if category:
-            items = [s for s in items if s["category"] == category]
-        if indoor is not None:
-            items = [s for s in items if s["indoor"] == indoor]
+    def list_spots(self, page=1, size=20):
         start = (page - 1) * size
-        return items[start : start + size], len(items)
+        return self.spots[start : start + size], len(self.spots)
 
     def get_spot(self, spot_id):
         return next((s for s in self.spots if s["id"] == spot_id), None)
-
-
-def make_weather(first_day_rainy: bool):
-    """4일치 가짜 날씨를 돌려주는 함수를 만듭니다. 첫날만 비가 오게 할 수 있습니다."""
-
-    def get_weather():
-        days = []
-        for i in range(4):
-            rainy = first_day_rainy and i == 0
-            days.append(
-                {
-                    "date": f"2026-12-0{i + 1}",
-                    "label": "비" if rainy else "맑음",
-                    "icon": "rain" if rainy else "sun",
-                    "temp_min": 8.0,
-                    "temp_max": 13.0,
-                    "rain_prob": 80 if rainy else 10,
-                }
-            )
-        return {
-            "rainy_today": first_day_rainy,
-            "message": "테스트 날씨",
-            "areas": [{"area": "제주시", "days": days}, {"area": "서귀포시", "days": days}],
-        }
-
-    return get_weather

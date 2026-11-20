@@ -1,21 +1,19 @@
 # 제주 한 바퀴
 
-> **이 브랜치는 3일차 수업이 끝난 상태입니다.** 오늘까지 만든 것: 서버(관광지·날씨·사진·데이터 가져오기)와 웹(홈·탐색·상세, 서버와 연결) / 다음 날 만드는 것: 구글 로그인과 찜(서버의 `/me`, 웹의 내 여행 화면), AI 일정 짜기, 앱(`app/`) — 로그인·찜 주소는 4일차에 만들므로 [API 명세](docs/api.md)에는 있어도 이 브랜치의 서버에는 아직 없습니다 / 완성본은 main 브랜치.
+> **이 브랜치는 2일차 수업이 끝난 상태입니다.** 오늘까지 만든 것: 웹(홈·탐색·상세 — 임시 데이터 `web/src/lib/sample-spots.json` 12건으로 동작), DB 테이블(`supabase/migrations`)과 임시 데이터 `supabase/seed_step2.sql`, 서버의 첫 API(`/health`·`/meta`·`/spots`·`/spots/{id}`) / 다음 날 만드는 것: 외부 데이터 가공·적재(`transform.py`, `tools/sync_spots.py`), 날씨와 지도, 웹과 서버 연결 — [API 명세](docs/api.md)에는 있어도 이 브랜치의 서버에는 아직 없는 주소(`/weather`, `/photos`, `/status`, 검색·필터 인자 등)가 있습니다 / 완성본은 main 브랜치.
 
-날씨와 취향에 맞는 제주 관광지를 찾아보는 여행 서비스.
+취향에 맞는 제주 관광지를 찾아보는 여행 서비스.
 화면이 **서버를 거쳐 DB** 를 쓰는 구조를 처음부터 끝까지 따라 만들어 보는 수업용 샘플입니다.
 
 ```
-[web  Next.js] ───→ [api  FastAPI] ───┬─ Supabase (PostgreSQL)
-                                      └─ Open-Meteo (날씨)
-
-[api/tools/sync_spots.py]  한국관광공사 TourAPI → 우리 기준으로 고치기 → DB 에 넣기
+[web  Next.js] ─(3일차에 연결)→ [api  FastAPI] ───→ Supabase (PostgreSQL)
+     └ 지금은 임시 데이터(sample-spots.json)로 동작
 ```
 
 | 폴더 | 내용 |
 |---|---|
 | `web/` | 웹 화면 (Next.js, Tailwind) |
-| `api/` | 서버 (FastAPI) · 데이터 가져오기 도구 · 테스트 |
+| `api/` | 서버 (FastAPI) · 테스트 |
 | `supabase/` | DB 테이블 정의 (SQL) |
 | `docs/` | 문서 (아래 "문서" 표) |
 | `dev/` | (강사용) Docker 로 띄우는 로컬 DB |
@@ -49,9 +47,8 @@
 
 ## 지키는 규칙
 
-1. 화면(web)은 DB·외부 API 를 직접 부르지 않고 **반드시 서버(api)를 거칩니다.**
+1. 화면(web)은 DB 를 직접 부르지 않고 **반드시 서버(api)를 거칩니다.** (지금은 임시 데이터를 쓰고, 3일차에 서버와 연결합니다)
 2. **비밀 키는 `api/.env` 에만** 둡니다. `.env` 파일은 git 에 올라가지 않습니다.
-3. 외부 데이터는 미리 받아 **우리 기준으로 고쳐 DB 에** 둡니다.
 
 ## 처음 실행하기
 
@@ -60,7 +57,7 @@
 
 ### 1. DB 만들기
 
-Supabase 대시보드 > SQL Editor 에 [`supabase/migrations/`](supabase/migrations) 의 SQL 파일을 **번호 순서대로**(001 → 002) 붙여 넣고 실행합니다.
+Supabase 대시보드 > SQL Editor 에 [`supabase/migrations/`](supabase/migrations) 의 SQL 파일을 **번호 순서대로**(001 → 002) 붙여 넣고 실행합니다. 이어서 [`supabase/seed_step2.sql`](supabase/seed_step2.sql) 을 실행하면 임시 관광지 12건이 들어갑니다.
 
 ### 2. 서버 (api)
 
@@ -70,7 +67,6 @@ python -m venv .venv
 .venv\Scripts\activate            # macOS·Linux: source .venv/bin/activate
 pip install -r requirements-dev.txt
 copy .env.example .env            # 그다음 .env 를 열어 값을 채웁니다
-python -m tools.sync_spots --sample   # 샘플 관광지 68건 넣기 (사진 포함)
 uvicorn main:app --reload
 ```
 
@@ -81,7 +77,6 @@ uvicorn main:app --reload
 ```bash
 cd web
 npm install
-copy .env.local.example .env.local
 npm run dev
 ```
 
@@ -96,43 +91,18 @@ npm run dev
 |---|---|
 | 서버 + 웹 함께 실행 | 터미널 두 개에 서버(8000)와 웹(3000)을 띄움 |
 | 검사: 서버 테스트 / 웹 | 고친 뒤 깨진 곳이 없는지 확인 |
-| 데이터: 샘플 관광지 넣기 | DB 에 샘플 68건 넣기 |
 
 3. 로컬에서 확인하는 주소: 웹 `http://localhost:3000` · 서버 `http://localhost:8000/docs`
-
-## 실측 점검 — 서버와 DB 가 정말 연결됐는지
-
-단위 테스트(`pytest`)는 가짜 DB 로 논리를 보고, 실측 점검은 **켜져 있는 서버를 실제로 불러** DB 와 외부 서비스까지 다녀온 결과를 봅니다.
-
-```bash
-cd api
-python -m tools.check_live                           # 로컬 서버
-python -m tools.check_live --api https://내서버.vercel.app   # 배포한 서버
-```
-
-## 데이터 가져오기
-
-```bash
-cd api
-python -m tools.sync_spots --sample        # 샘플 (키 없이 가능)
-python -m tools.sync_spots --dry-run       # TourAPI 에서 받아 결과만 보기 (TOUR_API_KEY 필요)
-python -m tools.sync_spots --types 12,14   # 관광지·문화시설만 받아 DB 에 넣기
-```
-
-원본에 **테마 태그 · 실내/실외 · 지역 · 한 줄 소개**를 붙이는 규칙은 [`api/transform.py`](api/transform.py) 에 있습니다.
-
-> 샘플 데이터(`api/data/sample_spots.json`)의 글은 수업용으로 직접 쓴 것이며 좌표와 주소는 대략값입니다. 실제 서비스에는 TourAPI 데이터를 쓰세요.
-> 샘플 사진(`api/static/photos/`)은 위키미디어 공용의 공개 라이선스 사진이며, 사진별 저작자와 라이선스는 [docs/photo-credits.md](docs/photo-credits.md) 에 있습니다. 사진은 우리 서버가 `/photos/...` 주소로 직접 내줍니다.
 
 ## 내 주제로 바꾸기 — 두 가지만
 
 | 바꾸는 것 | 고치는 파일 |
 |---|---|
-| ① 데이터 | `api/constants.py`(테마 목록) · `api/transform.py`(태그 규칙) · `sync_spots --types` |
+| ① 데이터 | `api/constants.py`(테마 목록) · `web/src/lib/sample-spots.json`(임시 관광지) · `supabase/seed_step2.sql` |
 | ② 브랜드 | `web/src/lib/brand.ts` · `web/src/app/globals.css`(색) |
 
 더 많은 "이걸 바꾸려면 어디를"은 [운영과 수정](docs/operations.md)에, 올리는 방법은 [배포 안내](docs/deploy.md)에 있습니다.
 
 ## 쓰는 외부 서비스 (모두 무료 등급)
 
-한국관광공사 TourAPI(공공데이터포털) · Open-Meteo · OpenStreetMap · Supabase · Vercel
+Supabase · Vercel

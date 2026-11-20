@@ -1,5 +1,4 @@
 // 화면 어디서나 쓰는 "순수 함수"(같은 입력 → 같은 출력)를 모았습니다. 테스트하기 쉬워요.
-import type { SpotsParams, WeatherDay } from "./types";
 
 /** 값이 있는 항목만 골라 "?a=1&b=2" 문자열을 만듭니다. 값이 하나도 없으면 빈 문자열. */
 export function buildQuery(
@@ -14,11 +13,6 @@ export function buildQuery(
   return text ? `?${text}` : "";
 }
 
-/** 탐색 화면의 필터 → /spots 쿼리 문자열. */
-export function spotsQuery(params: SpotsParams): string {
-  return buildQuery({ ...params });
-}
-
 export type FallbackTone = "sea" | "green" | "sand";
 
 /** 사진이 없을 때 테마 태그로 대체 그림의 색 계열을 고릅니다. (바다=틸, 오름·숲=초록, 그 밖=오렌지·모래) */
@@ -26,27 +20,4 @@ export function pickFallbackTone(tags: string[]): FallbackTone {
   if (tags.some((t) => t === "바다" || t === "폭포")) return "sea";
   if (tags.some((t) => t === "오름" || t === "숲")) return "green";
   return "sand";
-}
-
-/**
- * 사진 아래에 보일 출처 글자("사진: 저작자 · 라이선스"). 보일 것이 없으면 null.
- * 공개 라이선스 사진은 출처를 밝혀야 쓸 수 있습니다. 사진이 없어 대체 그림이 나올 때는 밝힐 출처도 없습니다.
- */
-export function photoCreditText(spot: { image_url: string | null; image_credit: string | null }): string | null {
-  const credit = spot.image_credit?.trim();
-  if (!spot.image_url || !credit) return null;
-  return `사진: ${credit}`;
-}
-
-/**
- * 날씨 한 줄 글자: "8° / 15° · 비 30%".
- * 서버는 기온·강수확률을 null 로 줄 수 있습니다. 값이 없는 조각은 "NaN°"나 "비 null%" 대신 통째로 뺍니다.
- */
-export function weatherText(day: Pick<WeatherDay, "temp_min" | "temp_max" | "rain_prob">): string {
-  const parts: string[] = [];
-  if (day.temp_min !== null && day.temp_max !== null) {
-    parts.push(`${Math.round(day.temp_min)}° / ${Math.round(day.temp_max)}°`);
-  }
-  if (day.rain_prob !== null) parts.push(`비 ${day.rain_prob}%`);
-  return parts.join(" · ");
 }

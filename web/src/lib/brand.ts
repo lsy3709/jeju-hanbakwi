@@ -3,7 +3,7 @@ export const BRAND = {
   name: "제주 한 바퀴",
   tagline: "나만의 제주 여행 길잡이",
   description:
-    "날씨와 취향에 맞는 제주 관광지를 찾아볼 수 있어요.",
+    "취향에 맞는 제주 관광지를 찾아볼 수 있어요.",
   greeting: "어디로 한 바퀴 돌까요?",
 };
 

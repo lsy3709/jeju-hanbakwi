@@ -1,4 +1,4 @@
-// docs/api.md 의 "자료 모양"을 그대로 옮긴 타입입니다.
+// docs/api.md 의 "자료 모양"을 그대로 옮긴 타입입니다. (임시 데이터 sample-spots.json 도 이 모양입니다)
 
 export type Spot = {
   id: number;
@@ -15,33 +15,4 @@ export type Spot = {
   one_liner: string;
   theme_tags: string[];
   indoor: boolean;
-};
-
-export type Meta = { themes: string[]; areas: string[]; categories: string[] };
-
-export type SpotList = { items: Spot[]; total: number; page: number; size: number };
-
-export type SpotsParams = {
-  q?: string;
-  theme?: string;
-  area?: string;
-  category?: string;
-  indoor?: boolean;
-  page?: number;
-  size?: number;
-};
-
-export type WeatherDay = {
-  date: string;
-  label: string;
-  icon: "sun" | "cloud" | "rain" | "snow" | "fog";
-  temp_min: number | null; // 서버가 값을 못 구하면 null
-  temp_max: number | null;
-  rain_prob: number | null;
-};
-
-export type Weather = {
-  rainy_today: boolean;
-  message: string;
-  areas: { area: string; days: WeatherDay[] }[];
 };

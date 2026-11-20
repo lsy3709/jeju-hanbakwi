@@ -1,36 +1,27 @@
 "use client";
 
-// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 글 → 주소 → 지도
+// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 글 → 주소
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback } from "react";
 import { MapPin } from "lucide-react";
-import { PhotoCredit } from "@/components/PhotoCredit";
 import { SpotImage } from "@/components/SpotImage";
 import { IndoorBadge } from "@/components/SpotCard";
-import { SpotMapView } from "@/components/SpotMapView";
-import { Empty, ErrorBox, Loading } from "@/components/States";
-import { getSpot } from "@/lib/api";
+import { Empty } from "@/components/States";
 import { buildQuery } from "@/lib/format";
-import { useAsync } from "@/hooks/useAsync";
+import { getSpot } from "@/lib/spots";
 
 export default function SpotDetailPage() {
   const params = useParams<{ id: string }>();
-  const id = params.id;
-  const load = useCallback(() => getSpot(id), [id]);
-  const { data: spot, loading, error, status, reload } = useAsync(load);
+  // 임시 데이터에서 찾습니다. (3일차에 서버에 물어보는 것으로 바뀝니다)
+  const spot = getSpot(params.id);
 
-  if (loading) return <Loading />;
-  // 서버가 404 를 주면 "없는 장소", 그 밖의 오류는 다시 시도 버튼
-  if (status === 404) {
+  if (!spot) {
     return <Empty title="이 장소를 찾을 수 없어요" hint="주소가 틀렸거나 사라진 장소일 수 있어요." />;
   }
-  if (error || !spot) return <ErrorBox message={error ?? "알 수 없는 오류"} onRetry={reload} />;
 
   return (
     <article className="mx-auto max-w-3xl space-y-5">
       <SpotImage imageUrl={spot.image_url} title={spot.title} tags={spot.theme_tags} className="aspect-16/9 w-full rounded-card" />
-      <PhotoCredit spot={spot} />
 
       <div className="flex items-center gap-2 text-sm text-muted">
         <span>{spot.category}</span>
@@ -65,11 +56,6 @@ export default function SpotDetailPage() {
         <MapPin size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
         {spot.address}
       </p>
-
-      <SpotMapView
-        spots={[{ id: spot.id, title: spot.title, lat: spot.lat, lng: spot.lng }]}
-        className="h-64 w-full rounded-card border border-line"
-      />
     </article>
   );
 }

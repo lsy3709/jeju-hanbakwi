@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import main  # noqa: E402
 from config import settings  # noqa: E402
 from repo import get_repo  # noqa: E402
-from tests.fakes import FakeRepo, make_weather  # noqa: E402
+from tests.fakes import FakeRepo  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
@@ -28,6 +28,5 @@ def repo():
 @pytest.fixture
 def client(repo):
     main.app.dependency_overrides[get_repo] = lambda: repo
-    main.app.dependency_overrides[main.get_weather_service] = lambda: make_weather(first_day_rainy=False)
     yield TestClient(main.app)
     main.app.dependency_overrides.clear()
