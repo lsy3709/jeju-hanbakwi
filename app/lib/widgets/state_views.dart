@@ -114,3 +114,10 @@ class SearchPill extends StatelessWidget {
     );
   }
 }
+
+/// 화면 아래에 잠깐 뜨는 안내.
+void showSnack(BuildContext context, String message) {
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(message)));
+}

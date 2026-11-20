@@ -4,13 +4,12 @@ import '../api/api_client.dart';
 import '../app_scope.dart';
 import '../models/spot.dart';
 import '../theme.dart';
-import '../widgets/login_prompt.dart';
 import '../widgets/spot_image.dart';
 import '../widgets/spot_map.dart';
 import '../widgets/state_views.dart';
 
 /// 관광지 상세 화면. 다른 화면에서는 [SpotDetailScreen.open] 으로 엽니다.
-/// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 → 주소 → 지도 → 버튼 2개.
+/// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 → 주소 → 지도.
 class SpotDetailScreen extends StatefulWidget {
   /// [initial] 이 있으면 먼저 보여 주고(목록에서 넘어온 경우), 없으면 서버에서 불러옵니다.
   const SpotDetailScreen({super.key, required this.spotId, this.initial});
@@ -41,7 +40,7 @@ class _SpotDetailScreenState extends State<SpotDetailScreen> {
     if (!_started) {
       _started = true;
       _spot = widget.initial;
-      // 목록에서 넘어왔으면 그 내용을 바로 보여 주고, 아니면(일정·딥링크 등) 서버에서 불러옵니다.
+      // 목록에서 넘어왔으면 그 내용을 바로 보여 주고, 아니면 서버에서 불러옵니다.
       if (_spot == null) _load();
     }
   }
@@ -67,19 +66,6 @@ class _SpotDetailScreenState extends State<SpotDetailScreen> {
     }
   }
 
-  Future<void> _toggleFavorite(Spot spot) async {
-    final scope = AppScope.of(context);
-    if (!scope.auth.loggedIn) {
-      await showLoginPrompt(context);
-      return;
-    }
-    try {
-      await scope.favorites.toggle(spot);
-    } on ApiException catch (e) {
-      if (mounted) showSnack(context, e.message);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final spot = _spot;
@@ -94,7 +80,6 @@ class _SpotDetailScreenState extends State<SpotDetailScreen> {
   }
 
   Widget _content(Spot spot) {
-    final scope = AppScope.of(context);
     final titleStyle = Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800);
     return CenteredBody(
       maxWidth: 760,
@@ -155,33 +140,6 @@ class _SpotDetailScreenState extends State<SpotDetailScreen> {
               // 작은 지도는 보기만 합니다(스크롤을 방해하지 않도록 조작 끔).
               child: SpotMap(spots: [spot], interactive: false, zoom: 13),
             ),
-          ),
-          const SizedBox(height: 20),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: [
-              ListenableBuilder(
-                listenable: scope.favorites,
-                builder: (context, _) {
-                  final fav = scope.favorites.isFavorite(spot.id);
-                  return OutlinedButton.icon(
-                    onPressed: () => _toggleFavorite(spot),
-                    icon: Icon(fav ? Icons.favorite : Icons.favorite_border, color: AppColors.primary),
-                    label: Text(fav ? '찜 해제' : '찜하기'),
-                  );
-                },
-              ),
-              FilledButton.icon(
-                onPressed: () {
-                  // 상세를 닫고 AI 플래너 탭으로 가서 입력창을 미리 채웁니다.
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                  scope.shell.goPlanner(prefill: '${spot.title}을 포함한 일정');
-                },
-                icon: const Icon(Icons.auto_awesome),
-                label: const Text('이 장소로 일정 짜기'),
-              ),
-            ],
           ),
         ],
       ),

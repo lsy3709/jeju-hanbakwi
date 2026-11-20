@@ -6,7 +6,6 @@ import '../controllers/explore_controller.dart';
 import '../models/spot.dart';
 import '../theme.dart';
 import '../widgets/filter_menu.dart';
-import '../widgets/login_prompt.dart';
 import '../widgets/spot_card.dart';
 import '../widgets/spot_map.dart';
 import '../widgets/state_views.dart';

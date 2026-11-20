@@ -12,10 +12,4 @@ class Config {
     if (_apiUrl.isNotEmpty) return _apiUrl;
     return kIsWeb ? 'http://localhost:8000' : 'http://10.0.2.2:8000';
   }
-
-  static const String supabaseUrl = String.fromEnvironment('SUPABASE_URL');
-  static const String supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
-
-  /// 로그인 설정이 채워져 있는지. false 면 로그인 버튼 대신 안내를 보여 줍니다.
-  static bool get hasSupabase => supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
 }

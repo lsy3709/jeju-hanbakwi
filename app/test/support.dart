@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:jeju_hanbakwi/api/api_client.dart';
-import 'package:jeju_hanbakwi/models/itinerary.dart';
 import 'package:jeju_hanbakwi/models/spot.dart';
-import 'package:jeju_hanbakwi/models/trip.dart';
 import 'package:jeju_hanbakwi/models/weather.dart';
 
 /// 테스트에서 쓰는 관광지 JSON (docs/api.md 의 Spot 모양).
@@ -100,32 +98,3 @@ SpotPage pageOf(List<String> titles, {int total = 2, int page = 1}) => SpotPage(
   page: page,
   size: 20,
 );
-
-const planDay = ItineraryDay(
-  day: 1,
-  date: null,
-  weather: null,
-  items: [ItineraryItem(time: '오전', spotId: 1, title: '성산일출봉', reason: '일출')],
-);
-
-/// 일정 짜기·저장만 흉내 내는 가짜 서버. 불린 내용을 기록합니다.
-class PlanApi extends FakeApi {
-  bool failPlan = false;
-  bool failSave = false;
-  final planCalls = <Map<String, Object?>>[];
-  final saveCalls = <String>[];
-
-  @override
-  Future<PlanResult> plan({required String message, int days = 2, String? companions, String? startDate}) async {
-    planCalls.add({'message': message, 'days': days, 'companions': companions, 'startDate': startDate});
-    if (failPlan) throw const ApiException('지금은 이 기능을 쓸 수 없어요.', statusCode: 503);
-    return const PlanResult(mode: 'ai', answer: '추천이에요', itinerary: [planDay], sources: []);
-  }
-
-  @override
-  Future<Trip> saveTrip({required String title, required List<ItineraryDay> itinerary}) async {
-    saveCalls.add(title);
-    if (failSave) throw const ApiException('로그인이 필요해요.', statusCode: 401);
-    return Trip(id: 1, title: title, itinerary: itinerary, createdAt: '');
-  }
-}

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/app.dart';
-import 'package:jeju_hanbakwi/auth/auth_service.dart';
 import 'package:jeju_hanbakwi/models/spot.dart';
 import 'package:jeju_hanbakwi/screens/explore_screen.dart';
 
@@ -12,7 +11,7 @@ Future<void> pumpApp(WidgetTester tester, FakeApi api) async {
   tester.view.physicalSize = const Size(400, 900);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  await tester.pumpWidget(JejuApp(api: api, auth: AuthService.disabled()));
+  await tester.pumpWidget(JejuApp(api: api));
   await tester.pumpAndSettle();
 }
 
@@ -133,21 +132,12 @@ void main() {
     expect(find.text('관광지 1'), findsOneWidget);
   });
 
-  testWidgets('내 여행: Supabase 설정이 없으면 안내 문구(앱이 죽지 않음)', (tester) async {
-    final api = FakeApi(spots: sampleSpots(1));
-    await pumpApp(tester, api);
-
-    await tester.tap(find.text('내 여행'));
-    await tester.pumpAndSettle();
-    expect(find.text('로그인 설정이 아직 없어요'), findsOneWidget);
-  });
-
   testWidgets('넓은 화면(웹): 왼쪽 메뉴가 보이고 홈·탐색이 깨지지 않는다', (tester) async {
     tester.view.physicalSize = const Size(1280, 900);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     final api = FakeApi(spots: sampleSpots(6), rainy: false);
-    await tester.pumpWidget(JejuApp(api: api, auth: AuthService.disabled()));
+    await tester.pumpWidget(JejuApp(api: api));
     await tester.pumpAndSettle();
 
     expect(find.byType(NavigationRail), findsOneWidget);
@@ -155,29 +145,5 @@ void main() {
     await tester.tap(find.text('탐색'));
     await tester.pumpAndSettle();
     expect(find.text('총 6곳'), findsOneWidget);
-  });
-
-  testWidgets('플래너: 글을 쓰고 "일정 짜기"를 누르면 결과가 보이고, 글이 비어 있으면 안내만', (tester) async {
-    final api = PlanApi();
-    await pumpApp(tester, api);
-    await tester.tap(find.text('AI 플래너').last);
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('일정 짜기'));
-    await tester.pump();
-    expect(find.text('하고 싶은 여행을 적어 주세요.'), findsOneWidget);
-    expect(api.planCalls, isEmpty);
-
-    await tester.enterText(find.byType(TextField), '바다 보고 싶어요');
-    await tester.tap(find.text('3일'));
-    await tester.tap(find.text('연인'));
-    await tester.tap(find.text('일정 짜기'));
-    await tester.pumpAndSettle();
-
-    expect(api.planCalls.single, containsPair('message', '바다 보고 싶어요'));
-    expect(api.planCalls.single, containsPair('days', 3));
-    expect(api.planCalls.single, containsPair('companions', '연인'));
-    expect(find.text('추천이에요'), findsOneWidget);
-    expect(find.text('내 여행에 저장'), findsOneWidget);
   });
 }

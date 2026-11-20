@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import 'api/api_client.dart';
 import 'app.dart';
-import 'auth/auth_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,13 +11,8 @@ Future<void> main() async {
   //    글꼴이 늦게 오면 첫 화면의 칩·버튼 너비가 잘못 계산되어 글자가 잘립니다(웹 실행에서 발생).
   await _loadFonts();
 
-  // 1) 로그인 준비(Supabase 설정이 비어 있으면 건너뜁니다).
-  final auth = await createAuthService();
-
-  // 2) API 클라이언트. 요청마다 로그인 토큰을 꺼내 붙입니다.
-  final api = ApiClient(tokenProvider: () => auth.accessToken);
-
-  runApp(JejuApp(api: api, auth: auth));
+  // 1) API 클라이언트를 만들어 앱에 넘깁니다.
+  runApp(JejuApp(api: ApiClient()));
 }
 
 Future<void> _loadFonts() async {

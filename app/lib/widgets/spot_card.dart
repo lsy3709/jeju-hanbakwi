@@ -4,15 +4,12 @@ import '../models/spot.dart';
 import '../theme.dart';
 import 'spot_image.dart';
 
-/// 큰 사진 카드. 홈의 가로 목록, 탐색 그리드, 찜 목록에서 함께 씁니다.
+/// 큰 사진 카드. 홈의 가로 목록과 탐색 그리드에서 함께 씁니다.
 /// 높이는 부모가 정해 주므로(SizedBox 또는 그리드 mainAxisExtent) 글이 넘치면 줄입니다.
 class SpotCard extends StatelessWidget {
-  const SpotCard({super.key, required this.spot, required this.onTap, this.corner});
+  const SpotCard({super.key, required this.spot, required this.onTap});
   final Spot spot;
   final VoidCallback onTap;
-
-  /// 사진 오른쪽 위에 얹을 위젯(예: 찜 해제 버튼).
-  final Widget? corner;
 
   /// 카드 높이 권장값.
   static const double height = 290;
@@ -27,13 +24,7 @@ class SpotCard extends StatelessWidget {
           children: [
             SizedBox(
               height: 160,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  SpotImage(spot: spot, height: 160),
-                  if (corner != null) Positioned(top: 6, right: 6, child: corner!),
-                ],
-              ),
+              child: SpotImage(spot: spot, height: 160),
             ),
             Expanded(
               child: Padding(

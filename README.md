@@ -1,5 +1,7 @@
 # 제주 한 바퀴
 
+> **이 브랜치는 5일차 수업이 끝난 상태입니다.** 오늘까지 만든 것: 서버·웹 전부(관광지·날씨·구글 로그인·찜·내 일정·AI 플래너)와 앱의 홈·탐색(목록/지도)·상세 화면 / 다음 날 만드는 것: 앱의 AI 플래너·내 여행 탭, 구글 로그인, 찜 / 완성본은 main 브랜치.
+
 날씨와 취향에 맞춰 제주 여행 일정을 짜 주는 AI 여행 플래너.
 웹과 앱이 **같은 서버, 같은 DB** 를 쓰는 구조를 처음부터 끝까지 따라 만들어 보는 수업용 샘플입니다.
 
@@ -171,8 +173,7 @@ python -m tools.seed_demo --token ... --clear         # 내 찜과 일정 모두
 2. Supabase > Authentication > Providers > Google 에 클라이언트 ID 와 비밀을 넣습니다.
 3. Supabase > Authentication > URL Configuration 의 Redirect URLs 에 추가합니다.
    - 웹: `http://localhost:3000/my`, `http://localhost:3000/planner` (배포 후에는 배포 주소의 두 화면도)
-   - 앱: `com.goldmagnet.jejuhanbakwi://login-callback`
-4. `web/.env.local` 과 `app/env.json` 에 Supabase URL 과 공개 키(anon)를 넣습니다.
+4. `web/.env.local` 에 Supabase URL 과 공개 키(anon)를 넣습니다.
 
 ## 내 주제로 바꾸기 — 세 가지만
 
