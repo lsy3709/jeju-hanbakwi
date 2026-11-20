@@ -45,5 +45,3 @@ export type Weather = {
   message: string;
   areas: { area: string; days: WeatherDay[] }[];
 };
-
-export type Me = { id: string; email: string };

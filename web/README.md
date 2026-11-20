@@ -1,6 +1,6 @@
 # 제주 한 바퀴 — 웹 (Next.js)
 
-날씨와 취향에 맞는 제주 관광지를 찾고 찜해 두는 웹 화면입니다.
+날씨와 취향에 맞는 제주 관광지를 찾아보는 웹 화면입니다.
 
 ## 실행 방법
 
@@ -15,8 +15,6 @@ npm run dev
 ## 환경변수 (`.env.local`)
 
 - `NEXT_PUBLIC_API_URL`: 서버(FastAPI) 주소. 기본값은 `http://localhost:8000` 입니다.
-- `NEXT_PUBLIC_SUPABASE_URL`: Supabase 프로젝트 주소. 로그인에만 씁니다. 비워 두면 로그인만 꺼집니다.
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase 공개(anon) 키. 로그인에만 씁니다.
 
 ## 검사 명령
 
@@ -33,10 +31,10 @@ npm run build         # 배포용 빌드
 
 | 폴더 | 역할 | 지켜야 할 것 |
 |---|---|---|
-| `app/` | 화면 경로. `page.tsx` 는 **조립만** 합니다(홈 `/`, `explore/`, `my/`, `spots/[id]/`). `layout.tsx` 는 공통 틀, `globals.css` 는 색·글꼴 토큰 | 상태·불러오기 로직은 `hooks/` 로 뺍니다 |
-| `components/` | **보여 주기만** 하는 화면 조각(헤더, 카드, 지도, 목록 …) | 서버를 부르지 않습니다. 예외: `AuthProvider`(로그인), `FavoriteButton`(찜) 은 기능이 본질이라 파일 맨 위 주석에 그렇게 적어 두었습니다 |
-| `hooks/` | 화면 상태와 데이터 불러오기를 담은 커스텀 훅 (`useAsync`, `useSpotSearch`, `useFavorites`, `useHydrated`) | 화면(JSX)을 그리지 않습니다 |
-| `lib/` | React 와 무관한 순수 코드 (`api.ts` 서버 호출, `types.ts` 응답 모양, `format.ts` 글자 만들기, `exploreFilters.ts` 탐색 주소 ↔ 필터, `spotList.ts`, `brand.ts` 이름·문구, `supabase.ts` 로그인) | 테스트(`*.test.ts`)를 곁에 둡니다 |
+| `app/` | 화면 경로. `page.tsx` 는 **조립만** 합니다(홈 `/`, `explore/`, `spots/[id]/`). `layout.tsx` 는 공통 틀, `globals.css` 는 색·글꼴 토큰 | 상태·불러오기 로직은 `hooks/` 로 뺍니다 |
+| `components/` | **보여 주기만** 하는 화면 조각(헤더, 카드, 지도, 목록 …) | 서버를 부르지 않습니다. |
+| `hooks/` | 화면 상태와 데이터 불러오기를 담은 커스텀 훅 (`useAsync`, `useSpotSearch`, `useHydrated`) | 화면(JSX)을 그리지 않습니다 |
+| `lib/` | React 와 무관한 순수 코드 (`api.ts` 서버 호출, `types.ts` 응답 모양, `format.ts` 글자 만들기, `exploreFilters.ts` 탐색 주소 ↔ 필터, `spotList.ts`, `brand.ts` 이름·문구) | 테스트(`*.test.ts`)를 곁에 둡니다 |
 
 **서버와 통하는 곳은 `lib/api.ts` 하나뿐입니다.** 화면은 `fetch` 를 직접 부르지 않고 `api.ts` 의 함수만 씁니다.
 

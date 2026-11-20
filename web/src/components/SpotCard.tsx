@@ -1,6 +1,5 @@
-// 관광지 카드 한 장. 홈·탐색·내 여행에서 같이 씁니다.
+// 관광지 카드 한 장. 홈·탐색에서 같이 씁니다.
 import Link from "next/link";
-import type { ReactNode } from "react";
 import type { Spot } from "@/lib/types";
 import { SpotImage } from "./SpotImage";
 
@@ -15,11 +14,9 @@ export function IndoorBadge({ indoor }: { indoor: boolean }) {
 type Props = {
   spot: Spot;
   className?: string;
-  /** 카드 아래에 붙일 버튼 등(예: 찜 해제) */
-  footer?: ReactNode;
 };
 
-export function SpotCard({ spot, className = "", footer }: Props) {
+export function SpotCard({ spot, className = "" }: Props) {
   return (
     <article className={`overflow-hidden rounded-card border border-line bg-surface ${className}`}>
       <Link href={`/spots/${spot.id}`} className="block">
@@ -37,7 +34,6 @@ export function SpotCard({ spot, className = "", footer }: Props) {
           <p className="line-clamp-2 text-sm text-muted">{spot.one_liner}</p>
         </div>
       </Link>
-      {footer && <div className="border-t border-line p-3">{footer}</div>}
     </article>
   );
 }

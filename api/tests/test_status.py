@@ -7,7 +7,6 @@ def test_status_reports_what_is_connected(client):
     body = client.get("/status").json()
     assert body["database"] == "ok"
     assert body["spots"] == 68
-    assert body["login"] == "off"  # 테스트에서는 Supabase 주소가 비어 있음
     assert body["photos"] == 55
 
 

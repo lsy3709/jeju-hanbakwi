@@ -18,7 +18,7 @@ def _env(name: str, default: str = "") -> str:
 
 
 class Settings:
-    # Supabase (DB + 로그인 확인)
+    # Supabase (DB)
     supabase_url = _env("SUPABASE_URL").rstrip("/")
     supabase_service_role_key = _env("SUPABASE_SERVICE_ROLE_KEY")
 

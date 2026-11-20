@@ -15,7 +15,6 @@ class FakeRepo:
         for index, item in enumerate(raw, start=1):
             row = to_spot_row(item, source="sample")
             self.spots.append({"id": index, **row})
-        self.favorites: list[tuple[str, int]] = []
 
     def list_spots(self, q=None, theme=None, area=None, category=None, indoor=None, page=1, size=20):
         items = self.spots
@@ -34,17 +33,6 @@ class FakeRepo:
 
     def get_spot(self, spot_id):
         return next((s for s in self.spots if s["id"] == spot_id), None)
-
-    def list_favorites(self, user_id):
-        ids = [spot_id for uid, spot_id in reversed(self.favorites) if uid == user_id]
-        return [self.get_spot(i) for i in ids]
-
-    def add_favorite(self, user_id, spot_id):
-        if (user_id, spot_id) not in self.favorites:
-            self.favorites.append((user_id, spot_id))
-
-    def remove_favorite(self, user_id, spot_id):
-        self.favorites = [f for f in self.favorites if f != (user_id, spot_id)]
 
 
 def make_weather(first_day_rainy: bool):

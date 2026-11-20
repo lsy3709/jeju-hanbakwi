@@ -16,7 +16,7 @@ from fastapi.staticfiles import StaticFiles
 
 from config import settings
 from deps import get_weather_service  # noqa: F401  (테스트에서 main.get_weather_service 로 바꿔 끼웁니다)
-from routers import me, spots, system, weather
+from routers import spots, system, weather
 from services.photos import PHOTO_DIR
 
 app = FastAPI(title="제주 한 바퀴 API", version="1.1.0")
@@ -38,4 +38,3 @@ app.mount("/photos", StaticFiles(directory=PHOTO_DIR), name="photos")
 app.include_router(system.router)   # /health, /status
 app.include_router(spots.router)    # /meta, /spots
 app.include_router(weather.router)  # /weather
-app.include_router(me.router)       # /me, /me/favorites

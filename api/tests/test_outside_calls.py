@@ -1,14 +1,12 @@
-"""바깥 서비스를 부르는 곳(로그인 확인, 날씨). 진짜로 부르지 않고 가짜 연결로 바꿔 끼웁니다.
+"""바깥 서비스를 부르는 곳(날씨). 진짜로 부르지 않고 가짜 연결로 바꿔 끼웁니다.
 
-두 곳 모두 "연결을 한 번 만들어 계속 쓴다"(_http)가 핵심입니다.
+"연결을 한 번 만들어 계속 쓴다"(_http)가 핵심입니다.
 요청마다 새로 만들면 그때마다 0.2초쯤 더 걸립니다.
 """
 
 import httpx
 import pytest
 
-import auth
-from config import settings
 from services import weather
 
 
@@ -36,39 +34,6 @@ class FakeHttp:
         if self.error:
             raise self.error
         return self.response
-
-
-# ---------------------------------------------------------------- 로그인 확인
-
-def use_auth(monkeypatch, fake):
-    monkeypatch.setattr(settings, "supabase_url", "https://example.supabase.co")
-    monkeypatch.setattr(settings, "supabase_service_role_key", "secret")
-    monkeypatch.setattr(auth, "_http", fake)
-
-
-def test_valid_token_gives_user(monkeypatch):
-    fake = FakeHttp(FakeResponse(200, {"id": "user-1", "email": "a@example.com"}))
-    use_auth(monkeypatch, fake)
-    user = auth.verify_token("good-token")
-    assert user.id == "user-1" and user.email == "a@example.com"
-    url, kwargs = fake.calls[0]
-    assert url == "https://example.supabase.co/auth/v1/user"
-    assert kwargs["headers"]["Authorization"] == "Bearer good-token"
-
-
-def test_rejected_token_gives_none(monkeypatch):
-    use_auth(monkeypatch, FakeHttp(FakeResponse(401, {"msg": "invalid"})))
-    assert auth.verify_token("bad") is None
-
-
-def test_response_without_id_gives_none(monkeypatch):
-    use_auth(monkeypatch, FakeHttp(FakeResponse(200, {})))
-    assert auth.verify_token("odd") is None
-
-
-def test_network_error_gives_none(monkeypatch):
-    use_auth(monkeypatch, FakeHttp(error=httpx.ConnectError("down")))
-    assert auth.verify_token("any") is None
 
 
 # ---------------------------------------------------------------- 날씨

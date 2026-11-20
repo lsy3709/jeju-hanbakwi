@@ -3,7 +3,6 @@
 // 주소·응답 모양은 docs/api.md 를 따릅니다.
 import { spotsQuery } from "./format";
 import type {
-  Me,
   Meta,
   Spot,
   SpotList,
@@ -29,14 +28,13 @@ export function errorMessage(error: unknown): string {
   return "알 수 없는 오류가 났어요. 잠시 뒤 다시 시도해 주세요.";
 }
 
-// 모든 요청이 지나가는 한 곳. token 이 있으면 Authorization 헤더를 붙입니다.
+// 모든 요청이 지나가는 한 곳.
 async function request<T>(
   path: string,
-  options: { method?: string; body?: unknown; token?: string | null } = {},
+  options: { method?: string; body?: unknown } = {},
 ): Promise<T> {
   const headers: Record<string, string> = {};
   if (options.body !== undefined) headers["Content-Type"] = "application/json";
-  if (options.token) headers.Authorization = `Bearer ${options.token}`;
 
   let response: Response;
   try {
@@ -66,16 +64,8 @@ async function request<T>(
   return (await response.json()) as T;
 }
 
-// ---------- 로그인 없이 쓰는 주소 ----------
+// ---------- 서버 주소 ----------
 export const getMeta = () => request<Meta>("/meta");
 export const getSpots = (params: SpotsParams = {}) => request<SpotList>(`/spots${spotsQuery(params)}`);
 export const getSpot = (id: number | string) => request<Spot>(`/spots/${id}`);
 export const getWeather = () => request<Weather>("/weather");
-
-// ---------- 로그인이 필요한 주소 (token = Supabase 액세스 토큰) ----------
-export const getMe = (token: string) => request<Me>("/me", { token });
-export const getFavorites = (token: string) => request<Spot[]>("/me/favorites", { token });
-export const addFavorite = (token: string, spotId: number) =>
-  request<{ spot_id: number }>("/me/favorites", { method: "POST", body: { spot_id: spotId }, token });
-export const removeFavorite = (token: string, spotId: number) =>
-  request<void>(`/me/favorites/${spotId}`, { method: "DELETE", token });

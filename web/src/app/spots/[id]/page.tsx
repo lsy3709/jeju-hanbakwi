@@ -1,11 +1,10 @@
 "use client";
 
-// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 글 → 주소 → 지도 → 찜 버튼
+// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 글 → 주소 → 지도
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback } from "react";
 import { MapPin } from "lucide-react";
-import { FavoriteButton } from "@/components/FavoriteButton";
 import { PhotoCredit } from "@/components/PhotoCredit";
 import { SpotImage } from "@/components/SpotImage";
 import { IndoorBadge } from "@/components/SpotCard";
@@ -71,10 +70,6 @@ export default function SpotDetailPage() {
         spots={[{ id: spot.id, title: spot.title, lat: spot.lat, lng: spot.lng }]}
         className="h-64 w-full rounded-card border border-line"
       />
-
-      <div className="flex flex-wrap items-center gap-3">
-        <FavoriteButton spotId={spot.id} />
-      </div>
     </article>
   );
 }

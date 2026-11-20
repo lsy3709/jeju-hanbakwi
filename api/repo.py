@@ -7,7 +7,6 @@
   list_spots(q, theme, area, category, indoor, page, size) → (목록, 전체 개수)
   get_spot(spot_id) → 한 곳 또는 None
   upsert_spots(rows) → 넣은 개수
-  list_favorites(user_id) / add_favorite(user_id, spot_id) / remove_favorite(user_id, spot_id)
 """
 
 import re
@@ -65,26 +64,6 @@ class SupabaseRepo:
             return 0
         result = self.db.table("spots").upsert(rows, on_conflict="source,source_id").execute()
         return len(result.data)
-
-    # ---------- 찜 ----------
-    def list_favorites(self, user_id: str):
-        # favorites 와 연결된 spots 를 한 번에 가져옵니다.
-        result = (
-            self.db.table("favorites")
-            .select("created_at, spots(*)")
-            .eq("user_id", user_id)
-            .order("created_at", desc=True)
-            .execute()
-        )
-        return [row["spots"] for row in result.data if row.get("spots")]
-
-    def add_favorite(self, user_id: str, spot_id: int) -> None:
-        self.db.table("favorites").upsert(
-            {"user_id": user_id, "spot_id": spot_id}, on_conflict="user_id,spot_id"
-        ).execute()
-
-    def remove_favorite(self, user_id: str, spot_id: int) -> None:
-        self.db.table("favorites").delete().eq("user_id", user_id).eq("spot_id", spot_id).execute()
 
 
 def get_repo() -> SupabaseRepo:

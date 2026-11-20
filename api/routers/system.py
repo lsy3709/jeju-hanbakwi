@@ -10,7 +10,6 @@ import logging
 
 from fastapi import APIRouter, Depends
 
-from config import settings
 from repo import get_repo
 from schemas import Status
 from services.photos import count_photos
@@ -35,6 +34,5 @@ def status(repo=Depends(get_repo)):
     return {
         "database": database,  # DB 에 닿는지
         "spots": spots,  # 관광지 수 (0 이면 데이터를 아직 안 넣은 것)
-        "login": "on" if settings.supabase_url and settings.supabase_service_role_key else "off",
         "photos": count_photos(),  # 서버에 들어 있는 사진 수
     }

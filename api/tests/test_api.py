@@ -1,7 +1,5 @@
 """주소별 동작. docs/api.md 의 약속을 지키는지 확인합니다."""
 
-from tests.conftest import ALICE, BOB
-
 
 def test_health_and_meta(client):
     assert client.get("/health").json() == {"status": "ok"}
@@ -77,58 +75,6 @@ def test_weather_unavailable_is_503(client):
     assert client.get("/weather").status_code == 503
 
 
-# ---------------------------------------------------------------- 로그인이 필요한 주소
-
-def test_me_routes_need_login(client):
-    for method, url in [
-        ("get", "/me"),
-        ("get", "/me/favorites"),
-        ("post", "/me/favorites"),
-        ("delete", "/me/favorites/1"),
-    ]:
-        response = getattr(client, method)(url)
-        assert response.status_code == 401, url
-
-
-def test_wrong_token_is_401(client):
-    # Supabase 설정이 없으면 어떤 토큰도 통과하지 못해야 합니다.
-    assert client.get("/me", headers={"Authorization": "Bearer made-up-token"}).status_code == 401
-    assert client.get("/me", headers={"Authorization": "made-up-token"}).status_code == 401
-
-
-def test_me(client, login):
-    login(ALICE)
-    assert client.get("/me").json() == {"id": ALICE.id, "email": "alice@example.com"}
-
-
-def test_favorites_flow(client, login):
-    login(ALICE)
-    assert client.get("/me/favorites").json() == []
-
-    added = client.post("/me/favorites", json={"spot_id": 1})
-    assert added.status_code == 201 and added.json() == {"spot_id": 1}
-    client.post("/me/favorites", json={"spot_id": 3})
-    assert client.post("/me/favorites", json={"spot_id": 1}).status_code == 201  # 두 번 찜해도 괜찮음
-
-    titles = [s["title"] for s in client.get("/me/favorites").json()]
-    assert titles == ["만장굴", "성산일출봉"]  # 최근에 찜한 순, 중복 없음
-
-    assert client.delete("/me/favorites/1").status_code == 204
-    assert [s["title"] for s in client.get("/me/favorites").json()] == ["만장굴"]
-
-
-def test_favorite_of_missing_spot_is_404(client, login):
-    login(ALICE)
-    assert client.post("/me/favorites", json={"spot_id": 9999}).status_code == 404
-
-
-def test_favorites_are_private(client, login):
-    login(ALICE)
-    client.post("/me/favorites", json={"spot_id": 1})
-    login(BOB)
-    assert client.get("/me/favorites").json() == []
-
-
 # ---------------------------------------------------------------- 사진 주소
 
 def test_our_photos_get_full_address(client):
@@ -145,12 +91,6 @@ def test_outside_photo_and_no_photo_are_left_alone(client, repo):
     items = client.get("/spots", params={"size": 2}).json()["items"]
     assert items[0]["image_url"] == "https://example.com/a.jpg"
     assert items[1]["image_url"] is None
-
-
-def test_photo_address_in_favorites(client, login):
-    login(ALICE)
-    client.post("/me/favorites", json={"spot_id": 1})
-    assert client.get("/me/favorites").json()[0]["image_url"].startswith("http://testserver/photos/")
 
 
 def test_public_api_url_setting_wins(client, monkeypatch):

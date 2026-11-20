@@ -1,12 +1,12 @@
 # 제주 한 바퀴
 
-> **이 브랜치는 4일차 수업이 끝난 상태입니다.** 오늘까지 만든 것: 서버(관광지·날씨·사진·구글 로그인 확인·찜)와 웹(홈·탐색·상세·내 여행의 찜한 곳) / 다음 날 만드는 것: AI 일정 짜기(`/agent/plan`)와 일정 저장(`/me/trips`), 웹의 AI 플래너 화면, 앱(`app/`) 시작 — 일정 관련 주소는 5일차에 만들므로 [API 명세](docs/api.md)에는 있어도 이 브랜치의 서버에는 아직 없습니다 / 완성본은 main 브랜치.
+> **이 브랜치는 3일차 수업이 끝난 상태입니다.** 오늘까지 만든 것: 서버(관광지·날씨·사진·데이터 가져오기)와 웹(홈·탐색·상세, 서버와 연결) / 다음 날 만드는 것: 구글 로그인과 찜(서버의 `/me`, 웹의 내 여행 화면), AI 일정 짜기, 앱(`app/`) — 로그인·찜 주소는 4일차에 만들므로 [API 명세](docs/api.md)에는 있어도 이 브랜치의 서버에는 아직 없습니다 / 완성본은 main 브랜치.
 
-날씨와 취향에 맞는 제주 관광지를 찾고 찜해 두는 여행 서비스.
+날씨와 취향에 맞는 제주 관광지를 찾아보는 여행 서비스.
 화면이 **서버를 거쳐 DB** 를 쓰는 구조를 처음부터 끝까지 따라 만들어 보는 수업용 샘플입니다.
 
 ```
-[web  Next.js] ───→ [api  FastAPI] ───┬─ Supabase (PostgreSQL · 구글 로그인)
+[web  Next.js] ───→ [api  FastAPI] ───┬─ Supabase (PostgreSQL)
                                       └─ Open-Meteo (날씨)
 
 [api/tools/sync_spots.py]  한국관광공사 TourAPI → 우리 기준으로 고치기 → DB 에 넣기
@@ -50,9 +50,8 @@
 ## 지키는 규칙
 
 1. 화면(web)은 DB·외부 API 를 직접 부르지 않고 **반드시 서버(api)를 거칩니다.**
-2. **로그인만 예외**입니다. 화면이 Supabase 로 구글 로그인을 하고, 받은 토큰을 서버에 보내 확인받습니다.
-3. **비밀 키는 `api/.env` 에만** 둡니다. `.env` 파일은 git 에 올라가지 않습니다.
-4. 외부 데이터는 미리 받아 **우리 기준으로 고쳐 DB 에** 둡니다.
+2. **비밀 키는 `api/.env` 에만** 둡니다. `.env` 파일은 git 에 올라가지 않습니다.
+3. 외부 데이터는 미리 받아 **우리 기준으로 고쳐 DB 에** 둡니다.
 
 ## 처음 실행하기
 
@@ -107,12 +106,9 @@ npm run dev
 
 ```bash
 cd api
-python -m tools.check_live                           # 로그인 없이 볼 수 있는 것
-python -m tools.check_live --token local-dev-token   # 로컬 Docker DB: 찜까지
+python -m tools.check_live                           # 로컬 서버
 python -m tools.check_live --api https://내서버.vercel.app   # 배포한 서버
 ```
-
-진짜 Supabase 를 쓸 때는 웹에서 구글 로그인한 뒤의 액세스 토큰을 `--token` 에 넣습니다. 찜 점검은 만든 것을 스스로 지웁니다.
 
 ## 데이터 가져오기
 
@@ -127,25 +123,6 @@ python -m tools.sync_spots --types 12,14   # 관광지·문화시설만 받아 D
 
 > 샘플 데이터(`api/data/sample_spots.json`)의 글은 수업용으로 직접 쓴 것이며 좌표와 주소는 대략값입니다. 실제 서비스에는 TourAPI 데이터를 쓰세요.
 > 샘플 사진(`api/static/photos/`)은 위키미디어 공용의 공개 라이선스 사진이며, 사진별 저작자와 라이선스는 [docs/photo-credits.md](docs/photo-credits.md) 에 있습니다. 사진은 우리 서버가 `/photos/...` 주소로 직접 내줍니다.
-
-### 예시 찜 넣기
-
-"내 여행" 화면이 비어 있으면 만들거나 시연하기 어렵습니다. 로그인한 내 계정에 찜 6개를 넣어 줍니다.
-
-```bash
-cd api
-python -m tools.seed_demo --token local-dev-token     # 로컬 Docker DB
-python -m tools.seed_demo --token <액세스 토큰>        # 진짜 Supabase
-python -m tools.seed_demo --token ... --clear         # 내 찜 모두 지우기
-```
-
-## 구글 로그인 켜기
-
-1. Google Cloud Console 에서 OAuth 클라이언트(웹 애플리케이션)를 만들고, 승인된 리디렉션 URI 에 `https://<프로젝트>.supabase.co/auth/v1/callback` 을 넣습니다.
-2. Supabase > Authentication > Providers > Google 에 클라이언트 ID 와 비밀을 넣습니다.
-3. Supabase > Authentication > URL Configuration 의 Redirect URLs 에 추가합니다.
-   - 웹: `http://localhost:3000/my` (배포 후에는 배포 주소의 `/my` 도)
-4. `web/.env.local` 에 Supabase URL 과 공개 키(anon)를 넣습니다.
 
 ## 내 주제로 바꾸기 — 두 가지만
 

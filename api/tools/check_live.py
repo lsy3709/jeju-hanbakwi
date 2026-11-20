@@ -5,12 +5,8 @@
 
 api 폴더에서 실행합니다. (서버가 먼저 켜져 있어야 합니다)
 
-  python -m tools.check_live                              로그인 없이 볼 수 있는 것만
-  python -m tools.check_live --token local-dev-token      로컬 Docker DB 일 때 (찜까지)
-  python -m tools.check_live --token <액세스 토큰>         진짜 Supabase 일 때
+  python -m tools.check_live
   python -m tools.check_live --api https://내서버.vercel.app   배포한 서버 점검
-
-찜 점검은 만든 것을 스스로 지우고 끝납니다.
 """
 
 import argparse
@@ -46,7 +42,7 @@ def check_public(client: httpx.Client) -> None:
     check(
         "연결 상태 /status",
         state.get("database") == "ok",
-        f"DB {state.get('database')}, 관광지 {state.get('spots')}건, 로그인 {state.get('login')}, 사진 {state.get('photos')}장",
+        f"DB {state.get('database')}, 관광지 {state.get('spots')}건, 사진 {state.get('photos')}장",
         ms,
     )
 
@@ -109,51 +105,17 @@ def check_public(client: httpx.Client) -> None:
         check("날씨 (Open-Meteo)", False, f"응답 {r.status_code}", ms)
 
 
-def check_login(client: httpx.Client, token: str | None) -> None:
-    print("\n[4] 로그인이 필요한 주소")
-    r, ms = call(client, "GET", "/me")
-    check("토큰이 없으면 401", r.status_code == 401, ms=ms)
-    r, ms = call(client, "GET", "/me", headers={"Authorization": "Bearer not-a-real-token"})
-    check("틀린 토큰이면 401", r.status_code == 401, ms=ms)
-
-    if not token:
-        print("  (--token 이 없어 찜은 점검하지 않았습니다)")
-        return
-
-    auth = {"Authorization": f"Bearer {token}"}
-    r, ms = call(client, "GET", "/me", headers=auth)
-    if not check("내 정보 /me", r.status_code == 200 and bool(r.json().get("id")), r.json().get("email", "") if r.status_code == 200 else f"응답 {r.status_code}", ms):
-        return
-
-    print("\n[5] DB 연동 — 찜 (만들고, 확인하고, 지웁니다)")
-    spot = client.get("/spots", params={"size": 1}).json()["items"][0]
-    before = {s["id"] for s in client.get("/me/favorites", headers=auth).json()}
-
-    r, ms = call(client, "POST", "/me/favorites", json={"spot_id": spot["id"]}, headers=auth)
-    check("찜 추가", r.status_code == 201, spot["title"], ms)
-    r, ms = call(client, "GET", "/me/favorites", headers=auth)
-    check("찜 목록에 보인다", any(s["id"] == spot["id"] for s in r.json()), ms=ms)
-    r, ms = call(client, "POST", "/me/favorites", json={"spot_id": 999999999}, headers=auth)
-    check("없는 관광지는 찜할 수 없다 (404)", r.status_code == 404, ms=ms)
-    if spot["id"] not in before:  # 원래 찜해 둔 것이면 지우지 않습니다
-        r, ms = call(client, "DELETE", f"/me/favorites/{spot['id']}", headers=auth)
-        gone = all(s["id"] != spot["id"] for s in client.get("/me/favorites", headers=auth).json())
-        check("찜 삭제", r.status_code == 204 and gone, ms=ms)
-
-
 def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")  # 윈도우 터미널에서 ✅ 와 한글이 깨지지 않게
     parser = argparse.ArgumentParser(description="켜져 있는 서버 실측 점검")
     parser.add_argument("--api", default="http://localhost:8000", help="서버 주소")
-    parser.add_argument("--token", default=None, help="로그인 토큰 (로컬 Docker DB 는 local-dev-token)")
     args = parser.parse_args()
 
     print(f"점검 대상: {args.api}")
     try:
         with httpx.Client(base_url=args.api.rstrip("/"), timeout=20) as client:
             check_public(client)
-            check_login(client, args.token)
     except httpx.ConnectError:
         print(f"\n❌ 서버에 연결할 수 없습니다: {args.api}\n   서버를 먼저 켜세요:  uvicorn main:app --reload")
         return 1
