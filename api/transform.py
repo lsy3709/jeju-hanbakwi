@@ -41,6 +41,35 @@ THEME_KEYWORDS = {
 INDOOR_KEYWORDS = ["실내", "박물관", "미술관", "전시관", "뮤지엄", "아쿠아리움", "동굴", "온실", "벙커", "지붕 덮인"]
 
 
+# 규칙이 틀리는 곳을 바로잡는 표: 이름 → 고칠 것.
+# 낱말 규칙은 편하지만 완벽하지 않습니다. 틀린 것을 발견하면 규칙을 복잡하게 만들기보다 여기에 한 줄 더합니다.
+#   indoor       실내/실외를 이 값으로
+#   remove_tags  잘못 붙은 태그 빼기
+#   add_tags     빠진 태그 더하기
+CORRECTIONS: dict[str, dict] = {
+    "한림공원": {"indoor": False},  # 소개 글의 "용암동굴" 때문에 실내로 잡힘. 대부분 야외 정원
+    "제주돌문화공원": {"indoor": False},  # "박물관" 때문에 실내로 잡힘. 넓은 야외 공원
+    "새별오름": {"remove_tags": ["바다"]},  # "바다를 내려다볼 수 있다"는 문장 때문
+    "금오름": {"remove_tags": ["바다"]},
+    "산방산": {"remove_tags": ["바다"]},
+    "흑돼지거리": {"remove_tags": ["시장"]},  # "동문시장과 가까워"라는 문장 때문
+}
+
+
+def apply_corrections(row: dict, corrections: dict[str, dict] = CORRECTIONS) -> dict:
+    """표에 이름이 있으면 그 줄을 고친 새 사전을 돌려줍니다. 없으면 그대로."""
+    change = corrections.get(row["title"])
+    if not change:
+        return row
+    fixed = dict(row)
+    if "indoor" in change:
+        fixed["indoor"] = change["indoor"]
+    tags = [tag for tag in row["theme_tags"] if tag not in change.get("remove_tags", [])]
+    tags += [tag for tag in change.get("add_tags", []) if tag not in tags]
+    fixed["theme_tags"] = tags
+    return fixed
+
+
 def _text(raw: dict, key: str) -> str:
     """값이 없거나 None 이어도 항상 글자로 돌려줍니다."""
     return str(raw.get(key) or "").strip()
@@ -100,7 +129,7 @@ def to_spot_row(raw: dict, source: str = "tourapi") -> dict | None:
     area = pick_area(address)
     image = _text(raw, "firstimage").replace("http://", "https://")  # http 사진은 https 화면에서 막히므로 바꿔 둡니다
 
-    return {
+    row = {
         "source": source,
         "source_id": source_id,
         "title": title,
@@ -118,3 +147,4 @@ def to_spot_row(raw: dict, source: str = "tourapi") -> dict | None:
         "theme_tags": pick_theme_tags(title, overview),
         "indoor": pick_indoor(content_type, title, overview),
     }
+    return apply_corrections(row)  # 마지막에, 규칙이 틀린 곳을 표로 바로잡습니다

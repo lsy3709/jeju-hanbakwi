@@ -103,3 +103,13 @@ class Trip(BaseModel):
     title: str
     itinerary: list[PlanDay]
     created_at: str
+
+
+class Status(BaseModel):
+    """운영 확인용 응답. 키 값은 담지 않고 "있다/없다"만 담습니다."""
+
+    database: Literal["ok", "error"]
+    spots: int | None = None
+    ai: Literal["ai", "rule"]
+    login: Literal["on", "off"]
+    photos: int

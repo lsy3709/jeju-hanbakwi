@@ -42,6 +42,15 @@ def check_public(client: httpx.Client) -> None:
     r, ms = call(client, "GET", "/health")
     check("서버 응답 /health", r.status_code == 200 and r.json() == {"status": "ok"}, ms=ms)
 
+    r, ms = call(client, "GET", "/status")
+    state = r.json() if r.status_code == 200 else {}
+    check(
+        "연결 상태 /status",
+        state.get("database") == "ok",
+        f"DB {state.get('database')}, 관광지 {state.get('spots')}건, 일정 방식 {state.get('ai')}, 로그인 {state.get('login')}, 사진 {state.get('photos')}장",
+        ms,
+    )
+
     r, ms = call(client, "GET", "/meta")
     meta = r.json() if r.status_code == 200 else {}
     check("선택지 /meta", bool(meta.get("themes")) and bool(meta.get("areas")), f"테마 {len(meta.get('themes', []))}개", ms)

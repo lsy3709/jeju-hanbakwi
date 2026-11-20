@@ -1,7 +1,14 @@
-"""DB(Supabase)에 묻고 답을 받아 오는 곳.
+"""DB(Supabase)에 묻고 답을 받아 오는 곳. (저장소 패턴)
 
 서버의 다른 파일은 DB 를 직접 만지지 않고 여기 있는 함수만 부릅니다.
 => DB 가 바뀌어도 이 파일만 고치면 되고, 테스트에서는 가짜(tests/fakes.py)로 바꿔 끼울 수 있습니다.
+
+다른 파일이 기대하는 함수는 아래가 전부입니다. 가짜 DB 도 이 이름과 모양만 맞추면 됩니다.
+  list_spots(q, theme, area, category, indoor, page, size) → (목록, 전체 개수)
+  get_spot(spot_id) → 한 곳 또는 None
+  upsert_spots(rows) → 넣은 개수
+  list_favorites(user_id) / add_favorite(user_id, spot_id) / remove_favorite(user_id, spot_id)
+  list_trips(user_id) / add_trip(user_id, title, itinerary) / delete_trip(user_id, trip_id) → 지웠으면 True
 """
 
 import re

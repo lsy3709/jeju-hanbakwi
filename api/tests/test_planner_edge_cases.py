@@ -6,7 +6,7 @@ import pytest
 
 from config import settings
 from schemas import PlanRequest
-from services import planner
+from services import plan_common, planner
 from tests.fakes import FakeRepo, make_weather
 
 START = date(2026, 12, 1)
@@ -25,7 +25,7 @@ def test_korea_today_does_not_follow_server_clock():
 
 
 def test_plan_without_start_date_starts_on_korea_today(monkeypatch):
-    monkeypatch.setattr(planner, "korea_today", lambda now=None: START)
+    monkeypatch.setattr(plan_common, "korea_today", lambda now=None: START)
     plan = planner.plan_trip(PlanRequest(message="제주 여행", days=1), FakeRepo(), make_weather(first_day_rainy=True))
     assert plan["itinerary"][0]["date"] == START
     assert plan["itinerary"][0]["weather"] == "비"  # 날짜가 맞아야 그날 날씨가 붙습니다
