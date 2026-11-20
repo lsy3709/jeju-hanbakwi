@@ -200,7 +200,7 @@ function PlanResult({ plan, token }: { plan: PlanResponse; token: string | null 
           저장하지 못했어요. {saveError}
         </p>
       )}
-      {showLogin && <LoginDialog message="일정을 저장하려면 로그인이 필요해요." onClose={() => setShowLogin(false)} />}
+      {showLogin && <LoginDialog message="일정을 저장하려면 로그인이 필요해요. 로그인하면 「내 여행」 화면으로 이동하고, 지금 짠 일정은 사라져요. 로그인한 뒤에 다시 짜 주세요." onClose={() => setShowLogin(false)} />}
     </section>
   );
 }

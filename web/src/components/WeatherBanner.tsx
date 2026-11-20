@@ -1,6 +1,7 @@
 // 홈의 날씨 배너. 데이터는 부모(홈)가 불러와서 넘겨 줍니다.
 import Link from "next/link";
 import { Cloud, CloudFog, CloudRain, Snowflake, Sun, type LucideIcon } from "lucide-react";
+import { weatherText } from "@/lib/format";
 import type { Weather, WeatherDay } from "@/lib/types";
 import { btnPrimary } from "./ui";
 
@@ -31,9 +32,7 @@ export function WeatherBanner({ weather }: { weather: Weather }) {
               <Icon size={20} aria-hidden="true" />
               <span className="font-semibold">{area}</span>
               <span>{today.label}</span>
-              <span className="text-muted">
-                {Math.round(today.temp_min)}° / {Math.round(today.temp_max)}° · 비 {today.rain_prob}%
-              </span>
+              <span className="text-muted">{weatherText(today)}</span>
             </li>
           );
         })}

@@ -31,10 +31,15 @@ class AuthService extends ChangeNotifier {
     final auth = Supabase.instance.client.auth;
     _session = auth.currentSession;
     // 로그인·로그아웃·토큰 갱신이 일어날 때마다 세션이 바뀝니다.
-    _subscription = auth.onAuthStateChange.listen((data) {
-      _session = data.session;
-      notifyListeners();
-    });
+    _subscription = auth.onAuthStateChange.listen(
+      (data) {
+        _session = data.session;
+        notifyListeners();
+      },
+      // 오프라인이면 토큰 갱신 실패가 이 스트림으로 옵니다. 받지 않으면 처리되지 않은 오류로 남는데,
+      // 다음 갱신 때 다시 시도되므로 여기서는 넘깁니다.
+      onError: (_) {},
+    );
   }
 
   /// 구글 로그인. 웹은 현재 주소로 돌아오고, 앱은 딥링크 스킴으로 돌아옵니다.

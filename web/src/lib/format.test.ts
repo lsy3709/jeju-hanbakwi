@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildQuery, dayTitle, formatDate, formatSavedAt, photoCreditText, pickFallbackTone, spotsQuery, todayString } from "./format";
+import { buildQuery, dayTitle, formatDate, formatSavedAt, photoCreditText, pickFallbackTone, spotsQuery, todayString, weatherText } from "./format";
 
 describe("photoCreditText", () => {
   it("사진과 출처가 있으면 '사진: …' 글자를 만든다", () => {
@@ -50,4 +50,21 @@ describe("날짜 표시", () => {
   });
   it("저장 시각이 이상하면 빈 문자열", () => expect(formatSavedAt("어제쯤")).toBe(""));
   it("오늘 날짜 문자열", () => expect(todayString(new Date(2026, 0, 5))).toBe("2026-01-05"));
+});
+
+describe("weatherText", () => {
+  const base = { temp_min: 8.4, temp_max: 14.6, rain_prob: 30 };
+  it("값이 모두 있으면 기온과 강수확률을 함께 보여 준다", () => {
+    expect(weatherText(base)).toBe("8° / 15° · 비 30%");
+  });
+  it("기온이 null 이면 기온 조각을 뺀다", () => {
+    expect(weatherText({ ...base, temp_min: null })).toBe("비 30%");
+    expect(weatherText({ ...base, temp_max: null })).toBe("비 30%");
+  });
+  it("강수확률이 null 이면 비 조각을 뺀다", () => {
+    expect(weatherText({ ...base, rain_prob: null })).toBe("8° / 15°");
+  });
+  it("전부 null 이면 빈 문자열", () => {
+    expect(weatherText({ temp_min: null, temp_max: null, rain_prob: null })).toBe("");
+  });
 });

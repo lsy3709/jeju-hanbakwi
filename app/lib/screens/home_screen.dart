@@ -242,8 +242,13 @@ class _WeatherBanner extends StatelessWidget {
                               Icon(_icon(a.days.first.icon), color: AppColors.secondary),
                               const SizedBox(width: 6),
                               Text(
-                                '${a.area} ${a.days.first.label} '
-                                '${a.days.first.tempMin.round()}~${a.days.first.tempMax.round()}°',
+                                // 서버가 기온을 null 로 줄 수 있어, 값이 없으면 기온 조각은 뺍니다.
+                                [
+                                  a.area,
+                                  a.days.first.label,
+                                  if (a.days.first.tempMin != null && a.days.first.tempMax != null)
+                                    '${a.days.first.tempMin!.round()}~${a.days.first.tempMax!.round()}°',
+                                ].join(' '),
                               ),
                             ],
                           ),

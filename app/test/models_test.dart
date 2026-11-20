@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/models/itinerary.dart';
 import 'package:jeju_hanbakwi/models/spot.dart';
@@ -71,6 +73,20 @@ void main() {
     expect(day.rainProb, 80);
   });
 
+  test('Weather.fromJson: 기온·강수확률이 null 이어도 죽지 않는다', () {
+    // jsonDecode 로 값을 null 로 바꿀 수 있는(수정 가능한) 사본을 만듭니다.
+    final json = jsonDecode(jsonEncode(weatherJson())) as Map<String, dynamic>;
+    final day = ((json['areas'] as List).single as Map)['days'][0] as Map;
+    day['temp_min'] = null;
+    day['temp_max'] = null;
+    day['rain_prob'] = null;
+    final parsed = Weather.fromJson(json).areas.single.days.single;
+    expect(parsed.tempMin, isNull);
+    expect(parsed.tempMax, isNull);
+    expect(parsed.rainProb, isNull);
+    expect(parsed.label, '비');
+  });
+
   group('일정', () {
     final json = {
       'mode': 'rule',
@@ -108,7 +124,7 @@ void main() {
       // 한국에서는 UTC 로 12월 1일이라, 글자만 자르면 하루 전으로 보입니다.
       final savedAt = DateTime(2026, 12, 2, 0, 30).toUtc().toIso8601String();
       final trip = Trip(id: 1, title: 't', itinerary: const [], createdAt: savedAt);
-      expect(trip.savedDate, '2026-12-02');
+      expect(trip.savedDate, '2026년 12월 2일');
       expect(const Trip(id: 1, title: 't', itinerary: [], createdAt: '어제쯤').savedDate, '');
     });
 

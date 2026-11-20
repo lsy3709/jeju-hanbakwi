@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../format.dart';
 import '../models/itinerary.dart';
 import '../theme.dart';
 
@@ -25,9 +26,8 @@ class ItineraryView extends StatelessWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 8,
                     children: [
-                      Text('${day.day}일차', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
-                      // 날짜·날씨는 null 일 수 있어서 있을 때만 보여 줍니다.
-                      if (day.date != null) Text(day.date!, style: const TextStyle(color: AppColors.muted)),
+                      // "1일차 · 11월 20일 (금)" (웹과 같은 표기). 날짜가 없으면 "1일차"만, 날씨도 있을 때만 보여 줍니다.
+                      Text(dayTitle(day.day, day.date), style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
                       if (day.weather != null) _Pill(text: day.weather!),
                     ],
                   ),

@@ -3,9 +3,10 @@ class WeatherDay {
   final String date;
   final String label; // 예: "비"
   final String icon; // sun | cloud | rain | snow | fog
-  final double tempMin;
-  final double tempMax;
-  final int rainProb;
+  // 서버는 값을 못 구하면 null 로 줍니다. non-null 로 읽으면 TypeError 로 홈이 무한 로딩이 됩니다.
+  final double? tempMin;
+  final double? tempMax;
+  final int? rainProb;
 
   const WeatherDay({
     required this.date,
@@ -20,9 +21,9 @@ class WeatherDay {
         date: json['date'] as String,
         label: json['label'] as String,
         icon: json['icon'] as String,
-        tempMin: (json['temp_min'] as num).toDouble(),
-        tempMax: (json['temp_max'] as num).toDouble(),
-        rainProb: (json['rain_prob'] as num).round(),
+        tempMin: (json['temp_min'] as num?)?.toDouble(),
+        tempMax: (json['temp_max'] as num?)?.toDouble(),
+        rainProb: (json['rain_prob'] as num?)?.round(),
       );
 }
 

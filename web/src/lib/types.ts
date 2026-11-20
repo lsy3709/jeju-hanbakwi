@@ -51,9 +51,9 @@ export type WeatherDay = {
   date: string;
   label: string;
   icon: "sun" | "cloud" | "rain" | "snow" | "fog";
-  temp_min: number;
-  temp_max: number;
-  rain_prob: number;
+  temp_min: number | null; // 서버가 값을 못 구하면 null
+  temp_max: number | null;
+  rain_prob: number | null;
 };
 
 export type Weather = {

@@ -1,5 +1,5 @@
 // 화면 어디서나 쓰는 "순수 함수"(같은 입력 → 같은 출력)를 모았습니다. 테스트하기 쉬워요.
-import type { SpotsParams } from "./types";
+import type { SpotsParams, WeatherDay } from "./types";
 
 /** 값이 있는 항목만 골라 "?a=1&b=2" 문자열을 만듭니다. 값이 하나도 없으면 빈 문자열. */
 export function buildQuery(
@@ -75,4 +75,17 @@ export function todayString(now: Date = new Date()): string {
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const dd = String(now.getDate()).padStart(2, "0");
   return `${now.getFullYear()}-${mm}-${dd}`;
+}
+
+/**
+ * 날씨 한 줄 글자: "8° / 15° · 비 30%".
+ * 서버는 기온·강수확률을 null 로 줄 수 있습니다. 값이 없는 조각은 "NaN°"나 "비 null%" 대신 통째로 뺍니다.
+ */
+export function weatherText(day: Pick<WeatherDay, "temp_min" | "temp_max" | "rain_prob">): string {
+  const parts: string[] = [];
+  if (day.temp_min !== null && day.temp_max !== null) {
+    parts.push(`${Math.round(day.temp_min)}° / ${Math.round(day.temp_max)}°`);
+  }
+  if (day.rain_prob !== null) parts.push(`비 ${day.rain_prob}%`);
+  return parts.join(" · ");
 }

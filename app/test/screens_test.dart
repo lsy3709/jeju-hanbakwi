@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/app.dart';
 import 'package:jeju_hanbakwi/auth/auth_service.dart';
 import 'package:jeju_hanbakwi/models/spot.dart';
+import 'package:jeju_hanbakwi/screens/explore_screen.dart';
 
 import 'support.dart';
 
@@ -19,7 +22,89 @@ List<Spot> sampleSpots(int n) => [
       for (var i = 1; i <= n; i++) Spot.fromJson(spotJson(id: i, title: '관광지 $i', indoor: true)),
     ];
 
+/// 응답 시점을 테스트가 정하는 API. gated 를 켜면 getSpots 가 Completer 가 풀릴 때까지 기다립니다.
+class GatedApi extends FakeApi {
+  GatedApi({super.spots, super.total});
+  bool gated = false;
+  final pending = <({String? theme, int page, Completer<SpotPage> done})>[];
+
+  @override
+  Future<SpotPage> getSpots({
+    String? q,
+    String? theme,
+    String? area,
+    String? category,
+    bool? indoor,
+    int page = 1,
+    int size = 20,
+  }) {
+    if (!gated) {
+      return super.getSpots(q: q, theme: theme, area: area, category: category, indoor: indoor, page: page, size: size);
+    }
+    final done = Completer<SpotPage>();
+    pending.add((theme: theme, page: page, done: done));
+    return done.future;
+  }
+}
+
+SpotPage pageOf(List<String> titles, {int total = 2, int page = 1}) => SpotPage(
+      items: [for (var i = 0; i < titles.length; i++) Spot.fromJson(spotJson(id: 100 + i + page * 10, title: titles[i]))],
+      total: total,
+      page: page,
+      size: 20,
+    );
+
+Finder exploreText(String text) => find.descendant(of: find.byType(ExploreScreen), matching: find.text(text));
+
 void main() {
+  testWidgets('탐색: 칩 A → 칩 B 를 누르고 B 응답이 먼저, A 응답이 나중에 와도 B 결과가 남는다', (tester) async {
+    final api = GatedApi(total: 1);
+    await pumpApp(tester, api);
+    await tester.tap(find.text('탐색'));
+    await tester.pumpAndSettle();
+    api.gated = true;
+
+    await tester.tap(exploreText('바다'));
+    await tester.pump();
+    await tester.tap(exploreText('오름'));
+    await tester.pump();
+    final a = api.pending.firstWhere((c) => c.theme == '바다');
+    final b = api.pending.firstWhere((c) => c.theme == '오름');
+
+    b.done.complete(pageOf(['B결과'], total: 1));
+    await tester.pump();
+    a.done.complete(pageOf(['A결과'], total: 1));
+    await tester.pump();
+
+    expect(find.text('B결과'), findsOneWidget);
+    expect(find.text('A결과'), findsNothing);
+  });
+
+  testWidgets('탐색: "더 보기" 요청 중 칩을 바꾸면 옛 조건의 2쪽이 섞이지 않는다', (tester) async {
+    final api = GatedApi(spots: sampleSpots(2), total: 40);
+    await pumpApp(tester, api);
+    await tester.tap(find.text('탐색'));
+    await tester.pumpAndSettle();
+    api.gated = true;
+
+    await tester.tap(find.text('더 보기'));
+    await tester.pump();
+    final more = api.pending.firstWhere((c) => c.page == 2);
+
+    await tester.tap(exploreText('바다'));
+    await tester.pump();
+    final fresh = api.pending.firstWhere((c) => c.theme == '바다');
+    fresh.done.complete(pageOf(['바다1쪽'], total: 40));
+    await tester.pump();
+    more.done.complete(pageOf(['옛조건2쪽'], total: 40, page: 2));
+    await tester.pump();
+
+    expect(find.text('바다1쪽'), findsOneWidget);
+    expect(find.text('옛조건2쪽'), findsNothing);
+    // 버려진 "더 보기"가 로딩 상태를 남기지 않아 버튼이 다시 보인다.
+    expect(find.text('더 보기'), findsOneWidget);
+  });
+
   testWidgets('홈: 날씨 메시지와 추천 카드, 비 오는 날 실내 코스 버튼', (tester) async {
     final api = FakeApi(spots: sampleSpots(3), rainy: true);
     await pumpApp(tester, api);

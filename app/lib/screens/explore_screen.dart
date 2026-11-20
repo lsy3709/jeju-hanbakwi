@@ -36,6 +36,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
   bool _loadingMore = false;
   String? _error;
 
+  // 요청 순서 번호. 필터를 바꿀 때마다 올라가며, 늦게 도착한 옛 응답을 알아보는 데 씁니다.
+  int _requestId = 0;
+
   ShellController? _shell;
   ExploreRequest? _lastRequest;
 
@@ -83,13 +86,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   /// 첫 쪽부터 다시 검색.
   Future<void> _fetch() async {
+    // 새 검색이 시작되면 이전 요청(검색·"더 보기")의 응답은 모두 버립니다.
+    final id = ++_requestId;
     setState(() {
       _loading = true;
+      _loadingMore = false; // 버려질 "더 보기"가 로딩 표시를 남기지 않게 되돌립니다.
       _error = null;
     });
     try {
       final page = await _query(1);
-      if (!mounted) return;
+      if (!mounted || id != _requestId) return; // 그사이 더 새 검색이 시작됐다면 버립니다.
       setState(() {
         _items = page.items;
         _total = page.total;
@@ -97,7 +103,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         _loading = false;
       });
     } on ApiException catch (e) {
-      if (!mounted) return;
+      if (!mounted || id != _requestId) return;
       setState(() {
         _error = e.message;
         _loading = false;
@@ -107,10 +113,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   /// "더 보기": 다음 쪽을 이어 붙입니다.
   Future<void> _loadMore() async {
+    // 시작 시점의 번호를 잡아 둡니다. 응답이 올 때 번호가 달라졌다면 다른 필터의 목록에 섞이면 안 되므로 버립니다.
+    final id = _requestId;
     setState(() => _loadingMore = true);
     try {
       final page = await _query(_page + 1);
-      if (!mounted) return;
+      if (!mounted || id != _requestId) return;
       setState(() {
         _items = [..._items, ...page.items];
         _total = page.total;
@@ -118,7 +126,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         _loadingMore = false;
       });
     } on ApiException catch (e) {
-      if (!mounted) return;
+      if (!mounted || id != _requestId) return;
       setState(() => _loadingMore = false);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
     }

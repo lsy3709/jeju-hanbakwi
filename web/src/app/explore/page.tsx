@@ -13,7 +13,8 @@ import { ThemeChips } from "@/components/ThemeChips";
 import { btnOutline, chip } from "@/components/ui";
 import { errorMessage, getMeta, getSpots } from "@/lib/api";
 import { buildQuery, spotsQuery } from "@/lib/format";
-import type { Spot, SpotsParams } from "@/lib/types";
+import { appendPage, type Result } from "@/lib/spotList";
+import type { SpotsParams } from "@/lib/types";
 import { useAsync } from "@/lib/useAsync";
 
 const PAGE_SIZE = 20;
@@ -26,8 +27,6 @@ export default function ExplorePage() {
     </Suspense>
   );
 }
-
-type Result = { key: string; items: Spot[]; total: number; page: number; error: string | null };
 
 function Explore() {
   const router = useRouter();
@@ -82,12 +81,14 @@ function Explore() {
   // 4) "더 보기": 다음 쪽을 받아 뒤에 이어 붙입니다.
   async function loadMore() {
     if (!result) return;
+    // 요청할 때의 필터를 기억해 둡니다. 응답이 늦게 와서 그사이 필터가 바뀌었다면 그 응답은 버립니다.
+    const requestKey = key;
     setMoreBusy(true);
     try {
       const next = await getSpots({ ...filters, page: result.page + 1, size: PAGE_SIZE });
-      setResult({ ...result, items: [...result.items, ...next.items], total: next.total, page: next.page });
+      setResult((prev) => appendPage(prev, requestKey, next));
     } catch (e) {
-      setResult({ ...result, error: errorMessage(e) });
+      setResult((prev) => (prev && prev.key === requestKey ? { ...prev, error: errorMessage(e) } : prev));
     } finally {
       setMoreBusy(false);
     }
