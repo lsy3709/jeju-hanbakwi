@@ -17,7 +17,10 @@
 
 ## 서버 (api)
 
+- 층을 지킵니다: `routers/`(주소 — 받아 넘기고 돌려주기만) → `services/`(일) → `repo.py`(DB). 주소 파일에 계산이나 DB 질의를 직접 쓰지 않습니다. 자세한 것은 `docs/architecture.md`.
 - DB 는 `repo.py` 의 함수로만 다룹니다. 다른 파일에서 Supabase 클라이언트를 직접 쓰지 않습니다.
+- 일정 짜는 방식을 더할 때는 `services/plan_common.py` 의 `Planner` 모양(`name`, `plan(request)`)을 따르는 클래스를 만들고 `services/planner.py` 의 `choose_planners` 에 넣습니다.
+- 데이터 분류가 틀린 곳은 규칙을 복잡하게 만들지 말고 `transform.py` 의 `CORRECTIONS` 표에 한 줄 더합니다.
 - 로그인이 필요한 주소는 `Depends(get_current_user)` 로 확인한 `user.id` 만 씁니다. 요청 본문이나 쿼리로 받은 사용자 ID 를 믿지 않습니다.
 - `favorites`, `trips` 를 다루는 질의에는 항상 `user_id` 조건을 붙입니다. (서버는 비밀 키로 접속해 RLS 를 건너뜁니다)
 - 일정에는 DB 에 있는 관광지만 넣습니다. AI 가 지어낸 장소는 버립니다.
@@ -25,6 +28,8 @@
 
 ## 화면 (web, app)
 
+- 층을 지킵니다. 웹: `app/`(화면 조립) → `hooks/`(상태·불러오기) → `lib/api.ts`(서버). 앱: `screens/`(화면) → `controllers/`(상태) → `api/api_client.dart`(서버). 화면 파일에서 `fetch` 나 `http` 를 직접 부르지 않습니다.
+- 계산은 순수 함수(`lib/*.ts`, `format.dart`)나 컨트롤러로 빼서 화면 없이 테스트합니다.
 - 색·모서리·글꼴은 `docs/design.md` 의 토큰을 쓰고, 값은 `globals.css` / `theme.dart` 한 곳에서만 정의합니다.
 - 서비스 이름과 문구는 `brand.ts` / `brand.dart` 에 둡니다.
 - 불러오는 중 · 결과 없음 · 오류 상태를 항상 만듭니다. 서버가 꺼져 있어도 화면이 죽지 않아야 합니다.

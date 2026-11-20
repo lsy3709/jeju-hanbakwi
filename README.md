@@ -17,8 +17,22 @@
 | `app/` | 앱 화면 (Flutter — 안드로이드 · 웹) |
 | `api/` | 서버 (FastAPI) · 데이터 가져오기 도구 · 테스트 |
 | `supabase/` | DB 테이블 정의 (SQL) |
-| `docs/` | [API 명세](docs/api.md) · [화면·디자인 기준](docs/design.md) |
+| `docs/` | 문서 (아래 "문서" 표) |
 | `dev/` | (강사용) Docker 로 띄우는 로컬 DB |
+
+## 문서
+
+| 문서 | 내용 |
+|---|---|
+| [구조와 설계](docs/architecture.md) | 층 나누기, 쓰인 설계 패턴, 자료가 흐르는 길, 테스트 전략 |
+| [API 명세](docs/api.md) | 서버 주소와 응답 모양 (웹·앱이 함께 쓰는 약속) |
+| [화면·디자인 기준](docs/design.md) | 디자인 토큰, 화면 구성 |
+| [배포 안내](docs/deploy.md) | Supabase + Vercel 무료 등급에 올리는 순서 |
+| [운영과 수정](docs/operations.md) | 올린 뒤 살펴보기, 데이터 바꾸기, "이걸 바꾸려면 어디를", 사고 대응 |
+| [일차별 브랜치](docs/steps.md) | `step-1` ~ `step-6` 쓰는 방법 |
+| [체크리스트](docs/CHECKLIST.md) | 무엇을 확인했고 무엇이 남았는지 |
+| [코드 분석 기록](docs/code-analysis-2026-11-20.md) | 고친 것, 보류·기각한 것과 이유 |
+| [사진 출처](docs/photo-credits.md) | 샘플 사진의 저작자와 라이선스 |
 
 ## 일차별 브랜치
 
@@ -156,7 +170,7 @@ python -m tools.seed_demo --token ... --clear         # 내 찜과 일정 모두
 1. Google Cloud Console 에서 OAuth 클라이언트(웹 애플리케이션)를 만들고, 승인된 리디렉션 URI 에 `https://<프로젝트>.supabase.co/auth/v1/callback` 을 넣습니다.
 2. Supabase > Authentication > Providers > Google 에 클라이언트 ID 와 비밀을 넣습니다.
 3. Supabase > Authentication > URL Configuration 의 Redirect URLs 에 추가합니다.
-   - 웹: `http://localhost:3000/my` (배포 후에는 배포 주소도)
+   - 웹: `http://localhost:3000/my`, `http://localhost:3000/planner` (배포 후에는 배포 주소의 두 화면도)
    - 앱: `com.goldmagnet.jejuhanbakwi://login-callback`
 4. `web/.env.local` 과 `app/env.json` 에 Supabase URL 과 공개 키(anon)를 넣습니다.
 
@@ -166,7 +180,9 @@ python -m tools.seed_demo --token ... --clear         # 내 찜과 일정 모두
 |---|---|
 | ① 데이터 | `api/constants.py`(테마 목록) · `api/transform.py`(태그 규칙) · `sync_spots --types` |
 | ② 브랜드 | `web/src/lib/brand.ts` · `web/src/app/globals.css`(색) · `app/lib/brand.dart` · `app/lib/theme.dart` |
-| ③ AI 역할 | `api/services/planner.py` 의 `SYSTEM_PROMPT` 와 도구 |
+| ③ AI 역할 | `api/services/plan_ai.py` 의 `SYSTEM_PROMPT` 와 도구 |
+
+더 많은 "이걸 바꾸려면 어디를"은 [운영과 수정](docs/operations.md)에, 올리는 방법은 [배포 안내](docs/deploy.md)에 있습니다.
 
 ## 쓰는 외부 서비스 (모두 무료 등급)
 
