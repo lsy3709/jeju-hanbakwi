@@ -1,3 +1,4 @@
+// 이 파일이 하는 일: 사진 아래에 저작자·라이선스 출처 글자(와 원본 링크)를 보여 줍니다.
 import type { Spot } from "@/lib/types";
 import { photoCreditText } from "@/lib/format";
 

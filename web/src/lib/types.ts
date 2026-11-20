@@ -69,6 +69,14 @@ export type PlanRequest = {
   start_date?: string;
 };
 
+/** 플래너 입력칸의 값(화면용). 서버로 보낼 때는 PlanRequest 로 바꿉니다. */
+export type PlanInput = {
+  message: string;
+  days: number;
+  companions: string; // "" = 고르지 않음
+  startDate: string; // "" = 고르지 않음
+};
+
 export type PlanResponse = {
   mode: "ai" | "rule";
   answer: string;

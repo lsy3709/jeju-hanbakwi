@@ -29,13 +29,31 @@ npm run build         # 배포용 빌드
 
 ## 폴더 안내 (`src/`)
 
-- `app/`: 화면 경로입니다. `page.tsx`(홈), `explore/`(탐색), `planner/`(AI 플래너), `my/`(내 여행), `spots/[id]/`(관광지 상세). `layout.tsx` 는 공통 틀, `globals.css` 는 색·글꼴 토큰입니다.
-- `components/`: 화면 조각(헤더, 관광지 카드, 지도, 날씨 배너, 로그인 패널 등)입니다.
-- `lib/`: 데이터와 설정입니다. `api.ts`(서버 호출), `supabase.ts`(로그인), `brand.ts`(서비스 이름·문구), `types.ts`(서버 응답 모양), `format.ts`(검색 주소 만들기 등 순수 함수), `useAsync.ts`(불러오기 상태 훅).
+위에서 아래로 갈수록 "화면과 멀어지는" 구조입니다. 각 폴더는 한 가지 일만 합니다.
 
-## 브랜드를 바꿀 때 고칠 파일
+| 폴더 | 역할 | 지켜야 할 것 |
+|---|---|---|
+| `app/` | 화면 경로. `page.tsx` 는 **조립만** 합니다(홈 `/`, `explore/`, `planner/`, `my/`, `spots/[id]/`). `layout.tsx` 는 공통 틀, `globals.css` 는 색·글꼴 토큰 | 상태·불러오기 로직은 `hooks/` 로 뺍니다 |
+| `components/` | **보여 주기만** 하는 화면 조각(헤더, 카드, 지도, 폼, 목록 …) | 서버를 부르지 않습니다. 예외: `AuthProvider`(로그인), `FavoriteButton`(찜) 은 기능이 본질이라 파일 맨 위 주석에 그렇게 적어 두었습니다 |
+| `hooks/` | 화면 상태와 데이터 불러오기를 담은 커스텀 훅 (`useAsync`, `useSpotSearch`, `usePlanner`, `useFavorites`, `useTrips`, `useHydrated`) | 화면(JSX)을 그리지 않습니다 |
+| `lib/` | React 와 무관한 순수 코드 (`api.ts` 서버 호출, `types.ts` 응답 모양, `format.ts` 글자 만들기, `exploreFilters.ts` 탐색 주소 ↔ 필터, `planDraft.ts` 일정 임시 보관, `spotList.ts`, `brand.ts` 이름·문구, `supabase.ts` 로그인) | 테스트(`*.test.ts`)를 곁에 둡니다 |
 
-- `src/lib/brand.ts`: 서비스 이름, 한 줄 소개(tagline), 설명 문구
-- `src/app/globals.css`: 색상과 모서리 등 디자인 토큰 (`@theme` 안의 값)
+**서버와 통하는 곳은 `lib/api.ts` 하나뿐입니다.** 화면은 `fetch` 를 직접 부르지 않고 `api.ts` 의 함수만 씁니다.
+
+## 이걸 바꾸려면 어디를 고치나
+
+| 바꾸고 싶은 것 | 고칠 곳 |
+|---|---|
+| 브랜드 색 · 모서리 · 글꼴 | `src/app/globals.css` 의 `@theme` 값 (한 곳에서만 정의) |
+| 서비스 이름 · 한 줄 소개 · 설명 문구 | `src/lib/brand.ts` 의 `BRAND` |
+| 메뉴(상단 메뉴 · 하단 탭) | `src/lib/brand.ts` 의 `NAV_ITEMS` |
+| 화면 문구(버튼 글자, 안내 문장) | 그 글자가 보이는 `components/*.tsx` 또는 `app/**/page.tsx`. 글자로 찾으면 바로 나옵니다 |
+| 서버 주소 | `.env.local` 의 `NEXT_PUBLIC_API_URL` (코드는 고치지 않습니다. 배포 환경에서는 호스팅 서비스의 환경변수) |
+| 새 화면(경로) 추가 | `src/app/<경로>/page.tsx` 를 만들고(조립만), 메뉴에 넣으려면 `NAV_ITEMS` 에 한 줄 추가. 상태가 필요하면 `hooks/` 에 훅을 만들어 씁니다 |
+| 새 API 함수 추가 | 먼저 `docs/api.md` 를 고치고 → `lib/types.ts` 에 응답 모양 → `lib/api.ts` 에 함수 한 줄 → 화면은 훅을 거쳐 그 함수를 씁니다 |
+
+## 로그인 후 돌아오는 주소
+
+로그아웃 상태에서 AI 일정을 짜고 "저장"을 누르면 구글 로그인 뒤 **`/planner` 로 돌아오고**, 짜 둔 일정이 그대로 되살아납니다(브라우저 탭의 `sessionStorage` 에 30분 동안만 보관). 그래서 Supabase 대시보드의 **Authentication → URL Configuration → Redirect URLs** 에 `/my` 뿐 아니라 `/planner` 주소도 등록해야 합니다(예: `http://localhost:3000/planner`, 배포 주소의 `/planner`). 등록하지 않으면 로그인 뒤 엉뚱한 주소로 갑니다.
 
 전체 설명은 저장소 루트 README 참고.

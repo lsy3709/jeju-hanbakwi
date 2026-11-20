@@ -14,7 +14,7 @@ import { btnPrimary } from "@/components/ui";
 import { BRAND } from "@/lib/brand";
 import { buildQuery } from "@/lib/format";
 import { getMeta, getSpots, getWeather } from "@/lib/api";
-import { useAsync } from "@/lib/useAsync";
+import { useAsync } from "@/hooks/useAsync";
 
 export default function HomePage() {
   const router = useRouter();

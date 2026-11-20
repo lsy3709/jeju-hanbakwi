@@ -14,7 +14,7 @@ import { Empty, ErrorBox, Loading } from "@/components/States";
 import { btnPrimary } from "@/components/ui";
 import { getSpot } from "@/lib/api";
 import { buildQuery } from "@/lib/format";
-import { useAsync } from "@/lib/useAsync";
+import { useAsync } from "@/hooks/useAsync";
 
 export default function SpotDetailPage() {
   const params = useParams<{ id: string }>();

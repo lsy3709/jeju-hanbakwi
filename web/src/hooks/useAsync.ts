@@ -1,9 +1,9 @@
 "use client";
 
-// 화면이 열릴 때 데이터를 한 번 불러오는 작은 훅.
+// 이 파일이 하는 일: 화면이 열릴 때 데이터를 한 번 불러오고 "불러오는 중 / 오류 / 결과" 상태를 돌려주는 작은 훅.
 // 주의: load 함수는 useCallback 으로 감싸 주세요(함수가 바뀔 때만 다시 불러옵니다).
 import { useEffect, useState } from "react";
-import { ApiError, errorMessage } from "./api";
+import { ApiError, errorMessage } from "@/lib/api";
 
 type Result<T> = { source: unknown; tick: number; data: T | null; error: string | null; status: number | null };
 

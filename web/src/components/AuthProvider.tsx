@@ -1,6 +1,7 @@
 "use client";
 
-// 로그인 상태를 앱 전체에 나눠 주는 React context 입니다.
+// 이 파일이 하는 일: 로그인 상태(토큰·이메일)를 앱 전체에 나눠 주고 구글 로그인·로그아웃을 실행하는 React context 입니다.
+// 보여 주기만 하는 컴포넌트가 아니라 "기능이 본질"인 예외입니다(Supabase 호출은 로그인에만 씁니다).
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { getSupabase, supabaseConfigured } from "@/lib/supabase";
@@ -13,7 +14,8 @@ type AuthState = {
   email: string | null;
   /** API 요청의 Authorization: Bearer 에 넣을 토큰. 로그인 전이면 null */
   token: string | null;
-  signInWithGoogle: () => Promise<void>;
+  /** next: 로그인을 마치고 돌아올 경로(기본 "/my"). Supabase 대시보드의 Redirect URLs 에도 등록돼 있어야 합니다. */
+  signInWithGoogle: (next?: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -38,12 +40,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => data.subscription.unsubscribe();
   }, []);
 
-  const signInWithGoogle = useCallback(async () => {
+  const signInWithGoogle = useCallback(async (next: string = "/my") => {
     const supabase = getSupabase();
     if (!supabase) return;
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: window.location.origin + "/my" },
+      options: { redirectTo: window.location.origin + next },
     });
   }, []);
 

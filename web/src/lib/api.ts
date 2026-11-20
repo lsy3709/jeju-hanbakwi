@@ -1,4 +1,6 @@
-// 서버(FastAPI)와 주고받는 모든 함수가 이 파일에 있습니다. 주소·응답 모양은 docs/api.md 를 따릅니다.
+// 이 파일이 하는 일: 서버(FastAPI)와 통하는 유일한 문입니다.
+// 화면은 fetch 를 직접 부르지 않고 여기 함수만 씁니다. 새 서버 주소를 쓰려면 여기에 함수를 하나 더하세요.
+// 주소·응답 모양은 docs/api.md 를 따릅니다.
 import { spotsQuery } from "./format";
 import type {
   Itinerary,

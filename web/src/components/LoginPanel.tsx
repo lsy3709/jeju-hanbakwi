@@ -1,11 +1,13 @@
 "use client";
 
-// 구글 로그인 버튼. Supabase 설정이 비어 있으면 버튼 대신 안내 문구를 보여 줍니다.
+// 이 파일이 하는 일: 구글 로그인 버튼(LoginPanel)과, 로그인이 필요한 버튼을 먼저 눌렀을 때 띄우는 안내창(LoginDialog).
+// Supabase 설정이 비어 있으면 버튼 대신 안내 문구를 보여 줍니다. 로그인 기능은 AuthProvider 에서 가져다 씁니다.
 import { Info, LogIn, X } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import { btnPrimary, btnOutline } from "./ui";
 
-export function LoginPanel() {
+/** next: 로그인 뒤 돌아올 경로. 생략하면 "/my". */
+export function LoginPanel({ next }: { next?: string }) {
   const { configured, signInWithGoogle } = useAuth();
 
   if (!configured) {
@@ -19,7 +21,7 @@ export function LoginPanel() {
     );
   }
   return (
-    <button type="button" onClick={signInWithGoogle} className={btnPrimary}>
+    <button type="button" onClick={() => signInWithGoogle(next)} className={btnPrimary}>
       <LogIn size={18} aria-hidden="true" />
       구글로 로그인
     </button>
@@ -27,7 +29,8 @@ export function LoginPanel() {
 }
 
 /** 로그인이 필요한 버튼(찜·저장)을 로그인 전에 눌렀을 때 띄우는 안내창 */
-export function LoginDialog({ message, onClose }: { message: string; onClose: () => void }) {
+/** next: 로그인 뒤 돌아올 경로(예: 플래너는 "/planner"). 생략하면 "/my". */
+export function LoginDialog({ message, next, onClose }: { message: string; next?: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div
@@ -43,7 +46,7 @@ export function LoginDialog({ message, onClose }: { message: string; onClose: ()
             <X size={20} aria-hidden="true" />
           </button>
         </div>
-        <LoginPanel />
+        <LoginPanel next={next} />
         <button type="button" onClick={onClose} className={`${btnOutline} w-full`}>
           나중에 할게요
         </button>
