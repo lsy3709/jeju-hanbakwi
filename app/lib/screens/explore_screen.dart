@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
-import '../api/api_client.dart';
 import '../app_scope.dart';
 import '../brand.dart';
+import '../controllers/explore_controller.dart';
 import '../models/spot.dart';
 import '../theme.dart';
+import '../widgets/filter_menu.dart';
+import '../widgets/login_prompt.dart';
 import '../widgets/spot_card.dart';
 import '../widgets/spot_map.dart';
 import '../widgets/state_views.dart';
 import 'spot_detail_screen.dart';
 
-/// 탐색: 검색바 · 테마 칩 · 필터 → 카드 그리드 ↔ 지도, 20개씩 "더 보기".
+/// 탐색 화면: 검색바 · 테마 칩 · 필터 → 카드 그리드 ↔ 지도, 20개씩 "더 보기".
+/// 검색 조건과 목록은 [ExploreController] 가 들고 있고, 이 화면은 그것을 그리기만 합니다.
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
 
@@ -19,176 +22,88 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  static const _pageSize = 20;
-
   final _search = TextEditingController();
-  String? _theme;
-  String? _area;
-  String? _category;
-  bool? _indoor; // null = 전체
-  bool _mapMode = false;
+  bool _mapMode = false; // 목록 ↔ 지도는 화면 모양일 뿐이라 컨트롤러가 아닌 여기에 둡니다.
 
-  Meta? _meta;
-  List<Spot> _items = [];
-  int _total = 0;
-  int _page = 1;
-  bool _loading = true;
-  bool _loadingMore = false;
-  String? _error;
-
-  // 요청 순서 번호. 필터를 바꿀 때마다 올라가며, 늦게 도착한 옛 응답을 알아보는 데 씁니다.
-  int _requestId = 0;
-
-  ShellController? _shell;
+  late final ExploreController _controller;
+  late final ShellController _shell;
   ExploreRequest? _lastRequest;
+  bool _started = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_shell == null) {
-      _shell = AppScope.of(context).shell;
-      _shell!.addListener(_onShellChanged);
-      _loadMeta();
-      _fetch();
-    }
+    // AppScope 는 initState 에서 못 꺼내므로, 처음 한 번만 여기서 준비합니다.
+    if (_started) return;
+    _started = true;
+    final scope = AppScope.of(context);
+    _controller = ExploreController(api: scope.api)..start();
+    _shell = scope.shell..addListener(_onShellChanged);
   }
 
   @override
   void dispose() {
-    _shell?.removeListener(_onShellChanged);
+    _shell.removeListener(_onShellChanged);
+    _controller.dispose();
     _search.dispose();
     super.dispose();
   }
 
   /// 홈에서 "이 조건으로 찾아 줘" 하고 보낸 요청이 오면 조건을 바꿔 다시 검색합니다.
   void _onShellChanged() {
-    final request = _shell!.exploreRequest;
+    final request = _shell.exploreRequest;
     if (request == null || identical(request, _lastRequest)) return;
     _lastRequest = request;
-    setState(() {
-      _search.text = request.q ?? '';
-      _theme = request.theme;
-      _indoor = request.indoor;
-      _area = null;
-      _category = null;
-    });
-    _fetch();
+    _search.text = request.q ?? '';
+    _controller.applyRequest(q: request.q, theme: request.theme, indoor: request.indoor);
   }
 
-  Future<void> _loadMeta() async {
-    try {
-      final meta = await AppScope.of(context).api.getMeta();
-      if (mounted) setState(() => _meta = meta);
-    } on ApiException {
-      // 선택지를 못 받아도 검색은 됩니다. 칩이 비어 보일 뿐입니다.
-    }
-  }
-
-  /// 첫 쪽부터 다시 검색.
-  Future<void> _fetch() async {
-    // 새 검색이 시작되면 이전 요청(검색·"더 보기")의 응답은 모두 버립니다.
-    final id = ++_requestId;
-    setState(() {
-      _loading = true;
-      _loadingMore = false; // 버려질 "더 보기"가 로딩 표시를 남기지 않게 되돌립니다.
-      _error = null;
-    });
-    try {
-      final page = await _query(1);
-      if (!mounted || id != _requestId) return; // 그사이 더 새 검색이 시작됐다면 버립니다.
-      setState(() {
-        _items = page.items;
-        _total = page.total;
-        _page = 1;
-        _loading = false;
-      });
-    } on ApiException catch (e) {
-      if (!mounted || id != _requestId) return;
-      setState(() {
-        _error = e.message;
-        _loading = false;
-      });
-    }
-  }
-
-  /// "더 보기": 다음 쪽을 이어 붙입니다.
   Future<void> _loadMore() async {
-    // 시작 시점의 번호를 잡아 둡니다. 응답이 올 때 번호가 달라졌다면 다른 필터의 목록에 섞이면 안 되므로 버립니다.
-    final id = _requestId;
-    setState(() => _loadingMore = true);
-    try {
-      final page = await _query(_page + 1);
-      if (!mounted || id != _requestId) return;
-      setState(() {
-        _items = [..._items, ...page.items];
-        _total = page.total;
-        _page = page.page;
-        _loadingMore = false;
-      });
-    } on ApiException catch (e) {
-      if (!mounted || id != _requestId) return;
-      setState(() => _loadingMore = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
-    }
+    final message = await _controller.loadMore();
+    if (message != null && mounted) showSnack(context, message);
   }
 
-  Future<SpotPage> _query(int page) {
-    return AppScope.of(context).api.getSpots(
-          q: _search.text,
-          theme: _theme,
-          area: _area,
-          category: _category,
-          indoor: _indoor,
-          page: page,
-          size: _pageSize,
-        );
-  }
-
-  void _openDetail(Spot spot) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => SpotDetailScreen(spotId: spot.id, initial: spot)),
-    );
-  }
+  void _openDetail(Spot spot) => SpotDetailScreen.open(context, spotId: spot.id, initial: spot);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: CenteredBody(
-        child: Column(
-          children: [
-            _header(),
-            Expanded(child: _body()),
-          ],
+        child: ListenableBuilder(
+          listenable: _controller,
+          builder: (context, _) => Column(
+            children: [
+              _header(),
+              Expanded(child: _body()),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _header() {
-    final themes = _meta?.themes ?? const <String>[];
+    final c = _controller;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SearchPill(controller: _search, hint: Brand.searchHint, onSubmitted: (_) => _fetch()),
+          SearchPill(controller: _search, hint: Brand.searchHint, onSubmitted: c.search),
           const SizedBox(height: 12),
           SizedBox(
             height: 40,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                for (final t in themes)
+                for (final t in c.meta?.themes ?? const <String>[])
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
                       label: Text(t),
-                      selected: _theme == t,
+                      selected: c.theme == t,
                       // 같은 칩을 다시 누르면 선택 해제
-                      onSelected: (on) {
-                        setState(() => _theme = on ? t : null);
-                        _fetch();
-                      },
+                      onSelected: (on) => c.setTheme(on ? t : null),
                     ),
                   ),
               ],
@@ -200,23 +115,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
             runSpacing: 8,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              _FilterMenu(
-                label: '지역',
-                value: _area,
-                options: _meta?.areas ?? const [],
-                onChanged: (v) {
-                  setState(() => _area = v);
-                  _fetch();
-                },
-              ),
-              _FilterMenu(
+              FilterMenu(label: '지역', value: c.area, options: c.meta?.areas ?? const [], onChanged: c.setArea),
+              FilterMenu(
                 label: '분류',
-                value: _category,
-                options: _meta?.categories ?? const [],
-                onChanged: (v) {
-                  setState(() => _category = v);
-                  _fetch();
-                },
+                value: c.category,
+                options: c.meta?.categories ?? const [],
+                onChanged: c.setCategory,
               ),
               SegmentedButton<bool?>(
                 showSelectedIcon: false,
@@ -226,11 +130,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   ButtonSegment(value: true, label: Text('실내')),
                   ButtonSegment(value: false, label: Text('실외')),
                 ],
-                selected: {_indoor},
-                onSelectionChanged: (s) {
-                  setState(() => _indoor = s.first);
-                  _fetch();
-                },
+                selected: {c.indoor},
+                onSelectionChanged: (s) => c.setIndoor(s.first),
               ),
               SegmentedButton<bool>(
                 showSelectedIcon: false,
@@ -250,9 +151,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Widget _body() {
-    if (_loading) return const LoadingView();
-    if (_error != null) return ErrorView(message: _error!, onRetry: _fetch);
-    if (_items.isEmpty) {
+    final c = _controller;
+    if (c.loading) return const LoadingView();
+    if (c.error != null) return ErrorView(message: c.error!, onRetry: c.reload);
+    if (c.items.isEmpty) {
       return const EmptyView(message: '조건에 맞는 곳이 없어요.\n검색어나 필터를 바꿔 보세요.');
     }
     if (_mapMode) {
@@ -260,17 +162,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
         padding: const EdgeInsets.all(16),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.card),
-          child: SpotMap(spots: _items, onOpen: _openDetail),
+          child: SpotMap(spots: c.items, onOpen: _openDetail),
         ),
       );
     }
-    final hasMore = _items.length < _total;
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-            child: Text('총 $_total곳', style: const TextStyle(color: AppColors.muted)),
+            child: Text('총 ${c.total}곳', style: const TextStyle(color: AppColors.muted)),
           ),
         ),
         SliverPadding(
@@ -283,61 +184,23 @@ class _ExploreScreenState extends State<ExploreScreen> {
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
-            itemCount: _items.length,
-            itemBuilder: (context, i) => SpotCard(spot: _items[i], onTap: () => _openDetail(_items[i])),
+            itemCount: c.items.length,
+            itemBuilder: (context, i) => SpotCard(spot: c.items[i], onTap: () => _openDetail(c.items[i])),
           ),
         ),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Center(
-              child: hasMore
-                  ? (_loadingMore
-                      ? const CircularProgressIndicator()
-                      : OutlinedButton(onPressed: _loadMore, child: const Text('더 보기')))
+              child: c.hasMore
+                  ? (c.loadingMore
+                        ? const CircularProgressIndicator()
+                        : OutlinedButton(onPressed: _loadMore, child: const Text('더 보기')))
                   : const SizedBox.shrink(),
             ),
           ),
         ),
       ],
-    );
-  }
-}
-
-/// "지역 ▾" 처럼 알약 모양으로 보이는 선택 메뉴. 고르면 라벨이 선택값으로 바뀝니다.
-class _FilterMenu extends StatelessWidget {
-  const _FilterMenu({required this.label, required this.value, required this.options, required this.onChanged});
-  final String label;
-  final String? value;
-  final List<String> options;
-  final ValueChanged<String?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final selected = value != null;
-    return PopupMenuButton<String>(
-      tooltip: '$label 고르기',
-      // 빈 문자열 = "전체"(조건 해제)
-      onSelected: (v) => onChanged(v.isEmpty ? null : v),
-      itemBuilder: (context) => [
-        PopupMenuItem(value: '', child: Text('$label 전체')),
-        for (final o in options) PopupMenuItem(value: o, child: Text(o)),
-      ],
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primary : AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.pill),
-          border: Border.all(color: selected ? AppColors.primary : AppColors.line),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(value ?? label, style: TextStyle(color: selected ? Colors.white : AppColors.ink)),
-            Icon(Icons.arrow_drop_down, size: 20, color: selected ? Colors.white : AppColors.muted),
-          ],
-        ),
-      ),
     );
   }
 }

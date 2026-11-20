@@ -26,17 +26,33 @@ flutter test      # 단위·위젯 테스트
 
 ## 폴더 안내 (`lib/`)
 
-- `main.dart`: 앱 시작점입니다. `app.dart` 가 앱의 기본 틀(테마, 첫 화면)을 맡습니다.
-- `screens/`: 화면입니다. 홈(`home_screen.dart`, `home_shell.dart` 가 하단 탭을 담당), 탐색, AI 플래너, 내 여행, 관광지 상세.
-- `widgets/`: 화면에서 함께 쓰는 조각(관광지 카드, 지도, 일정 보기, 로그인 안내, 상태 화면 등)입니다.
-- `models/`: 서버 응답을 담는 데이터 모양(관광지, 일정, 여행, 날씨)입니다.
-- `api/`: 서버 호출(`api_client.dart`)입니다.
-- `auth/`: 구글 로그인(`auth_service.dart`)과 찜 목록 저장(`favorites_store.dart`)입니다.
-- `config.dart`: `env.json` 값을 읽는 곳입니다.
+화면은 "그리기"만, 상태와 데이터 불러오기는 "컨트롤러"가 맡습니다. 컨트롤러는 위젯 없이 `test/controllers/` 에서 단위 테스트합니다.
 
-## 브랜드를 바꿀 때 고칠 파일
+| 폴더·파일 | 하는 일 |
+|---|---|
+| `main.dart`, `app.dart` | 앱 시작점과 기본 틀(테마, 첫 화면). `app_scope.dart` 는 화면 어디서든 api·로그인·찜·탭 이동을 꺼내 쓰는 통로 |
+| `screens/` | 화면. 홈·탐색·AI 플래너·내 여행·관광지 상세. `home_shell.dart` 가 하단 탭(넓은 화면은 왼쪽 메뉴)을 맡음 |
+| `screens/my_trips/` | 내 여행 화면 안의 두 탭(찜한 곳, 저장한 일정) |
+| `controllers/` | 화면 상태를 가진 `ChangeNotifier`: `explore_controller`(검색 조건·목록·더 보기), `home_controller`(날씨·추천), `planner_controller`(입력·결과·저장), `trips_controller`(저장한 일정) |
+| `widgets/` | 여러 화면이 쓰는 작은 위젯: 관광지 카드, 지도, 일정 보기, 필터 메뉴, 날씨 배너, 상태 화면 등 |
+| `models/` | 서버 응답을 담는 데이터 모양(관광지, 일정, 여행, 날씨) |
+| `api/api_client.dart` | 서버와 통하는 **유일한 문**. 화면과 컨트롤러는 http 를 직접 부르지 않음 |
+| `auth/` | 구글 로그인(`auth_service.dart`)과 찜 목록(`favorites_store.dart`) |
+| `config.dart`, `brand.dart`, `theme.dart`, `format.dart` | 설정 값 읽기 / 서비스 이름·문구 / 색·모서리 / 날짜 표기 |
 
-- `lib/brand.dart`: 서비스 이름과 화면 문구
-- `lib/theme.dart`: 색상 등 디자인 토큰 (`AppColors`)
+화면 하나의 흐름: `screens/*` 가 컨트롤러를 만들고 → 컨트롤러가 `api_client` 로 서버를 부르고 → `ListenableBuilder` 가 컨트롤러가 바뀔 때마다 화면을 다시 그립니다.
+
+## 이걸 바꾸려면 어디를 고치나
+
+| 바꾸고 싶은 것 | 고칠 곳 |
+|---|---|
+| 서비스 이름, 화면 문구(인사말, 검색창 안내, AI 카드 등) | `lib/brand.dart` |
+| 브랜드 색, 모서리 둥글기 | `lib/theme.dart` (`AppColors`, `AppRadius`) — 값은 이 한 곳에서만 정의 |
+| 하단 탭(이름·아이콘·순서) | `lib/screens/home_shell.dart` 의 `_tabs` 와 `IndexedStack` 의 화면 순서 |
+| 화면에 직접 쓰인 글(버튼, 안내 문구) | 해당 `lib/screens/*.dart` 또는 `lib/widgets/*.dart` |
+| 서버 주소, 로그인 설정 | `env.json` (`API_URL` 등). 읽는 곳은 `lib/config.dart` |
+| 새 화면 추가 | ① `lib/screens/` 에 화면 파일 ② 상태·불러오기가 있으면 `lib/controllers/` 에 컨트롤러(+ `test/controllers/` 테스트) ③ 탭이면 `home_shell.dart` 에 등록, 아니면 `Navigator.push` (상세 화면은 `SpotDetailScreen.open`) |
+| 새 API 메서드 추가 | ① `docs/api.md` 에 주소·응답 적기 ② `lib/models/` 에 응답 모양 ③ `lib/api/api_client.dart` 에 메서드 ④ 컨트롤러에서 호출 ⑤ `test/api_client_test.dart` 에 시험 |
+| 관광지 상세 화면으로 이동 | 어디서든 `SpotDetailScreen.open(context, spotId: ..., initial: ...)` |
 
 전체 설명은 저장소 루트 README 참고.

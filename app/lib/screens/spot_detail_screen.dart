@@ -9,12 +9,21 @@ import '../widgets/spot_image.dart';
 import '../widgets/spot_map.dart';
 import '../widgets/state_views.dart';
 
+/// 관광지 상세 화면. 다른 화면에서는 [SpotDetailScreen.open] 으로 엽니다.
 /// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 → 주소 → 지도 → 버튼 2개.
 class SpotDetailScreen extends StatefulWidget {
   /// [initial] 이 있으면 먼저 보여 주고(목록에서 넘어온 경우), 없으면 서버에서 불러옵니다.
   const SpotDetailScreen({super.key, required this.spotId, this.initial});
   final int spotId;
   final Spot? initial;
+
+  /// 상세 화면을 엽니다. 어느 화면에서든 이 한 줄로 부르게 해, 화면 이동 코드가 여기 한 곳에만 있게 합니다.
+  /// 이미 가진 [initial] 을 넘기면 서버를 기다리지 않고 바로 보여 줍니다.
+  static Future<void> open(BuildContext context, {required int spotId, Spot? initial}) {
+    return Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => SpotDetailScreen(spotId: spotId, initial: initial)),
+    );
+  }
 
   @override
   State<SpotDetailScreen> createState() => _SpotDetailScreenState();

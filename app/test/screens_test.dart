@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/app.dart';
@@ -19,40 +17,8 @@ Future<void> pumpApp(WidgetTester tester, FakeApi api) async {
 }
 
 List<Spot> sampleSpots(int n) => [
-      for (var i = 1; i <= n; i++) Spot.fromJson(spotJson(id: i, title: '관광지 $i', indoor: true)),
-    ];
-
-/// 응답 시점을 테스트가 정하는 API. gated 를 켜면 getSpots 가 Completer 가 풀릴 때까지 기다립니다.
-class GatedApi extends FakeApi {
-  GatedApi({super.spots, super.total});
-  bool gated = false;
-  final pending = <({String? theme, int page, Completer<SpotPage> done})>[];
-
-  @override
-  Future<SpotPage> getSpots({
-    String? q,
-    String? theme,
-    String? area,
-    String? category,
-    bool? indoor,
-    int page = 1,
-    int size = 20,
-  }) {
-    if (!gated) {
-      return super.getSpots(q: q, theme: theme, area: area, category: category, indoor: indoor, page: page, size: size);
-    }
-    final done = Completer<SpotPage>();
-    pending.add((theme: theme, page: page, done: done));
-    return done.future;
-  }
-}
-
-SpotPage pageOf(List<String> titles, {int total = 2, int page = 1}) => SpotPage(
-      items: [for (var i = 0; i < titles.length; i++) Spot.fromJson(spotJson(id: 100 + i + page * 10, title: titles[i]))],
-      total: total,
-      page: page,
-      size: 20,
-    );
+  for (var i = 1; i <= n; i++) Spot.fromJson(spotJson(id: i, title: '관광지 $i', indoor: true)),
+];
 
 Finder exploreText(String text) => find.descendant(of: find.byType(ExploreScreen), matching: find.text(text));
 
@@ -189,5 +155,29 @@ void main() {
     await tester.tap(find.text('탐색'));
     await tester.pumpAndSettle();
     expect(find.text('총 6곳'), findsOneWidget);
+  });
+
+  testWidgets('플래너: 글을 쓰고 "일정 짜기"를 누르면 결과가 보이고, 글이 비어 있으면 안내만', (tester) async {
+    final api = PlanApi();
+    await pumpApp(tester, api);
+    await tester.tap(find.text('AI 플래너').last);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('일정 짜기'));
+    await tester.pump();
+    expect(find.text('하고 싶은 여행을 적어 주세요.'), findsOneWidget);
+    expect(api.planCalls, isEmpty);
+
+    await tester.enterText(find.byType(TextField), '바다 보고 싶어요');
+    await tester.tap(find.text('3일'));
+    await tester.tap(find.text('연인'));
+    await tester.tap(find.text('일정 짜기'));
+    await tester.pumpAndSettle();
+
+    expect(api.planCalls.single, containsPair('message', '바다 보고 싶어요'));
+    expect(api.planCalls.single, containsPair('days', 3));
+    expect(api.planCalls.single, containsPair('companions', '연인'));
+    expect(find.text('추천이에요'), findsOneWidget);
+    expect(find.text('내 여행에 저장'), findsOneWidget);
   });
 }

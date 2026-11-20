@@ -1,3 +1,6 @@
+// 서버와 통하는 유일한 문: 화면과 컨트롤러는 http 를 직접 부르지 않고 여기 메서드만 씁니다.
+// 새 서버 주소를 쓰려면 docs/api.md 를 먼저 고치고 이 파일에 메서드를 하나 더하세요.
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -24,7 +27,9 @@ class ApiException implements Exception {
 /// 로그인한 사용자의 액세스 토큰을 돌려주는 함수. 로그아웃 상태면 null.
 typedef TokenProvider = String? Function();
 
-/// 서버(FastAPI)와 말하는 곳. docs/api.md 의 주소를 하나씩 메서드로 만들었습니다.
+/// 서버(FastAPI)와 통하는 **유일한 문**. docs/api.md 의 주소를 하나씩 메서드로 만들었습니다.
+/// 화면과 컨트롤러는 http 를 직접 부르지 않고 여기 메서드(getSpots, plan, saveTrip …)만 씁니다.
+/// 서버 오류는 모두 한국어 메시지를 담은 [ApiException] 으로 바뀌어 나옵니다.
 /// [client] 를 밖에서 넣을 수 있게 해 두면 테스트에서 가짜 서버를 꽂을 수 있습니다.
 class ApiClient {
   final http.Client _client;
