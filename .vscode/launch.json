@@ -1,20 +1,4 @@
 {
   "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "서버 디버그 (FastAPI)",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "uvicorn",
-      "args": [
-        "main:app",
-        "--reload"
-      ],
-      "cwd": "${workspaceFolder}/api",
-      "env": {
-        "PYTHONUTF8": "1"
-      },
-      "jinja": false
-    }
-  ]
+  "configurations": []
 }

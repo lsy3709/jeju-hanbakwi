@@ -1,11 +1,5 @@
 {
   "files.encoding": "utf8",
-  "python.defaultInterpreterPath": "${workspaceFolder}/api/.venv/Scripts/python.exe",
-  "python.testing.pytestEnabled": true,
-  "python.testing.cwd": "${workspaceFolder}/api",
-  "terminal.integrated.env.windows": {
-    "PYTHONUTF8": "1"
-  },
   "eslint.workingDirectories": [
     "web"
   ]

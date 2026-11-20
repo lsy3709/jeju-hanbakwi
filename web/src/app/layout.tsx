@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Header } from "@/components/Header";
 import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
@@ -21,9 +20,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen antialiased">
-        <Header />
-        {/* 아래 pb-24 는 좁은 화면에서 하단 탭에 내용이 가리지 않게 하는 여백 */}
-        <main className="mx-auto w-full max-w-6xl px-4 pb-24 pt-6 md:pb-12">{children}</main>
+        <header className="border-b border-line bg-surface">
+          <div className="mx-auto flex h-14 max-w-6xl items-center px-4">
+            <span className="text-lg font-extrabold text-primary">{BRAND.name}</span>
+          </div>
+        </header>
+        <main className="mx-auto w-full max-w-6xl px-4 pb-12 pt-6">{children}</main>
       </body>
     </html>
   );

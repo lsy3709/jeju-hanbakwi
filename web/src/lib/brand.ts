@@ -6,9 +6,3 @@ export const BRAND = {
     "취향에 맞는 제주 관광지를 찾아볼 수 있어요.",
   greeting: "어디로 한 바퀴 돌까요?",
 };
-
-// 상단 메뉴·하단 탭에서 함께 쓰는 메뉴 목록
-export const NAV_ITEMS = [
-  { href: "/", label: "홈", icon: "home" },
-  { href: "/explore", label: "탐색", icon: "compass" },
-] as const;
