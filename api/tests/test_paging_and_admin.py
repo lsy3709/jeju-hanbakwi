@@ -39,6 +39,19 @@ def test_favorites_cursor_is_stable_when_a_new_one_is_added(client, login):
     assert [s["id"] for s in second["items"]] == [3, 2]
 
 
+def test_has_favorite_answers_for_one_spot(client, login):
+    """찜이 많아 목록의 첫 묶음에 없어도, 한 곳을 찜했는지는 바로 알 수 있어야 합니다."""
+    login(ALICE)
+    for spot_id in range(1, 31):
+        client.post("/me/favorites", json={"spot_id": spot_id})
+    first_page = [s["id"] for s in client.get("/me/favorites").json()["items"]]
+    assert 1 not in first_page                                   # 가장 먼저 찜한 곳은 첫 묶음에 없음
+    assert client.get("/me/favorites/1").json() == {"spot_id": 1, "favorite": True}
+    assert client.get("/me/favorites/40").json() == {"spot_id": 40, "favorite": False}
+    login(BOB)
+    assert client.get("/me/favorites/1").json()["favorite"] is False   # 남의 찜은 내 찜이 아님
+
+
 def test_trips_cursor(client, login):
     login(ALICE)
     for n in range(5):

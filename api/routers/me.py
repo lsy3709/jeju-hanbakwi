@@ -37,6 +37,12 @@ def list_favorites(
     return {"items": with_photo_addresses([spot for _, spot in page], request), "next_cursor": next_cursor}
 
 
+@router.get("/favorites/{spot_id}")
+def has_favorite(spot_id: int, user: User = Depends(get_active_user), repo=Depends(get_repo)):
+    """상세 화면의 하트가 쓸 주소. 찜 목록은 나뉘어 오므로 "이 한 곳"은 따로 묻습니다."""
+    return {"spot_id": spot_id, "favorite": repo.has_favorite(user.id, spot_id)}
+
+
 @router.post("/favorites", status_code=201)
 def add_favorite(body: FavoriteIn, user: User = Depends(get_active_user), repo=Depends(get_repo)):
     if repo.get_spot(body.spot_id) is None:

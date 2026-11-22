@@ -90,6 +90,7 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
 | POST | `/agent/plan` | - | AI 일정 짜기 |
 | GET | `/me` | 필요 | 로그인한 사용자 |
 | GET | `/me/favorites` | 필요 | 찜한 관광지 목록 |
+| GET | `/me/favorites/{spot_id}` | 필요 | 이 한 곳을 찜했는지 |
 | POST | `/me/favorites` | 필요 | 찜 추가 |
 | DELETE | `/me/favorites/{spot_id}` | 필요 | 찜 삭제 |
 | GET | `/me/trips` | 필요 | 저장한 일정 목록 |
@@ -206,6 +207,7 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
 ### 찜
 
 - `GET /me/favorites?size=20&cursor=` → `{ "items": [ Spot, ... ], "next_cursor": 31 }` (최근에 찜한 순. 숨긴 곳은 빠짐)
+- `GET /me/favorites/12` → `{ "spot_id": 12, "favorite": true }` (이 한 곳을 찜했는지. 상세 화면의 하트가 씁니다 — 목록이 나뉘어 오므로 목록에서 찾지 않습니다)
 - `POST /me/favorites` 요청 `{ "spot_id": 12 }` → `201` `{ "spot_id": 12 }` (이미 찜했어도 201, 없는 관광지면 404)
 - `DELETE /me/favorites/12` → `204` (본문 없음)
 

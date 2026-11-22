@@ -66,6 +66,9 @@ class FakeRepo:
         pairs = [(f["id"], self.get_spot(f["spot_id"])) for f in rows]
         return [(fid, spot) for fid, spot in pairs if spot][:size]
 
+    def has_favorite(self, user_id, spot_id):
+        return any(f["user_id"] == user_id and f["spot_id"] == spot_id for f in self.favorites)
+
     def add_favorite(self, user_id, spot_id):
         if not any(f["user_id"] == user_id and f["spot_id"] == spot_id for f in self.favorites):
             self._favorite_id += 1

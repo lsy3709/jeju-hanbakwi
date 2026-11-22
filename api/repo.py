@@ -8,7 +8,7 @@
   get_spot(spot_id, include_hidden) → 한 곳 또는 None
   add_spot(row) / update_spot(spot_id, changes) → 한 줄 (없으면 None)
   upsert_spots(rows) → 넣은 개수
-  list_favorites(user_id, before_id, size) → [(찜 번호, 관광지)] / add_favorite / remove_favorite
+  list_favorites(user_id, before_id, size) → [(찜 번호, 관광지)] / has_favorite / add_favorite / remove_favorite
   list_trips(user_id, before_id, size) / add_trip(user_id, title, itinerary) / delete_trip(user_id, trip_id) → 지웠으면 True
   is_suspended(user_id) / list_users(q, before_no, size) / set_suspended(user_id, suspended)
 
@@ -114,6 +114,13 @@ class SupabaseRepo:
             query = query.lt("id", before_id)
         result = query.order("id", desc=True).limit(size).execute()
         return [(row["id"], row["spots"]) for row in result.data if row.get("spots")]
+
+    def has_favorite(self, user_id: str, spot_id: int) -> bool:
+        """이 한 곳을 찜했는가. 목록이 나뉘어 오므로 화면이 목록을 다 받아 찾지 않게 따로 묻습니다."""
+        result = (
+            self.db.table("favorites").select("spot_id").eq("user_id", user_id).eq("spot_id", spot_id).limit(1).execute()
+        )
+        return bool(result.data)
 
     def add_favorite(self, user_id: str, spot_id: int) -> None:
         self.db.table("favorites").upsert(

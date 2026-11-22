@@ -126,6 +126,7 @@ def test_me_routes_need_login(client):
     for method, url in [
         ("get", "/me"),
         ("get", "/me/favorites"),
+        ("get", "/me/favorites/1"),
         ("post", "/me/favorites"),
         ("delete", "/me/favorites/1"),
         ("get", "/me/trips"),
