@@ -202,6 +202,7 @@ python -m tools.check_live --api https://<서버 주소>
 |---|---|---|
 | Vercel 빌드가 "No framework detected" 또는 엉뚱한 것을 빌드 | Root Directory 를 안 정함 | 프로젝트 Settings → General → Root Directory |
 | 서버 주소를 열면 Vercel 로그인 화면이 나옴 | 배포 하나만 가리키는 긴 주소를 씀 | `https://<프로젝트 이름>.vercel.app` 을 씀 |
+| 키를 넣었는데 `/status` 의 `ai` 가 계속 `rule` | 변수 이름이 틀림(예: 맨 앞 글자가 빠진 `EMINI_API_KEY`), 또는 넣고 다시 배포하지 않음 | Vercel 편집 창에서는 Key(이름)를 고칠 수 없습니다. **Add Environment Variable** 로 바른 이름을 새로 만들고 틀린 줄은 `⋯` → Remove, 그다음 Redeploy |
 | 웹에서 "서버에 연결할 수 없어요" | `NEXT_PUBLIC_API_URL` 이 비었거나, 서버의 `ALLOWED_ORIGINS` 에 웹 주소가 없음 | 값을 넣고 **다시 배포** |
 | `/health` 는 되는데 `/status` · `/spots` 가 500 | 서버 프로젝트에 `SUPABASE_URL` · `SUPABASE_SERVICE_ROLE_KEY` 가 없음(웹 프로젝트에 넣었거나, 넣고 다시 배포하지 않음) | 서버 프로젝트에 넣고 Redeploy. Vercel 의 Logs 에 "SUPABASE_URL 과 SUPABASE_SERVICE_ROLE_KEY 를 넣어 주세요" 가 보임 |
 | `sync_spots` 가 "Invalid API key" | 비밀 키 칸에 주소나 공개 키를 넣음 | `sb_secret_` 로 시작하는 값으로 |
