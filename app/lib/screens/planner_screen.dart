@@ -6,6 +6,7 @@ import '../theme.dart';
 import '../widgets/login_prompt.dart';
 import '../widgets/plan_result_view.dart';
 import '../widgets/state_views.dart';
+import '../widgets/title_dialog.dart';
 import 'spot_detail_screen.dart';
 
 /// AI 플래너 화면: 입력(하고 싶은 여행 · 며칠 · 누구와 · 시작 날짜) → 결과(설명 + 일자별 타임라인).
@@ -86,28 +87,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
   Future<String?> _askTitle() {
     final text = _controller.message.trim();
-    final controller = TextEditingController(text: text.length > 20 ? '제주 여행' : text);
-    return showDialog<String>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('일정 제목'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: const InputDecoration(hintText: '예: 부모님과 제주'),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('취소')),
-          FilledButton(
-            onPressed: () {
-              final t = controller.text.trim();
-              if (t.isNotEmpty) Navigator.pop(dialogContext, t);
-            },
-            child: const Text('저장'),
-          ),
-        ],
-      ),
-    ).whenComplete(controller.dispose);
+    return askTripTitle(context, initial: text.length > 20 ? '제주 여행' : text);
   }
 
   void _openSpot(int spotId) {
