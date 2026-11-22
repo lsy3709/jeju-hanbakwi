@@ -4,7 +4,9 @@
 // 보여 주기만 하는 컴포넌트가 아니라 "기능이 본질"인 예외입니다(Supabase 호출은 로그인에만 씁니다).
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { useMe } from "@/hooks/useMe";
 import { getSupabase, supabaseConfigured } from "@/lib/supabase";
+import type { Me } from "@/lib/types";
 
 type AuthState = {
   /** 세션을 아직 확인하는 중이면 true */
@@ -14,6 +16,13 @@ type AuthState = {
   email: string | null;
   /** API 요청의 Authorization: Bearer 에 넣을 토큰. 로그인 전이면 null */
   token: string | null;
+  /** 서버가 알려 준 내 정보(/me: 관리자인지 · 이용 정지인지). 로그인 전이거나 아직 못 받았으면 null */
+  me: Me | null;
+  /** 로그인했는데 /me 를 아직 기다리는 중이면 true */
+  meLoading: boolean;
+  /** /me 를 불러오지 못했을 때의 문구 */
+  meError: string | null;
+  reloadMe: () => void;
   /** next: 로그인을 마치고 돌아올 경로(기본 "/my"). Supabase 대시보드의 Redirect URLs 에도 등록돼 있어야 합니다. */
   signInWithGoogle: (next?: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -53,16 +62,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await getSupabase()?.auth.signOut();
   }, []);
 
+  const token = session?.access_token ?? null;
+  // 관리자 여부·정지 여부는 Supabase 가 아니라 우리 서버(/me)가 정합니다. 그래서 로그인 뒤 한 번 더 물어봅니다.
+  const { me, loading: meLoading, error: meError, reload: reloadMe } = useMe(token, session?.user.id ?? null);
+
   const value = useMemo<AuthState>(
     () => ({
       loading,
       configured: supabaseConfigured,
       email: session?.user.email ?? null,
-      token: session?.access_token ?? null,
+      token,
+      me,
+      meLoading,
+      meError,
+      reloadMe,
       signInWithGoogle,
       signOut,
     }),
-    [loading, session, signInWithGoogle, signOut],
+    [loading, session, token, me, meLoading, meError, reloadMe, signInWithGoogle, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -15,6 +15,10 @@ export function chip(selected: boolean) {
   }`;
 }
 
+/** 표 안처럼 좁은 곳에 쓰는 작은 테두리 버튼(관리자 화면) */
+export const btnSmall =
+  "inline-flex shrink-0 items-center justify-center gap-1 rounded-pill border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-ink transition-colors hover:bg-sand disabled:cursor-not-allowed disabled:opacity-50";
+
 export const card = "rounded-card border border-line bg-surface";
 export const inputClass =
   "w-full rounded-pill border border-line bg-surface px-4 py-2.5 text-sm placeholder:text-muted";

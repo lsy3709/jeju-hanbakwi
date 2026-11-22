@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { ItineraryView } from "@/components/ItineraryView";
+import { MoreButton } from "@/components/MoreButton";
 import { Empty, ErrorBox, Loading } from "@/components/States";
 import { btnOutline } from "@/components/ui";
 import { formatSavedAt } from "@/lib/format";
@@ -15,6 +16,9 @@ export function TripList({
   loading,
   error,
   actionError,
+  hasMore,
+  moreBusy,
+  onMore,
   onRetry,
   onRemove,
 }: {
@@ -22,56 +26,66 @@ export function TripList({
   loading: boolean;
   error: string | null;
   actionError: string | null;
+  hasMore: boolean;
+  moreBusy: boolean;
+  onMore: () => void;
   onRetry: () => void;
   onRemove: (id: number) => void;
 }) {
   const [openId, setOpenId] = useState<number | null>(null); // 펼쳐 둔 일정
 
-  if (loading) return <Loading />;
-  if (error || !trips) return <ErrorBox message={error ?? "알 수 없는 오류"} onRetry={onRetry} />;
-  if (trips.length === 0) return <Empty title="저장한 일정이 없어요" hint="AI 플래너에서 일정을 짠 뒤 저장해 보세요." />;
+  if (loading || !trips) return <Loading />;
+  // 받은 것이 하나도 없는데 오류가 있으면 첫 묶음부터 실패한 것 → 큰 오류 상자 + 다시 시도
+  if (error && trips.length === 0 && !hasMore) return <ErrorBox message={error} onRetry={onRetry} />;
+  // 남은 묶음이 있으면 "비었다"고 하지 않습니다(받아 둔 것을 모두 지운 경우).
+  if (trips.length === 0 && !hasMore) return <Empty title="저장한 일정이 없어요" hint="AI 플래너에서 일정을 짠 뒤 저장해 보세요." />;
 
   return (
-    <ul className="space-y-3">
+    <div className="space-y-4">
       {actionError && (
-        <li role="alert" className="text-sm text-primary">
+        <p role="alert" className="text-sm text-primary">
           {actionError}
-        </li>
+        </p>
       )}
-      {trips.map((trip) => {
-        const open = openId === trip.id;
-        return (
-          <li key={trip.id} className="rounded-card border border-line bg-surface p-4">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="font-bold">{trip.title}</h2>
-                <p className="text-xs text-muted">{formatSavedAt(trip.created_at)} 저장</p>
+      <ul className="space-y-3">
+        {trips.map((trip) => {
+          const open = openId === trip.id;
+          return (
+            <li key={trip.id} className="rounded-card border border-line bg-surface p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <h2 className="break-words font-bold">{trip.title}</h2>
+                  <p className="text-xs text-muted">{formatSavedAt(trip.created_at)} 저장</p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <button type="button" aria-expanded={open} onClick={() => setOpenId(open ? null : trip.id)} className={btnOutline}>
+                    {open ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
+                    {open ? "접기" : "펼쳐 보기"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm(`"${trip.title}" 일정을 삭제할까요?`)) onRemove(trip.id);
+                    }}
+                    aria-label={`${trip.title} 삭제`}
+                    className="rounded-pill p-2 text-muted hover:bg-sand hover:text-primary"
+                  >
+                    <Trash2 size={18} aria-hidden="true" />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button type="button" aria-expanded={open} onClick={() => setOpenId(open ? null : trip.id)} className={btnOutline}>
-                  {open ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
-                  {open ? "접기" : "펼쳐 보기"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (window.confirm(`"${trip.title}" 일정을 삭제할까요?`)) onRemove(trip.id);
-                  }}
-                  aria-label={`${trip.title} 삭제`}
-                  className="rounded-pill p-2 text-muted hover:bg-sand hover:text-primary"
-                >
-                  <Trash2 size={18} aria-hidden="true" />
-                </button>
-              </div>
-            </div>
-            {open && (
-              <div className="mt-4">
-                <ItineraryView itinerary={trip.itinerary} />
-              </div>
-            )}
-          </li>
-        );
-      })}
-    </ul>
+              {open && (
+                <div className="mt-4">
+                  <ItineraryView itinerary={trip.itinerary} />
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      {/* "더 보기"가 실패한 경우: 받아 둔 일정은 두고 문구만 보여 줍니다. 버튼을 다시 누르면 다시 시도합니다. */}
+      {error && <ErrorBox message={error} />}
+      <MoreButton hasMore={hasMore} busy={moreBusy} onMore={onMore} />
+    </div>
   );
 }

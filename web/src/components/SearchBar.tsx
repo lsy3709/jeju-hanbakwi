@@ -4,9 +4,15 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 
-type Props = { initial?: string; onSearch: (q: string) => void; placeholder?: string };
+// label: 화면 읽기 프로그램이 읽어 줄 입력칸 이름(관리자 화면처럼 관광지가 아닌 것을 찾을 때 바꿉니다).
+type Props = { initial?: string; onSearch: (q: string) => void; placeholder?: string; label?: string };
 
-export function SearchBar({ initial = "", onSearch, placeholder = "관광지 이름이나 키워드를 검색해 보세요" }: Props) {
+export function SearchBar({
+  initial = "",
+  onSearch,
+  placeholder = "관광지 이름이나 키워드를 검색해 보세요",
+  label = "관광지 검색",
+}: Props) {
   const [text, setText] = useState(initial);
 
   return (
@@ -24,7 +30,7 @@ export function SearchBar({ initial = "", onSearch, placeholder = "관광지 이
         value={text}
         onChange={(event) => setText(event.target.value)}
         placeholder={placeholder}
-        aria-label="관광지 검색"
+        aria-label={label}
         className="min-w-0 flex-1 bg-transparent py-1.5 text-sm outline-none placeholder:text-muted"
       />
       <button

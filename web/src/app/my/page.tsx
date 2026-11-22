@@ -3,7 +3,7 @@
 // 이 파일이 하는 일: 내 여행 화면 조립. 로그인 전엔 안내 + 로그인 버튼, 로그인 후엔 "찜한 곳" / "저장한 일정" 탭.
 // 데이터는 hooks/useFavorites.ts · useTrips.ts, 목록 화면은 components/FavoriteList.tsx · TripList.tsx 에 있습니다.
 import { useState } from "react";
-import { LogOut } from "lucide-react";
+import { Ban, LogOut } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { FavoriteList } from "@/components/FavoriteList";
 import { LoginPanel } from "@/components/LoginPanel";
@@ -14,9 +14,10 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { useTrips } from "@/hooks/useTrips";
 
 export default function MyPage() {
-  const { loading, token, email, signOut } = useAuth();
+  const { loading, token, email, me, meLoading, signOut } = useAuth();
 
-  if (loading) return <Loading />;
+  // /me 까지 받은 뒤에 그립니다. 정지된 계정인지 모른 채 탭을 열면 찜·일정 주소가 403 을 주어 오류 상자가 먼저 떴다 사라집니다.
+  if (loading || meLoading) return <Loading />;
 
   if (!token) {
     return (
@@ -30,18 +31,30 @@ export default function MyPage() {
     );
   }
 
-  return <MyContent token={token} email={email} onSignOut={signOut} />;
+  // /me 를 못 받았으면(서버가 꺼짐 등) me 는 null 입니다. 그때는 정지가 아닌 것으로 보고 탭을 그대로 보여 줍니다
+  // (탭이 각자 오류 상자와 "다시 시도"를 보여 줍니다).
+  return <MyContent token={token} email={email} suspended={me?.suspended ?? false} onSignOut={signOut} />;
 }
 
-function MyContent({ token, email, onSignOut }: { token: string; email: string | null; onSignOut: () => void }) {
+function MyContent({
+  token,
+  email,
+  suspended,
+  onSignOut,
+}: {
+  token: string;
+  email: string | null;
+  suspended: boolean;
+  onSignOut: () => void;
+}) {
   const [tab, setTab] = useState<"favorites" | "trips">("favorites");
 
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <h1 className="text-2xl font-extrabold">내 여행</h1>
-          {email && <p className="text-sm text-muted">{email}</p>}
+          {email && <p className="break-all text-sm text-muted">{email}</p>}
         </div>
         <button type="button" onClick={onSignOut} className={btnOutline}>
           <LogOut size={16} aria-hidden="true" />
@@ -49,6 +62,32 @@ function MyContent({ token, email, onSignOut }: { token: string; email: string |
         </button>
       </div>
 
+      {/* 정지된 계정은 찜·일정 주소가 모두 403 이라, 탭을 열지 않고(= 요청을 보내지 않고) 안내 한 줄만 보여 줍니다. */}
+      {suspended ? <SuspendedNotice /> : <MyTabs token={token} tab={tab} onTab={setTab} />}
+    </div>
+  );
+}
+
+function SuspendedNotice() {
+  return (
+    <p role="alert" className="flex items-start gap-2 rounded-card border border-line bg-surface p-4 text-sm">
+      <Ban size={18} className="mt-0.5 shrink-0 text-primary" aria-hidden="true" />
+      이용이 정지된 계정입니다. 관리자에게 문의해 주세요.
+    </p>
+  );
+}
+
+function MyTabs({
+  token,
+  tab,
+  onTab: setTab,
+}: {
+  token: string;
+  tab: "favorites" | "trips";
+  onTab: (tab: "favorites" | "trips") => void;
+}) {
+  return (
+    <>
       <div className="flex gap-2" role="tablist" aria-label="내 여행 보기">
         <button type="button" role="tab" aria-selected={tab === "favorites"} onClick={() => setTab("favorites")} className={chip(tab === "favorites")}>
           찜한 곳
@@ -59,7 +98,7 @@ function MyContent({ token, email, onSignOut }: { token: string; email: string |
       </div>
 
       {tab === "favorites" ? <FavoritesTab token={token} /> : <TripsTab token={token} />}
-    </div>
+    </>
   );
 }
 

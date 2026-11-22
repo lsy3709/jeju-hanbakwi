@@ -1,16 +1,20 @@
 "use client";
 
-// 넓은 화면: 위쪽 메뉴 / 768px 미만: 아래쪽 탭 4개
+// 넓은 화면: 위쪽 메뉴 / 768px 미만: 아래쪽 탭 4개 (관리자면 "관리자"가 하나 더 붙어 5개)
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Heart, Home, Sparkles, type LucideIcon } from "lucide-react";
-import { BRAND, NAV_ITEMS } from "@/lib/brand";
+import { Compass, Heart, Home, Shield, Sparkles, type LucideIcon } from "lucide-react";
+import { ADMIN_NAV_ITEM, BRAND, NAV_ITEMS } from "@/lib/brand";
+import { useAuth } from "./AuthProvider";
 
-const ICONS: Record<(typeof NAV_ITEMS)[number]["icon"], LucideIcon> = {
+type NavItem = (typeof NAV_ITEMS)[number] | typeof ADMIN_NAV_ITEM;
+
+const ICONS: Record<NavItem["icon"], LucideIcon> = {
   home: Home,
   compass: Compass,
   sparkles: Sparkles,
   heart: Heart,
+  shield: Shield,
 };
 
 // 지금 주소가 메뉴의 href 에 해당하는지("/" 는 정확히 같을 때만)
@@ -20,6 +24,9 @@ function isActive(pathname: string, href: string) {
 
 export function Header() {
   const pathname = usePathname();
+  const { me } = useAuth();
+  // /me 가 관리자라고 알려 줄 때만 "관리자" 메뉴를 더합니다(로그인 전·확인 전에는 보이지 않음).
+  const items: readonly NavItem[] = me?.is_admin ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
 
   return (
     <>
@@ -30,7 +37,7 @@ export function Header() {
           </Link>
           {/* 넓은 화면에서만 보이는 상단 메뉴 */}
           <nav aria-label="주요 메뉴" className="hidden gap-1 md:flex">
-            {NAV_ITEMS.map((item) => {
+            {items.map((item) => {
               const active = isActive(pathname, item.href);
               return (
                 <Link
@@ -49,12 +56,14 @@ export function Header() {
         </div>
       </header>
 
-      {/* 좁은 화면에서만 보이는 하단 탭 */}
+      {/* 좁은 화면에서만 보이는 하단 탭. Tailwind 는 글자 그대로 적힌 클래스만 만들므로 grid-cols-5 / grid-cols-4 를 통째로 고릅니다. */}
       <nav
         aria-label="하단 메뉴"
-        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-line bg-surface md:hidden"
+        className={`fixed inset-x-0 bottom-0 z-40 grid border-t border-line bg-surface md:hidden ${
+          items.length === 5 ? "grid-cols-5" : "grid-cols-4"
+        }`}
       >
-        {NAV_ITEMS.map((item) => {
+        {items.map((item) => {
           const Icon = ICONS[item.icon];
           const active = isActive(pathname, item.href);
           return (

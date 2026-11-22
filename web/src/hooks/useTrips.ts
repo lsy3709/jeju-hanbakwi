@@ -1,27 +1,37 @@
 "use client";
 
-// 이 파일이 하는 일: "내 여행 > 저장한 일정" 탭의 데이터(불러오기 · 삭제)를 맡는 훅.
+// 이 파일이 하는 일: "내 여행 > 저장한 일정" 탭의 데이터(20개씩 불러오기 · 더 보기 · 삭제)를 맡는 훅.
 import { useCallback, useState } from "react";
 import { deleteTrip, errorMessage, getTrips } from "@/lib/api";
-import { useAsync } from "./useAsync";
+import { useCursorList } from "./useCursorList";
+
+const PAGE_SIZE = 20;
 
 export function useTrips(token: string) {
-  const load = useCallback(() => getTrips(token), [token]);
-  const { data, loading, error, reload } = useAsync(load);
-  const [removed, setRemoved] = useState<number[]>([]);
+  const fetchPage = useCallback((cursor: number | null) => getTrips(token, { cursor, size: PAGE_SIZE }), [token]);
+  const { list, hasMore, moreBusy, loadMore, reload, remove } = useCursorList("trips", fetchPage);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  async function remove(id: number) {
+  async function removeTrip(id: number) {
     setActionError(null);
     try {
       await deleteTrip(token, id);
-      setRemoved((ids) => [...ids, id]);
+      remove(id); // 목록을 다시 받지 않고 그 줄만 뺍니다(펼쳐 둔 일정·스크롤 위치가 그대로)
     } catch (e) {
       setActionError(errorMessage(e));
     }
   }
 
-  const trips = data ? data.filter((trip) => !removed.includes(trip.id)) : null;
   // 이름을 TripList 의 props 와 맞춰 두어 <TripList {...trips} /> 로 바로 넘길 수 있습니다.
-  return { trips, loading, error, actionError, onRetry: reload, onRemove: remove };
+  return {
+    trips: list?.items ?? null,
+    loading: list === null,
+    error: list?.error ?? null,
+    actionError,
+    hasMore,
+    moreBusy,
+    onMore: loadMore,
+    onRetry: reload,
+    onRemove: removeTrip,
+  };
 }

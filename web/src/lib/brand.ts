@@ -14,3 +14,6 @@ export const NAV_ITEMS = [
   { href: "/planner", label: "AI 플래너", icon: "sparkles" },
   { href: "/my", label: "내 여행", icon: "heart" },
 ] as const;
+
+// 관리자(/me 의 is_admin)에게만 메뉴 끝에 더해 보이는 항목. 숨기는 것은 편의일 뿐, 막는 일은 서버가 합니다.
+export const ADMIN_NAV_ITEM = { href: "/admin", label: "관리자", icon: "shield" } as const;

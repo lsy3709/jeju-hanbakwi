@@ -52,7 +52,8 @@ export default function SpotDetailPage() {
             <li key={tag}>
               <Link
                 href={`/explore${buildQuery({ theme: tag })}`}
-                className="rounded-pill bg-teal-50 px-3 py-1 text-sm font-medium text-secondary hover:underline"
+                // inline-flex + min-h: 손가락으로 누르기에 충분한 높이(36px)를 줍니다
+                className="inline-flex min-h-9 items-center rounded-pill bg-teal-50 px-3.5 text-sm font-medium text-secondary hover:underline"
               >
                 #{tag}
               </Link>

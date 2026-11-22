@@ -6,6 +6,7 @@ import { Suspense, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { List, Map as MapIcon } from "lucide-react";
 import { FilterSelect } from "@/components/FilterSelect";
+import { MoreButton } from "@/components/MoreButton";
 import { SearchBar } from "@/components/SearchBar";
 import { SpotCard } from "@/components/SpotCard";
 import { SpotMapView } from "@/components/SpotMapView";
@@ -35,7 +36,7 @@ function Explore() {
   // 주소가 바뀔 때만 필터를 새로 만듭니다(그래야 useSpotSearch 가 쓸데없이 다시 불러오지 않습니다).
   const state = useMemo(() => parseExploreQuery(searchParams), [searchParams]);
   const { q, theme, area, category, indoorText, isMap, filters } = state;
-  const { current, loadMore, moreBusy, reload } = useSpotSearch(filters);
+  const { list: current, hasMore, loadMore, moreBusy, reload } = useSpotSearch(filters);
 
   // 필터를 바꾸면 주소를 바꿉니다. (view 는 그대로 유지)
   const update = (changes: Record<string, string>) =>
@@ -89,8 +90,11 @@ function Explore() {
         <Empty title="조건에 맞는 장소가 없어요" hint="검색어나 필터를 바꿔 보세요." />
       ) : (
         <>
+          {/* total 은 첫 묶음에서만 오므로 useCursorList 가 기억해 둔 값을 씁니다 */}
           <p className="text-sm text-muted">
-            총 {current.total}곳 중 {current.items.length}곳을 보여 드려요
+            {current.total !== null
+              ? `총 ${current.total}곳 중 ${current.items.length}곳을 보여 드려요`
+              : `${current.items.length}곳을 보여 드려요`}
           </p>
           {isMap ? (
             <SpotMapView spots={current.items} className="h-[60vh] w-full rounded-card border border-line" />
@@ -102,13 +106,8 @@ function Explore() {
             </div>
           )}
           {current.error && <ErrorBox message={current.error} />}
-          {current.items.length < current.total && (
-            <div className="flex justify-center">
-              <button type="button" onClick={loadMore} disabled={moreBusy} className={btnOutline}>
-                {moreBusy ? "불러오는 중..." : "더 보기"}
-              </button>
-            </div>
-          )}
+          {/* 다음 묶음이 남았을 때(next_cursor 가 null 이 아닐 때)만 버튼이 보입니다 */}
+          <MoreButton hasMore={hasMore} busy={moreBusy} onMore={loadMore} />
         </>
       )}
     </div>
