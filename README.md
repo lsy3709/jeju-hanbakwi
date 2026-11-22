@@ -167,8 +167,10 @@ python -m tools.seed_demo --token ... --clear         # 내 찜과 일정 모두
 
 ## 구글 로그인 켜기
 
-1. Google Cloud Console 에서 OAuth 클라이언트(웹 애플리케이션)를 만들고, 승인된 리디렉션 URI 에 `https://<프로젝트>.supabase.co/auth/v1/callback` 을 넣습니다.
-2. Supabase > Authentication > Providers > Google 에 클라이언트 ID 와 비밀을 넣습니다.
+화면별 자세한 순서는 [docs/deploy.md](docs/deploy.md) 4단계에 있습니다.
+
+1. Google Cloud Console 의 "Google 인증 플랫폼"에서 동의 화면을 만들고 테스트 사용자에 내 계정을 넣은 뒤, OAuth 클라이언트(웹 애플리케이션)를 만들고 승인된 리디렉션 URI 에 `https://<프로젝트>.supabase.co/auth/v1/callback` 을 넣습니다.
+2. Supabase > Authentication > Sign In / Providers > Google 을 켜고 클라이언트 ID 와 비밀을 넣습니다.
 3. Supabase > Authentication > URL Configuration 의 Redirect URLs 에 추가합니다.
    - 웹: `http://localhost:3000/my`, `http://localhost:3000/planner` (배포 후에는 배포 주소의 두 화면도)
    - 앱: `com.goldmagnet.jejuhanbakwi://login-callback`

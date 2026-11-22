@@ -137,14 +137,14 @@ VS Code 에서는 `Ctrl+Shift+P` → `Tasks: Run Task` 의 "검사: …" 작업�
 | 앱 | `screens/`(화면) · `controllers/`(상태) · `api/`(서버 호출)로 나눔. 상세 화면 여는 코드 한 곳으로 | analyze 0 · 테스트 64건 · 디버그 APK | 에뮬레이터에서 홈 · 탐색 · 상세 |
 | 문서 | [구조와 설계](architecture.md) · [배포 안내](deploy.md) · [운영과 수정](operations.md) 새로 씀 | — | — |
 
-- ✅ 2026-11-22 [배포 안내](deploy.md) 1 ~ 3 · 6단계를 실제 배포에 맞춰 고침 → 아래 "실제 배포" / ⏳ 4단계(구글 로그인) · 5단계(앱)는 아직 해 보지 않음
+- ✅ 2026-11-22 [배포 안내](deploy.md) 1 ~ 4 · 6단계를 실제 배포에 맞춰 고침 → 아래 "실제 배포" / ⏳ 5단계(앱)는 아직 해 보지 않음
 - ⏳ 구조 정리 뒤 앱의 AI 플래너 · 내 여행 화면은 에뮬레이터에서 다시 열어 보지 않음(테스트 통과까지)
 
 ### 강사가 직접 해야 하는 일 (계정·키가 필요)
 
 - [ ] 공공데이터포털에서 TourAPI 키 신청 → `python -m tools.sync_spots --dry-run` 으로 실제 응답 확인
 - [x] Supabase 프로젝트 만들기(서울) → SQL 001 → 002 실행 → 샘플 데이터 넣기 (2026-11-22)
-- [ ] Google OAuth 클라이언트 + Supabase 로그인 설정 (Redirect URLs 에 `/my` · `/planner` · 앱 주소)
+- [x] Google OAuth 클라이언트 + Supabase 로그인 설정 (Redirect URLs 에 `/my` · `/planner` · 앱 주소) (2026-11-22, 웹에서 로그인 확인. 앱은 ⏳)
 - [ ] Vercel 프로젝트: 서버(`api`) ✅ · 웹(`web`) ✅ (2026-11-22) · 앱 웹 빌드 ⏳
 - [x] 배포 후 `/status` 와 `python -m tools.check_live --api <서버 주소>` 로 확인 (2026-11-22, 18개 통과)
 
@@ -161,7 +161,11 @@ Supabase 무료 프로젝트(서울)와 Vercel 프로젝트 둘(서버 · 웹)�
 | 웹 주소에서 서버 호출 허용(CORS) | ✅ 웹 화면이 배포 서버의 데이터를 받아 표시 |
 | 웹 홈(날씨 · 사진) · 탐색(68곳 중 20곳) · 상세(사진 · 출처) | ✅ 브라우저에서 확인, 콘솔 오류 없음 |
 | 웹 AI 플래너 | ✅ 2일 일정 표시 — 규칙 방식("간단 추천"). AI 키를 넣지 않음 |
-| 구글 로그인 → 찜 · 일정 저장 | ⏳ Google OAuth 를 아직 설정하지 않음. 새 공개 키(`sb_publishable_…`)로 로그인이 되는지도 미확인 |
+| 구글 로그인 설정(Supabase 주소 → Google 동의 화면 · 테스트 사용자 · OAuth 클라이언트 → Supabase Google 공급자) | ✅ [deploy.md](deploy.md) 4단계대로 |
+| 배포 웹에서 구글 로그인 → 내 여행 | ✅ 새 공개 키(`sb_publishable_…`)로 로그인됨. 로그인 뒤 `/my` 로 돌아옴 |
+| 배포 웹에서 찜 → 내 여행에 표시 → 찜 해제 | ✅ 상세에서 찜, 내 여행에 나타남, 해제 뒤 사라짐 |
+| 배포 웹에서 일정 짜기 → 제목 넣고 저장 → 내 여행에 표시 → 삭제 | ✅ 제목이 비면 저장 버튼이 눌리지 않음 |
+| 로그인한 토큰으로 실측 점검(`check_live --token`), 앱에서 구글 로그인 | ⏳ 하지 않음 |
 | AI(Gemini) 일정이 Vercel 응답 시간 제한 안에 오는지 | ⏳ 배포 서버에 `GEMINI_API_KEY` 를 넣지 않음 |
 | 앱 웹 빌드 배포, 앱에서 배포 서버 부르기 | ⏳ |
 
@@ -172,6 +176,9 @@ Supabase 무료 프로젝트(서울)와 Vercel 프로젝트 둘(서버 · 웹)�
 - 환경변수에 Secret · Config 구분이 생김. 바꾼 뒤에는 Redeploy 해야 반영됨
 - Supabase 키 이름이 Publishable · Secret 으로 바뀜(예전 anon · service_role 은 Legacy 쪽)
 - DB 값이 없으면 `/status` 가 `database: error` 가 아니라 500 으로 응답함. 실제로 비밀 키를 웹 프로젝트에 넣어 한 번 겪음
+- 구글 로그인은 OAuth 클라이언트보다 먼저 "Google 인증 플랫폼"의 동의 화면(앱 이름 · 대상 · 연락처 · 정책 동의)을 만들어야 함. "테스트 중"에는 테스트 사용자로 넣은 계정만 로그인됨
+- 계정 선택 화면을 몇 분 띄워 두면 `bad_oauth_state`("OAuth state has expired")로 홈에 돌아옴. 실제로 한 번 겪음 — 다시 누르면 됨
+- Supabase 의 Site URL 처음 값은 `http://localhost:3000`. 메뉴 이름은 Authentication → Sign In / Providers
 
 ## 일차별 브랜치 (2026-11-20)
 
