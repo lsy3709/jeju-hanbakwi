@@ -3,7 +3,7 @@
 로컬에서 다 확인한 뒤에 올립니다. 순서는 **DB → 서버 → 웹 → 앱** 입니다.
 앞 단계의 주소가 뒤 단계의 설정 값이 되기 때문입니다.
 
-> 이 문서의 절차는 아직 실제 배포로 끝까지 확인하지 않았습니다. 대시보드 화면의 이름은 바뀔 수 있으니, 다르면 비슷한 이름을 찾으세요. 무료 등급의 한도(프로젝트 수, 사용량, 응답 시간 제한)도 자주 바뀌므로 각 서비스의 요금 안내에서 확인하세요.
+> 1 ~ 3단계(DB · 서버 · 웹)와 6단계의 실측 점검은 2026-11-22 에 실제로 올려 확인한 절차입니다. 4단계(구글 로그인)와 5단계(앱)는 아직 실제로 해 보지 않았습니다. 대시보드 화면의 이름은 자주 바뀌니, 다르면 비슷한 이름을 찾으세요. 무료 등급의 한도(프로젝트 수, 사용량, 응답 시간 제한)도 자주 바뀌므로 각 서비스의 요금 안내에서 확인하세요.
 
 ## 준비물
 
@@ -17,39 +17,53 @@
 
 ## 1. DB — Supabase
 
-1. 새 프로젝트를 만듭니다. **지역은 Northeast Asia (Seoul)** 을 고릅니다.
-2. SQL Editor 에서 [`supabase/migrations/`](../supabase/migrations) 의 파일을 **번호 순서대로** 붙여 넣고 실행합니다 (001 → 002).
-3. Project Settings 의 API 화면에서 세 값을 적어 둡니다.
+1. **New project** 를 누르고 이름과 DB 비밀번호를 정합니다. 비밀번호는 **Generate a password** 로 만들고 내 비밀번호 관리 도구에 적어 둡니다. 이 수업의 코드에는 쓰지 않습니다.
+2. **지역은 Northeast Asia (Seoul)** 을 고릅니다. 지역 칸이 보이지 않으면 "Need a specific region?" 을 눌러 목록을 엽니다. 목록이 길어 아래로 내려야 서울이 보입니다.
+3. 아래쪽 Data access 의 선택 칸은 처음 값 그대로 둡니다(Data API 켬, 테이블 자동 공개 켬, 자동 RLS 끔). RLS 는 우리 SQL 이 직접 켭니다.
+4. 프로젝트가 준비되면(1 ~ 2분) **SQL Editor** 에서 [`supabase/migrations/`](../supabase/migrations) 의 파일을 **번호 순서대로** 붙여 넣고 **Run** 을 누릅니다 (001 → 002). 결과 칸에 "Success. No rows returned" 가 나오면 된 것입니다. 편집기가 "자동 저장하지 않는다"는 안내 창을 띄우면 닫고 계속합니다.
+5. **Project Settings → API Keys** 에서 키를, **Project Settings → Data API**(또는 화면 위 **Connect**)에서 주소를 확인합니다.
 
-| 값 | 어디에 쓰나 | 공개해도 되나 |
-|---|---|---|
-| Project URL | 서버·웹·앱 | 됨 |
-| 공개 키 (anon 또는 publishable) | 웹·앱 — 로그인에만 | 됨 |
-| 비밀 키 (service_role 또는 secret) | **서버에만** | **안 됨** |
+| 값 | 화면에 보이는 이름 | 생김새 | 어디에 쓰나 | 공개해도 되나 |
+|---|---|---|---|---|
+| 프로젝트 주소 | Project URL | `https://<프로젝트 ID>.supabase.co` | 서버·웹·앱 | 됨 |
+| 공개 키 | Publishable key | `sb_publishable_…` | 웹·앱 — 로그인에만 | 됨 |
+| 비밀 키 | Secret key | `sb_secret_…` | **서버에만** | **안 됨** |
 
-4. 내 PC 의 `api/.env` 를 이 프로젝트 값으로 바꾸고 데이터를 넣습니다.
+예전 이름인 `anon` · `service_role` 키(`eyJ…` 로 시작)는 "Legacy API keys" 쪽에 따로 있습니다. 새 프로젝트는 위 표의 새 키를 씁니다. 이 저장소의 환경변수 이름(`SUPABASE_SERVICE_ROLE_KEY`, `…_ANON_KEY`)은 예전 이름 그대로지만, 값에는 새 키를 넣으면 됩니다(서버는 새 비밀 키로 동작하는 것을 확인했습니다).
+
+6. 내 PC 의 `api/.env` 에 Project URL 과 비밀 키를 넣고 데이터를 넣습니다.
 
 ```bash
 python -m tools.sync_spots --sample
 ```
 
-Supabase 의 Table Editor 에서 `spots` 에 68줄이 들어갔는지 봅니다.
+"DB 에 68건을 넣었습니다" 가 나오고, Supabase 의 Table Editor 에서 `spots` 에 68줄이 보이면 됩니다. "Invalid API key" 가 나오면 키 칸에 주소나 공개 키를 넣은 것입니다. 비밀 키는 `sb_secret_` 로 시작합니다.
 
 ## 2. 서버 — Vercel 프로젝트 ①
 
-1. Vercel 에서 **Add New → Project** → 내 저장소를 고릅니다.
-2. **Root Directory 를 `api`** 로 지정합니다. (가장 자주 빠뜨리는 곳)
-3. Environment Variables 에 넣습니다.
+1. Vercel 에서 **Add New → Project** → 내 저장소 옆의 **Import** 를 누릅니다.
+2. Vercel 이 저장소 안의 폴더를 알아보고 `api` 와 `web` 을 따로 보여 줍니다. **`api` 줄의 "Import single project"** 를 누릅니다. 이렇게 하면 Root Directory 가 `api` 로, Framework Preset 이 FastAPI 로 잡힙니다. (폴더 목록이 나오지 않으면 Root Directory 의 **Edit** 을 눌러 `api` 를 직접 고릅니다. 가장 자주 빠뜨리는 곳입니다. 폴더 둘을 한 프로젝트로 묶는 "Services" 제안은 쓰지 않습니다.)
+3. Project Name 을 정합니다(예: `jeju-hanbakwi-api`). 이 이름이 주소가 됩니다.
+4. **Environment Variables** 를 펼쳐 넣습니다. 지금 넣지 않고 배포한 뒤 Settings → Environment Variables 에서 넣어도 됩니다.
 
-| 이름 | 값 |
+| 이름 | 값 | 종류 |
+|---|---|---|
+| `SUPABASE_URL` | Supabase Project URL | Config |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase 비밀 키 (`sb_secret_…`) | **Secret** |
+| `GEMINI_API_KEY` | AI 키 (없으면 만들지 않음) | **Secret** |
+| `ALLOWED_ORIGINS` | 웹 주소. 3단계 뒤에 넣음 | Config |
+| `PUBLIC_API_URL` | 이 서버의 주소. 첫 배포 뒤에 넣음 | Config |
+
+변수를 더하는 창에서 종류(Secret · Config)를 고릅니다. Secret 은 저장한 뒤 다시 볼 수 없으므로 비밀 키에 씁니다. 적용 환경은 처음 값인 Production 그대로 둡니다.
+
+5. **Deploy** 를 누릅니다. 끝나면 주소가 둘 나옵니다.
+
+| 주소 | 쓰임 |
 |---|---|
-| `SUPABASE_URL` | Supabase Project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase 비밀 키 |
-| `GEMINI_API_KEY` | AI 키 (없으면 비워 둠) |
-| `ALLOWED_ORIGINS` | 일단 비워 두고, 3·4단계 뒤에 웹·앱 주소를 넣음 |
+| `https://<프로젝트 이름>.vercel.app` | **이 주소를 씁니다.** 누구나 열 수 있습니다 |
+| `https://<프로젝트 이름>-<글자들>-<팀 이름>.vercel.app` | 그 배포 하나만 가리키는 주소. Vercel 로그인을 요구하므로 화면 설정 값으로 쓰지 않습니다 |
 
-4. Deploy 를 누르고, 끝나면 주소(예: `https://jeju-api-xxxx.vercel.app`)를 적어 둡니다.
-5. 브라우저에서 확인합니다.
+6. 브라우저에서 확인합니다.
 
 | 주소 | 기대하는 결과 |
 |---|---|
@@ -58,25 +72,33 @@ Supabase 의 Table Editor 에서 `spots` 에 68줄이 들어갔는지 봅니다.
 | `/docs` | 주소 목록 화면 |
 | `/spots/1` | `image_url` 이 `https://` 로 시작 |
 
+`/health` 는 되는데 `/status` 가 500 이면 서버가 DB 값을 받지 못한 것입니다. 변수 이름, 변수를 넣은 프로젝트(서버인지 웹인지), 넣은 뒤 다시 배포했는지를 차례로 봅니다.
+
 `image_url` 이 `http://` 로 나오면 환경변수 `PUBLIC_API_URL` 에 서버 주소를 넣고 다시 배포합니다.
 
 서버가 도는 지역은 [`api/vercel.json`](../api/vercel.json) 에서 서울(`icn1`)로 정해 두었습니다. DB 와 서버가 같은 지역에 있어야 빠릅니다. Supabase 를 다른 지역에 만들었다면 이 값을 그 지역에 맞춥니다.
 
 ## 3. 웹 — Vercel 프로젝트 ②
 
-1. 다시 **Add New → Project** → 같은 저장소 → **Root Directory 를 `web`** 으로.
+1. 다시 **Add New → Project** → 같은 저장소 → 이번에는 **`web` 줄의 "Import single project"** 를 누릅니다(Root Directory `web`, Framework Preset Next.js).
 2. Environment Variables:
 
-| 이름 | 값 |
-|---|---|
-| `NEXT_PUBLIC_API_URL` | 2단계의 서버 주소 |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase Project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase 공개 키 |
+| 이름 | 값 | 종류 |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | 2단계의 서버 주소(짧은 쪽) | Config |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase Project URL | Config |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase 공개 키 (`sb_publishable_…`) | Config |
 
-`NEXT_PUBLIC_` 으로 시작하는 값은 브라우저에 그대로 보입니다. **비밀 키를 넣지 마세요.**
+`NEXT_PUBLIC_` 으로 시작하는 값은 브라우저에 그대로 보입니다. **비밀 키를 넣지 마세요.** 웹 프로젝트에는 위 세 개만 있으면 됩니다.
 
-3. Deploy 후 주소(예: `https://jeju-web-xxxx.vercel.app`)를 적어 둡니다.
-4. 서버 프로젝트(①)의 `ALLOWED_ORIGINS` 에 이 주소를 넣고, 서버를 **다시 배포**합니다. (환경변수는 다시 배포해야 반영됩니다)
+3. **Deploy** 를 누릅니다. 프로젝트를 만든 뒤 Supabase 같은 연동을 권하는 칸이 먼저 나오면, 연동은 하지 않고 그 아래의 **Deploy** 를 누릅니다. 끝나면 주소(`https://<프로젝트 이름>.vercel.app`)를 적어 둡니다.
+4. 서버 프로젝트(①)의 `ALLOWED_ORIGINS` 에 이 주소를 넣고, 서버를 **다시 배포**합니다. 주소 끝에 `/` 를 붙이지 않습니다. 로컬에서도 계속 쓰려면 쉼표로 이어 `https://<웹 주소>,http://localhost:3000` 처럼 적습니다.
+
+### 환경변수를 바꾼 뒤 — Redeploy
+
+환경변수는 저장만으로는 반영되지 않습니다. **Deployments** 에서 맨 위 배포의 `⋯` → **Redeploy** → 확인 창의 **Redeploy** 를 눌러야 새 값으로 다시 만들어집니다. `NEXT_PUBLIC_` 값은 빌드할 때 화면 코드에 들어가므로 웹도 마찬가지입니다.
+
+변수를 넣기 전에 **화면 위쪽의 프로젝트 이름**을 꼭 봅니다. 서버와 웹 프로젝트의 화면이 똑같이 생겨서, 비밀 키를 웹 프로젝트에 넣는 실수가 잦습니다. 잘못 넣었으면 그 줄의 `⋯` → **Delete** 로 지우고 서버 프로젝트에 다시 넣습니다.
 
 ## 4. 구글 로그인
 
@@ -123,6 +145,8 @@ flutter build apk --dart-define-from-file=env.json
 python -m tools.check_live --api https://<서버 주소>
 ```
 
+끝에 "18개 통과, 0개 실패"가 나오면 됩니다(로그인 토큰 없이 돌렸을 때의 개수).
+
 웹에서 로그인한 뒤의 흐름까지 보려면, 브라우저 개발자 도구의 Application → Local Storage 에서 `sb-...-auth-token` 의 `access_token` 을 복사해 `--token` 에 넣습니다.
 
 | 확인할 것 | 방법 |
@@ -138,7 +162,10 @@ python -m tools.check_live --api https://<서버 주소>
 | 증상 | 원인 | 해결 |
 |---|---|---|
 | Vercel 빌드가 "No framework detected" 또는 엉뚱한 것을 빌드 | Root Directory 를 안 정함 | 프로젝트 Settings → General → Root Directory |
+| 서버 주소를 열면 Vercel 로그인 화면이 나옴 | 배포 하나만 가리키는 긴 주소를 씀 | `https://<프로젝트 이름>.vercel.app` 을 씀 |
 | 웹에서 "서버에 연결할 수 없어요" | `NEXT_PUBLIC_API_URL` 이 비었거나, 서버의 `ALLOWED_ORIGINS` 에 웹 주소가 없음 | 값을 넣고 **다시 배포** |
+| `/health` 는 되는데 `/status` · `/spots` 가 500 | 서버 프로젝트에 `SUPABASE_URL` · `SUPABASE_SERVICE_ROLE_KEY` 가 없음(웹 프로젝트에 넣었거나, 넣고 다시 배포하지 않음) | 서버 프로젝트에 넣고 Redeploy. Vercel 의 Logs 에 "SUPABASE_URL 과 SUPABASE_SERVICE_ROLE_KEY 를 넣어 주세요" 가 보임 |
+| `sync_spots` 가 "Invalid API key" | 비밀 키 칸에 주소나 공개 키를 넣음 | `sb_secret_` 로 시작하는 값으로 |
 | `/status` 의 `database` 가 `error` | Supabase 주소·비밀 키가 틀렸거나 SQL 을 실행하지 않음 | 1단계 다시 |
 | `/status` 의 `spots` 가 0 | 데이터를 넣지 않음 | `python -m tools.sync_spots --sample` |
 | 로그인 뒤 처음 화면으로 돌아감 | Redirect URLs 에 그 주소가 없음 | 4단계 표 |

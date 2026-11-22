@@ -16,7 +16,7 @@ VS Code 에서는 `Ctrl+Shift+P` → `Tasks: Run Task` 의 "검사: …" 작업�
 
 표의 기호: ✅ 확인함 · ⏳ 아직 못 함(이유) · — 해당 없음
 
-"로컬 DB"는 `dev/docker-compose.yml` 로 띄운 PostgreSQL 입니다. 진짜 Supabase 프로젝트로는 아직 확인하지 않았습니다.
+"로컬 DB"는 `dev/docker-compose.yml` 로 띄운 PostgreSQL 입니다. 진짜 Supabase 프로젝트로 확인한 것은 아래 "실제 배포 (2026-11-22)"에 따로 적었습니다.
 
 ## 서버 기능
 
@@ -91,7 +91,7 @@ VS Code 에서는 `Ctrl+Shift+P` → `Tasks: Run Task` 의 "검사: …" 작업�
 - 사진 55장(11MB)을 `api/static/photos/` 에 넣고 우리 서버가 내주도록 바꿨습니다. 응답의 사진 주소에는 요청이 들어온 서버 주소가 붙습니다.
   - ✅ 서버 테스트 6건 추가(합계 56건), 실측 23개 통과(사진이 실제로 받아지는지 포함)
   - ✅ 웹: 사진이 `localhost:8000` 에서 옴 / 에뮬레이터: 앱 저장 공간을 비운 뒤에도 사진 표시(`10.0.2.2:8000`)
-  - ⏳ Vercel 에 올렸을 때 사진 파일이 함께 올라가고 주소가 https 로 나오는지는 배포 후 확인 (`PUBLIC_API_URL` 로 고정 가능)
+  - ✅ 2026-11-22 Vercel 에 올린 서버에서 사진이 받아지고 주소가 https 로 나옴 (`PUBLIC_API_URL` 을 넣은 상태. 넣지 않았을 때는 확인하지 않음)
 
 ## 코드 분석 — 리팩토링 · 메모리 · 비동기 (2026-11-20)
 
@@ -137,16 +137,41 @@ VS Code 에서는 `Ctrl+Shift+P` → `Tasks: Run Task` 의 "검사: …" 작업�
 | 앱 | `screens/`(화면) · `controllers/`(상태) · `api/`(서버 호출)로 나눔. 상세 화면 여는 코드 한 곳으로 | analyze 0 · 테스트 64건 · 디버그 APK | 에뮬레이터에서 홈 · 탐색 · 상세 |
 | 문서 | [구조와 설계](architecture.md) · [배포 안내](deploy.md) · [운영과 수정](operations.md) 새로 씀 | — | — |
 
-- ⏳ [배포 안내](deploy.md)의 절차는 실제 배포로 끝까지 확인하지 않았습니다. 첫 배포 때 막힌 곳을 문서에 반영할 것
+- ✅ 2026-11-22 [배포 안내](deploy.md) 1 ~ 3 · 6단계를 실제 배포에 맞춰 고침 → 아래 "실제 배포" / ⏳ 4단계(구글 로그인) · 5단계(앱)는 아직 해 보지 않음
 - ⏳ 구조 정리 뒤 앱의 AI 플래너 · 내 여행 화면은 에뮬레이터에서 다시 열어 보지 않음(테스트 통과까지)
 
 ### 강사가 직접 해야 하는 일 (계정·키가 필요)
 
 - [ ] 공공데이터포털에서 TourAPI 키 신청 → `python -m tools.sync_spots --dry-run` 으로 실제 응답 확인
-- [ ] Supabase 프로젝트 만들기(서울) → SQL 001 → 002 실행 → 샘플 데이터 넣기
+- [x] Supabase 프로젝트 만들기(서울) → SQL 001 → 002 실행 → 샘플 데이터 넣기 (2026-11-22)
 - [ ] Google OAuth 클라이언트 + Supabase 로그인 설정 (Redirect URLs 에 `/my` · `/planner` · 앱 주소)
-- [ ] Vercel 프로젝트: 서버(`api`) · 웹(`web`) · 앱 웹 빌드
-- [ ] 배포 후 `/status` 와 `python -m tools.check_live --api <서버 주소>` 로 확인
+- [ ] Vercel 프로젝트: 서버(`api`) ✅ · 웹(`web`) ✅ (2026-11-22) · 앱 웹 빌드 ⏳
+- [x] 배포 후 `/status` 와 `python -m tools.check_live --api <서버 주소>` 로 확인 (2026-11-22, 18개 통과)
+
+## 실제 배포 (2026-11-22)
+
+Supabase 무료 프로젝트(서울)와 Vercel 프로젝트 둘(서버 · 웹)에 올려 확인했습니다. 절차: [deploy.md](deploy.md)
+
+| 항목 | 확인 |
+|---|---|
+| Supabase 새 프로젝트에 SQL 001 → 002 실행 | ✅ 오류 없이 실행 |
+| 샘플 데이터 넣기 `sync_spots --sample` (새 형식 비밀 키 `sb_secret_…`) | ✅ 68건 |
+| 서버 `/health` · `/status` · `/meta` · `/spots` · `/spots/1` · `/weather` | ✅ `database ok`, 68건, 사진 55장, `image_url` 이 https |
+| 실측 점검 `check_live --api <배포 서버>` | ✅ 18개 통과, 0개 실패 (토큰 없이. 찜 · 일정 저장은 점검하지 않음) |
+| 웹 주소에서 서버 호출 허용(CORS) | ✅ 웹 화면이 배포 서버의 데이터를 받아 표시 |
+| 웹 홈(날씨 · 사진) · 탐색(68곳 중 20곳) · 상세(사진 · 출처) | ✅ 브라우저에서 확인, 콘솔 오류 없음 |
+| 웹 AI 플래너 | ✅ 2일 일정 표시 — 규칙 방식("간단 추천"). AI 키를 넣지 않음 |
+| 구글 로그인 → 찜 · 일정 저장 | ⏳ Google OAuth 를 아직 설정하지 않음. 새 공개 키(`sb_publishable_…`)로 로그인이 되는지도 미확인 |
+| AI(Gemini) 일정이 Vercel 응답 시간 제한 안에 오는지 | ⏳ 배포 서버에 `GEMINI_API_KEY` 를 넣지 않음 |
+| 앱 웹 빌드 배포, 앱에서 배포 서버 부르기 | ⏳ |
+
+배포하다 문서와 달랐던 곳(모두 [deploy.md](deploy.md)에 반영):
+
+- Vercel 이 저장소의 `api` · `web` 폴더를 알아보고 "Import single project" 버튼을 줌
+- 배포 하나만 가리키는 긴 주소는 Vercel 로그인을 요구함 → `https://<프로젝트 이름>.vercel.app` 을 씀
+- 환경변수에 Secret · Config 구분이 생김. 바꾼 뒤에는 Redeploy 해야 반영됨
+- Supabase 키 이름이 Publishable · Secret 으로 바뀜(예전 anon · service_role 은 Legacy 쪽)
+- DB 값이 없으면 `/status` 가 `database: error` 가 아니라 500 으로 응답함. 실제로 비밀 키를 웹 프로젝트에 넣어 한 번 겪음
 
 ## 일차별 브랜치 (2026-11-20)
 
@@ -188,15 +213,15 @@ VS Code 에서는 `Ctrl+Shift+P` → `Tasks: Run Task` 의 "검사: …" 작업�
 ## 사람이 해야 하는 일
 
 - [ ] 공공데이터포털에서 한국관광공사 국문 관광정보 서비스(TourAPI) 키 신청 → `api/.env` 의 `TOUR_API_KEY`
-- [ ] Supabase 프로젝트 만들기 → SQL Editor 에서 `supabase/migrations/` 의 SQL 을 번호 순서대로(001 → 002) 실행
+- [x] Supabase 프로젝트 만들기 → SQL Editor 에서 `supabase/migrations/` 의 SQL 을 번호 순서대로(001 → 002) 실행 (2026-11-22)
 - [ ] Google Cloud OAuth 클라이언트 만들기 → Supabase 구글 로그인 켜기 (README "구글 로그인 켜기")
-- [ ] Vercel 계정에 프로젝트 3개(web · api · app 웹 빌드) 연결
+- [ ] Vercel 계정에 프로젝트 3개 연결 — web ✅ · api ✅ (2026-11-22) · app 웹 빌드 ⏳
 
 ## 남은 작업
 
 - [ ] TourAPI 실제 호출 확인 후 `sync_spots` 보정 (사진이 들어오면 카드 화면 다시 확인)
 - [ ] 진짜 Supabase 로 실측 점검 다시 실행, 구글 로그인 → 찜·일정 저장 흐름 확인 (웹·앱)
 - [ ] 앱: 로그인 후 앱으로 돌아오기(딥링크), 한글 입력
-- [ ] Vercel 배포 3종과 배포 주소 등록(CORS, 로그인 돌아올 주소), 배포 서버에 실측 점검
+- [ ] Vercel 배포 3종과 배포 주소 등록(CORS, 로그인 돌아올 주소), 배포 서버에 실측 점검 — 서버 · 웹 · CORS · 실측 점검 ✅ (2026-11-22) / 앱 웹 빌드 · 로그인 돌아올 주소 ⏳
 - [ ] AI 일정 2~3일(14~21초)이 Vercel 함수 제한 안에 드는지 확인
 - [ ] 일차별 교안·실습지·요청문 카드, 구글 로그인 설정 안내서(화면 캡처)
