@@ -43,6 +43,14 @@ void main() {
       expect(Spot.fromJson(json).imageCredit, isNull);
     });
 
+    test('위치(lat · lng)가 없는 곳도 읽는다 — 관리자가 위치 없이 추가한 여행지', () {
+      final json = spotJson()..addAll({'lat': null, 'lng': null});
+      final spot = Spot.fromJson(json);
+      expect(spot.lat, isNull);
+      expect(spot.hasLocation, isFalse);
+      expect(Spot.fromJson(spotJson()).hasLocation, isTrue);
+    });
+
     test('lat/lng 가 정수로 와도 double 로 바뀐다', () {
       final json = spotJson();
       json['lat'] = 33;

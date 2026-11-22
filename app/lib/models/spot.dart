@@ -5,8 +5,11 @@ class Spot {
   final String category;
   final String area;
   final String address;
-  final double lat;
-  final double lng;
+  /// 위치. 관리자가 위치 없이 추가한 곳은 둘 다 null 입니다(지도에는 그리지 않음).
+  final double? lat;
+  final double? lng;
+
+  bool get hasLocation => lat != null && lng != null;
   final String? imageUrl; // 없을 수 있음 → 화면에서 대체 그림
   final String? imageCredit; // 사진 저작자·라이선스. 있으면 상세에서 반드시 표시
   final String? imageSourceUrl; // 사진 원본 설명 쪽 주소(앱은 링크로 열지 않고 보관만)
@@ -40,8 +43,8 @@ class Spot {
       area: (json['area'] ?? '') as String,
       address: (json['address'] ?? '') as String,
       // 서버가 정수(33)로 줄 수도 있어서 num 으로 받아 double 로 바꿉니다.
-      lat: (json['lat'] as num).toDouble(),
-      lng: (json['lng'] as num).toDouble(),
+      lat: (json['lat'] as num?)?.toDouble(),
+      lng: (json['lng'] as num?)?.toDouble(),
       imageUrl: json['image_url'] as String?,
       imageCredit: json['image_credit'] as String?,
       imageSourceUrl: json['image_source_url'] as String?,

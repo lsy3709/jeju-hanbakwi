@@ -20,11 +20,13 @@ class SpotMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 위치가 없는 곳은 지도에 그릴 수 없으니 뺍니다.
+    final spots = this.spots.where((s) => s.hasLocation).toList();
     final center = spots.isEmpty
         ? _jejuCenter
         : LatLng(
-            spots.map((s) => s.lat).reduce((a, b) => a + b) / spots.length,
-            spots.map((s) => s.lng).reduce((a, b) => a + b) / spots.length,
+            spots.map((s) => s.lat!).reduce((a, b) => a + b) / spots.length,
+            spots.map((s) => s.lng!).reduce((a, b) => a + b) / spots.length,
           );
     return FlutterMap(
       // 핀 목록이 바뀌면 지도를 새로 만들어 중심을 다시 잡습니다.
@@ -46,7 +48,7 @@ class SpotMap extends StatelessWidget {
           markers: [
             for (final s in spots)
               Marker(
-                point: LatLng(s.lat, s.lng),
+                point: LatLng(s.lat!, s.lng!),
                 width: 44,
                 height: 44,
                 alignment: Alignment.topCenter,

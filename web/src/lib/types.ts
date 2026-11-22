@@ -6,8 +6,8 @@ export type Spot = {
   category: string;
   area: string;
   address: string;
-  lat: number;
-  lng: number;
+  lat: number | null; // 위치가 없는 곳은 null (지도에 그리지 않음)
+  lng: number | null;
   image_url: string | null; // 사진이 없으면 null → 대체 그림
   image_credit: string | null; // 사진 저작자·라이선스. 있으면 상세에서 반드시 표시
   image_source_url: string | null; // 사진 원본 설명 쪽 주소

@@ -149,15 +149,18 @@ class _SpotDetailScreenState extends State<SpotDetailScreen> {
               Expanded(child: Text(spot.address, style: const TextStyle(color: AppColors.muted))),
             ],
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 200,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppRadius.card),
-              // 작은 지도는 보기만 합니다(스크롤을 방해하지 않도록 조작 끔).
-              child: SpotMap(spots: [spot], interactive: false, zoom: 13),
+          // 위치가 없는 곳(관리자가 위치 없이 추가)은 지도를 그리지 않습니다.
+          if (spot.hasLocation) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 200,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.card),
+                // 작은 지도는 보기만 합니다(스크롤을 방해하지 않도록 조작 끔).
+                child: SpotMap(spots: [spot], interactive: false, zoom: 13),
+              ),
             ),
-          ),
+          ],
           const SizedBox(height: 20),
           Wrap(
             spacing: 12,

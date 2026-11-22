@@ -4,10 +4,9 @@
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-
-export type MapSpot = { id: number; title: string; lat: number; lng: number };
+import { withLocation, type MapSpot, type MaybeLocated } from "@/lib/mapSpots";
 
 // Leaflet 기본 핀 이미지는 번들러에서 경로가 깨지기 쉬워서, CSS 로 직접 그린 핀(divIcon)을 씁니다.
 const pin = L.divIcon({
@@ -32,7 +31,9 @@ function FitBounds({ spots }: { spots: MapSpot[] }) {
   return null;
 }
 
-export default function SpotMap({ spots, className = "" }: { spots: MapSpot[]; className?: string }) {
+export default function SpotMap({ spots: all, className = "" }: { spots: MaybeLocated[]; className?: string }) {
+  // 위치가 없는 곳은 지도에 그릴 수 없으니 뺍니다(Leaflet 은 null 좌표에서 오류를 냅니다).
+  const spots = useMemo(() => withLocation(all), [all]);
   const first = spots[0];
   const center: [number, number] = first ? [first.lat, first.lng] : [33.38, 126.55]; // 제주도 가운데
   const zoom = spots.length === 1 ? 14 : 9;

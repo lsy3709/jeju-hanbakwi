@@ -69,10 +69,13 @@ export default function SpotDetailPage() {
         {spot.address}
       </p>
 
-      <SpotMapView
-        spots={[{ id: spot.id, title: spot.title, lat: spot.lat, lng: spot.lng }]}
-        className="h-64 w-full rounded-card border border-line"
-      />
+      {/* 위치가 없는 곳(관리자가 위치 없이 추가)은 지도를 그리지 않습니다. */}
+      {spot.lat !== null && spot.lng !== null && (
+        <SpotMapView
+          spots={[{ id: spot.id, title: spot.title, lat: spot.lat, lng: spot.lng }]}
+          className="h-64 w-full rounded-card border border-line"
+        />
+      )}
 
       <div className="flex flex-wrap items-center gap-3">
         <FavoriteButton spotId={spot.id} />
