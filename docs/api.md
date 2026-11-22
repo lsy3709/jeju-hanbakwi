@@ -87,7 +87,8 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
 | GET | `/spots` | - | 관광지 목록 |
 | GET | `/spots/{id}` | - | 관광지 한 곳 (없으면 404) |
 | GET | `/weather` | - | 제주시·서귀포시 오늘부터 4일 날씨 |
-| POST | `/agent/plan` | - | AI 일정 짜기 |
+| POST | `/agent/plan` | - | AI 일정 짜기 (`X-Gemini-Key` 헤더로 내 AI 키를 쓸 수 있음) |
+| POST | `/agent/key-check` | - | 내 AI 키가 쓸 수 있는 키인지 확인 |
 | GET | `/me` | 필요 | 로그인한 사용자 |
 | GET | `/me/favorites` | 필요 | 찜한 관광지 목록 |
 | GET | `/me/favorites/{spot_id}` | 필요 | 이 한 곳을 찜했는지 |
@@ -178,6 +179,9 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
 ```
 
 - `message` 필수(1~500자). `days` 1~3(기본 2). `companions`, `start_date` 는 선택.
+- 헤더 `X-Gemini-Key`(선택): 사용자가 설정 화면에 넣은 자기 Gemini 키. 있으면 이 요청은 그 키로 AI 를 부릅니다. 영문 · 숫자 · `_` · `-` · `.` 20~200자가 아니면 `422`.
+  - 서버는 이 키를 **그 요청에만 쓰고 저장하지도, 로그에 남기지도 않습니다.** 키는 사용자의 기기(웹: 브라우저 저장소, 앱: 기기 보안 저장소)에만 있습니다.
+  - 헤더가 없으면 지금까지처럼 서버의 키(없으면 규칙)로 짭니다.
 
 응답:
 
@@ -186,14 +190,27 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
   "mode": "ai",
   "answer": "짧은 설명 글",
   "itinerary": [ ... Itinerary ... ],
-  "sources": [ Spot, ... ]
+  "sources": [ Spot, ... ],
+  "notice": null
 }
 ```
 
+- `notice`: 보통 `null`. 보낸 내 키로 일정을 받지 못해 다른 방식(서버 키 또는 규칙)으로 대신했을 때만 안내 글이 옵니다. 화면은 이 글을 결과 위에 보여 줍니다.
 - `mode`: `ai`(AI 가 짠 일정) 또는 `rule`(AI 를 쓸 수 없을 때 규칙으로 짠 일정). 화면은 `rule` 일 때 "간단 추천" 표시를 붙입니다.
 - `sources` 는 일정에 나온 관광지입니다. 일정의 `spot_id` 는 항상 `sources` 안에 있습니다.
 - 하루 안의 항목은 오전 → 점심 → 오후 → 저녁 순으로 옵니다.
 - 글에서 말한 관광지는 먼저 넣습니다(규칙 방식은 하루 3곳까지). 다 넣지 못하면 `answer` 에 넣지 못한 곳을 적어 줍니다.
+
+### POST /agent/key-check
+
+설정 화면의 "확인" 단추가 부릅니다. 본문은 없고 헤더 `X-Gemini-Key`(필수, 형식은 위와 같음)만 보냅니다.
+
+```json
+{ "ok": true, "message": "쓸 수 있는 키예요." }
+```
+
+- `ok` 가 `false` 면 `message` 에 까닭이 옵니다(키가 틀렸거나, AI 서비스에 닿지 못함).
+- 헤더가 없거나 형식이 틀리면 `422`. 키는 저장하지 않습니다.
 
 ### GET /me
 

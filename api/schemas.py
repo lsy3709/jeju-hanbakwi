@@ -83,6 +83,15 @@ class PlanResponse(BaseModel):
     answer: str
     itinerary: list[PlanDay]
     sources: list[Spot]
+    # 사용자가 보낸 자기 AI 키로 일정을 받지 못해 다른 방식으로 대신했을 때만 안내 글이 옵니다.
+    notice: str | None = None
+
+
+class KeyCheck(BaseModel):
+    """POST /agent/key-check 응답. 키 값은 담지 않습니다."""
+
+    ok: bool
+    message: str
 
 
 class User(BaseModel):

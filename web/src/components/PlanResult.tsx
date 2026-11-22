@@ -1,5 +1,6 @@
 // 이 파일이 하는 일: AI 플래너의 결과 영역(설명 글 + 일자별 일정 + "간단 추천" 표시 + 내 여행에 저장 폼 + 로그인 안내창).
 // 서버 호출은 하지 않고, 저장 동작은 위(usePlanner)에서 받습니다.
+import Link from "next/link";
 import { Save } from "lucide-react";
 import { ItineraryView } from "@/components/ItineraryView";
 import { LoginDialog } from "@/components/LoginPanel";
@@ -21,6 +22,15 @@ export type PlanSave = {
 export function PlanResult({ plan, save }: { plan: PlanResponse; save: PlanSave }) {
   return (
     <section aria-label="추천 일정" className="space-y-4">
+      {/* 내 AI 키로 일정을 받지 못해 다른 방식으로 대신했을 때 서버가 보내는 안내 */}
+      {plan.notice && (
+        <p role="status" className="rounded-card border border-line bg-surface p-4 text-sm">
+          {plan.notice}{" "}
+          <Link href="/settings" className="font-semibold text-primary underline">
+            설정 열기
+          </Link>
+        </p>
+      )}
       <div className="space-y-2 rounded-card bg-primary/10 p-5">
         {plan.mode === "rule" && (
           <span className="inline-block rounded-pill bg-surface px-3 py-0.5 text-xs font-semibold text-primary">

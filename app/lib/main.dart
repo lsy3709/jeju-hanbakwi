@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'api/api_client.dart';
 import 'app.dart';
+import 'auth/ai_key_store.dart';
 import 'auth/auth_service.dart';
 
 Future<void> main() async {
@@ -15,10 +16,14 @@ Future<void> main() async {
   // 1) 로그인 준비(Supabase 설정이 비어 있으면 건너뜁니다).
   final auth = await createAuthService();
 
-  // 2) API 클라이언트. 요청마다 로그인 토큰을 꺼내 붙입니다.
-  final api = ApiClient(tokenProvider: () => auth.accessToken);
+  // 2) 설정 화면에 넣어 둔 내 AI 키를 기기 보안 저장소에서 꺼냅니다(없으면 그대로 진행).
+  final aiKey = AiKeyStore(SecureKeyVault());
+  await aiKey.load();
 
-  runApp(JejuApp(api: api, auth: auth));
+  // 3) API 클라이언트. 요청마다 로그인 토큰을, 일정 요청에는 내 AI 키를 꺼내 붙입니다.
+  final api = ApiClient(tokenProvider: () => auth.accessToken, aiKeyProvider: () => aiKey.key);
+
+  runApp(JejuApp(api: api, auth: auth, aiKey: aiKey));
 }
 
 Future<void> _loadFonts() async {

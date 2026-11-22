@@ -90,7 +90,12 @@ export type PlanResponse = {
   answer: string;
   itinerary: Itinerary;
   sources: Spot[];
+  /** 보낸 내 AI 키로 일정을 받지 못해 다른 방식으로 대신했을 때만 오는 안내 글 */
+  notice?: string | null;
 };
+
+/** POST /agent/key-check 응답 */
+export type KeyCheck = { ok: boolean; message: string };
 
 export type Me = {
   id: string;

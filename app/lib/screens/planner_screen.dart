@@ -7,6 +7,7 @@ import '../widgets/login_prompt.dart';
 import '../widgets/plan_result_view.dart';
 import '../widgets/state_views.dart';
 import '../widgets/title_dialog.dart';
+import 'settings_screen.dart';
 import 'spot_detail_screen.dart';
 
 /// AI 플래너 화면: 입력(하고 싶은 여행 · 며칠 · 누구와 · 시작 날짜) → 결과(설명 + 일자별 타임라인).
@@ -111,7 +112,19 @@ class _PlannerScreenState extends State<PlannerScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('AI 플래너', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800)),
+        Row(
+          children: [
+            Expanded(
+              child: Text('AI 플래너', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800)),
+            ),
+            // 내 AI 키를 넣는 설정 화면
+            IconButton(
+              tooltip: '설정',
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () => SettingsScreen.open(context),
+            ),
+          ],
+        ),
         const SizedBox(height: 16),
         TextField(
           controller: _message,
@@ -196,6 +209,11 @@ class _PlannerScreenState extends State<PlannerScreen> {
     if (c.error != null) return ErrorView(message: c.error!, onRetry: _submit);
     final result = c.result;
     if (result == null) return const SizedBox.shrink();
-    return PlanResultView(result: result, onSpotTap: _openSpot, onSave: _save);
+    return PlanResultView(
+      result: result,
+      onSpotTap: _openSpot,
+      onSave: _save,
+      onOpenSettings: () => SettingsScreen.open(context),
+    );
   }
 }

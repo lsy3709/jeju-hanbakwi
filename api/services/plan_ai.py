@@ -72,8 +72,27 @@ def build_plan_from_ai(data: dict, found: dict[int, dict], request: PlanRequest,
     return {"mode": "ai", "answer": answer, "itinerary": itinerary, "sources": list(sources.values())}
 
 
-def ask_gemini(request: PlanRequest, repo, get_weather_fn, found: dict[int, dict]) -> str:
-    """Gemini 에게 도구 두 개를 쥐여 주고 일정을 받아 옵니다. 돌려주는 값은 AI 의 마지막 글."""
+def check_gemini_key(api_key: str) -> bool:
+    """이 키로 Gemini 를 부를 수 있는지 확인합니다. 글을 만들지 않고 모델 목록만 한 줄 받아 봅니다(요금 없음).
+
+    키가 틀렸으면 False. 서비스에 닿지 못한 것 같은 다른 문제는 오류를 그대로 올립니다.
+    """
+    from google import genai
+    from google.genai import errors, types
+
+    client = genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=10_000))
+    try:
+        next(iter(client.models.list(config={"page_size": 1})), None)
+    except errors.ClientError:   # 400 · 401 · 403: 키가 틀렸거나 쓸 수 없는 키
+        return False
+    return True
+
+
+def ask_gemini(request: PlanRequest, repo, get_weather_fn, found: dict[int, dict], api_key: str | None = None) -> str:
+    """Gemini 에게 도구 두 개를 쥐여 주고 일정을 받아 옵니다. 돌려주는 값은 AI 의 마지막 글.
+
+    api_key 가 있으면(사용자가 보낸 자기 키) 그 키로, 없으면 서버 설정의 키로 부릅니다.
+    """
     from google import genai
     from google.genai import types
 
@@ -117,7 +136,7 @@ def ask_gemini(request: PlanRequest, repo, get_weather_fn, found: dict[int, dict
         f"기간: {request.days}일 ({dates[0]} 부터)\n"
         f"동행: {request.companions or '정해지지 않음'}"
     )
-    client = genai.Client(api_key=settings.gemini_api_key, http_options=types.HttpOptions(timeout=AI_TIMEOUT_MS))
+    client = genai.Client(api_key=api_key or settings.gemini_api_key, http_options=types.HttpOptions(timeout=AI_TIMEOUT_MS))
     response = client.models.generate_content(
         model=settings.gemini_model,
         contents=prompt,
@@ -137,16 +156,20 @@ class AiPlanner:
     """AI 로 일정을 짜는 방식. (services/plan_common.py 의 Planner 모양을 따릅니다)
 
     ask 는 "AI 에게 묻는 함수"입니다. 기본은 ask_gemini 이고, 테스트에서는 가짜로 바꿔 끼웁니다.
+    api_key 는 사용자가 보낸 자기 키입니다. 없으면(None) 서버 설정의 키를 씁니다.
     """
 
     name = "ai"
 
-    def __init__(self, repo, get_weather, ask=ask_gemini):
+    def __init__(self, repo, get_weather, ask=ask_gemini, api_key: str | None = None):
         self.repo = repo
         self.get_weather = get_weather
         self.ask = ask
+        self.api_key = api_key
 
     def plan(self, request: PlanRequest) -> dict:
         found: dict[int, dict] = {}
-        text = self.ask(request, self.repo, self.get_weather, found)
+        # 사용자 키가 있을 때만 api_key 를 넘깁니다(없으면 묻는 함수가 서버 설정의 키를 씁니다).
+        extra = {"api_key": self.api_key} if self.api_key else {}
+        text = self.ask(request, self.repo, self.get_weather, found, **extra)
         return build_plan_from_ai(extract_json(text), found, request, weather_by_date(self.get_weather))

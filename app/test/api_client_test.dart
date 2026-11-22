@@ -16,6 +16,64 @@ http.Response jsonResponse(Object body, [int status = 200]) => http.Response.byt
     );
 
 void main() {
+  group('내 AI 키', () {
+    const key = 'AIzaUserKey_1234567890-abcdefghij';
+    final planBody = {'mode': 'ai', 'answer': '좋아요', 'itinerary': <Object>[], 'sources': <Object>[], 'notice': '안내 글'};
+
+    test('plan: 키가 있으면 X-Gemini-Key 헤더로 보내고, notice 를 읽는다', () async {
+      late http.BaseRequest seen;
+      final api = ApiClient(
+        baseUrl: 'http://fake',
+        aiKeyProvider: () => key,
+        client: MockClient((req) async {
+          seen = req;
+          return jsonResponse(planBody);
+        }),
+      );
+      final result = await api.plan(message: '바다');
+      expect(seen.headers['X-Gemini-Key'], key);
+      expect(result.notice, '안내 글');
+    });
+
+    test('plan: 키가 없으면 헤더를 보내지 않고, 다른 주소에는 키를 붙이지 않는다', () async {
+      final seen = <http.BaseRequest>[];
+      String? current;
+      final api = ApiClient(
+        baseUrl: 'http://fake',
+        aiKeyProvider: () => current,
+        client: MockClient((req) async {
+          seen.add(req);
+          if (req.url.path == '/agent/plan') return jsonResponse({...planBody, 'notice': null});
+          return jsonResponse({'items': <Object>[], 'next_cursor': null, 'total': 0, 'size': 20});
+        }),
+      );
+      final result = await api.plan(message: '바다');
+      expect(seen.last.headers.containsKey('X-Gemini-Key'), isFalse);
+      expect(result.notice, isNull);
+
+      current = key;
+      await api.getSpots();
+      expect(seen.last.headers.containsKey('X-Gemini-Key'), isFalse);
+    });
+
+    test('checkAiKey: 헤더로 키를 보내고 ok · message 를 읽는다', () async {
+      late http.BaseRequest seen;
+      final api = ApiClient(
+        baseUrl: 'http://fake',
+        client: MockClient((req) async {
+          seen = req;
+          return jsonResponse({'ok': false, 'message': '쓸 수 없는 키예요.'});
+        }),
+      );
+      final result = await api.checkAiKey(key);
+      expect(seen.method, 'POST');
+      expect(seen.url.path, '/agent/key-check');
+      expect(seen.headers['X-Gemini-Key'], key);
+      expect(result.ok, isFalse);
+      expect(result.message, '쓸 수 없는 키예요.');
+    });
+  });
+
   test('getSpots: 비어 있는 조건은 빼고 쿼리 문자열을 만든다', () async {
     late Uri seen;
     final api = ApiClient(

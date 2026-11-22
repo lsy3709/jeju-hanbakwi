@@ -1,21 +1,53 @@
 """AI 일정 짜기 주소. 누구나 쓸 수 있습니다.
 
 여기서는 요청을 받아 넘기고 결과를 돌려주기만 합니다. 일정을 짜는 일은 services/planner.py 가 합니다.
+
+X-Gemini-Key 헤더: 사용자가 설정 화면에 넣은 자기 AI 키. 이 요청에만 쓰고 저장하지도, 로그에 남기지도 않습니다.
 """
 
-from fastapi import APIRouter, Depends, Request
+import logging
+from typing import Annotated
 
-from deps import get_weather_service
+from fastapi import APIRouter, Depends, Header, Request
+
+from deps import get_ai_asker, get_key_checker, get_weather_service
 from repo import get_repo
-from schemas import PlanRequest, PlanResponse
+from schemas import KeyCheck, PlanRequest, PlanResponse
 from services import planner
 from services.photos import with_photo_addresses
 
 router = APIRouter(tags=["AI 일정"])
+log = logging.getLogger("agent")
+
+# 키의 모양만 봅니다(영문 · 숫자 · _ · - · . 20~200자). 맞는 키인지는 AI 서비스가 판단합니다.
+# 마침표는 "AQ." 로 시작하는 새 형식의 키에 들어 있습니다.
+KEY_PATTERN = r"^[A-Za-z0-9_.\-]{20,200}$"
+UserKey = Annotated[str | None, Header(alias="X-Gemini-Key", pattern=KEY_PATTERN)]
+RequiredUserKey = Annotated[str, Header(alias="X-Gemini-Key", pattern=KEY_PATTERN)]
 
 
 @router.post("/agent/plan", response_model=PlanResponse)
-def plan(body: PlanRequest, request: Request, repo=Depends(get_repo), get_weather_fn=Depends(get_weather_service)):
-    result = planner.plan_trip(body, repo, get_weather_fn)
+def plan(
+    body: PlanRequest,
+    request: Request,
+    user_key: UserKey = None,
+    repo=Depends(get_repo),
+    get_weather_fn=Depends(get_weather_service),
+    ask_ai=Depends(get_ai_asker),
+):
+    result = planner.plan_trip(body, repo, get_weather_fn, ask_ai=ask_ai, user_key=user_key)
     result["sources"] = with_photo_addresses(result["sources"], request)
     return result
+
+
+@router.post("/agent/key-check", response_model=KeyCheck)
+def key_check(user_key: RequiredUserKey, check=Depends(get_key_checker)):
+    """설정 화면의 "확인" 단추. 키가 쓸 수 있는 키인지만 알려 주고, 키는 저장하지 않습니다."""
+    try:
+        ok = check(user_key)
+    except Exception as error:  # 키 문제가 아니라 AI 서비스에 닿지 못한 경우
+        log.warning("AI 키 확인 실패: %s", planner.hide_key(str(error), user_key))
+        return {"ok": False, "message": "AI 서비스에 닿지 못했어요. 잠시 뒤 다시 확인해 주세요."}
+    if ok:
+        return {"ok": True, "message": "쓸 수 있는 키예요."}
+    return {"ok": False, "message": "쓸 수 없는 키예요. 키를 다시 확인해 주세요."}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'api/api_client.dart';
+import 'auth/ai_key_store.dart';
 import 'auth/auth_service.dart';
 import 'auth/favorites_store.dart';
 
@@ -52,6 +53,7 @@ class AppScope extends InheritedWidget {
     required this.auth,
     required this.favorites,
     required this.shell,
+    required this.aiKey,
     required super.child,
   });
 
@@ -59,6 +61,7 @@ class AppScope extends InheritedWidget {
   final AuthService auth;
   final FavoritesStore favorites;
   final ShellController shell;
+  final AiKeyStore aiKey; // 설정 화면에 넣은 내 AI 키
 
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();

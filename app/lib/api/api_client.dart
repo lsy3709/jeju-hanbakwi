@@ -28,6 +28,9 @@ class ApiException implements Exception {
 /// 로그인한 사용자의 액세스 토큰을 돌려주는 함수. 로그아웃 상태면 null.
 typedef TokenProvider = String? Function();
 
+/// 설정 화면에 넣은 내 AI 키를 돌려주는 함수. 넣지 않았으면 null.
+typedef AiKeyProvider = String? Function();
+
 /// 서버(FastAPI)와 통하는 **유일한 문**. docs/api.md 의 주소를 하나씩 메서드로 만들었습니다.
 /// 화면과 컨트롤러는 http 를 직접 부르지 않고 여기 메서드(getSpots, plan, saveTrip …)만 씁니다.
 /// 서버 오류는 모두 한국어 메시지를 담은 [ApiException] 으로 바뀌어 나옵니다.
@@ -36,8 +39,9 @@ class ApiClient {
   final http.Client _client;
   final String baseUrl;
   final TokenProvider? tokenProvider;
+  final AiKeyProvider? aiKeyProvider;
 
-  ApiClient({http.Client? client, String? baseUrl, this.tokenProvider})
+  ApiClient({http.Client? client, String? baseUrl, this.tokenProvider, this.aiKeyProvider})
       : _client = client ?? http.Client(),
         baseUrl = baseUrl ?? Config.apiUrl;
 
@@ -83,7 +87,16 @@ class ApiClient {
       if (companions != null && companions.isNotEmpty) 'companions': companions,
       if (startDate != null && startDate.isNotEmpty) 'start_date': startDate,
     };
-    return PlanResult.fromJson(await _send('POST', '/agent/plan', body: body) as Map<String, dynamic>);
+    // 내 AI 키가 있으면 이 요청에만 함께 보냅니다(다른 주소에는 붙이지 않습니다). 서버는 저장하지 않습니다.
+    final aiKey = aiKeyProvider?.call();
+    final headers = (aiKey != null && aiKey.isNotEmpty) ? {'X-Gemini-Key': aiKey} : null;
+    return PlanResult.fromJson(await _send('POST', '/agent/plan', body: body, headers: headers) as Map<String, dynamic>);
+  }
+
+  /// 내 AI 키가 쓸 수 있는 키인지 서버에 묻습니다.
+  Future<({bool ok, String message})> checkAiKey(String key) async {
+    final json = await _send('POST', '/agent/key-check', headers: {'X-Gemini-Key': key}) as Map<String, dynamic>;
+    return (ok: json['ok'] == true, message: (json['message'] ?? '') as String);
   }
 
   // ---- 로그인이 필요한 주소 ----
@@ -134,10 +147,17 @@ class ApiClient {
 
   Future<dynamic> _get(String path, {Map<String, String>? query}) => _send('GET', path, query: query);
 
-  Future<dynamic> _send(String method, String path, {Map<String, String>? query, Object? body}) async {
+  Future<dynamic> _send(
+    String method,
+    String path, {
+    Map<String, String>? query,
+    Object? body,
+    Map<String, String>? headers,
+  }) async {
     final uri = Uri.parse('$baseUrl$path').replace(queryParameters: (query == null || query.isEmpty) ? null : query);
     final request = http.Request(method, uri);
     request.headers['Accept'] = 'application/json';
+    if (headers != null) request.headers.addAll(headers);
     if (body != null) {
       request.headers['Content-Type'] = 'application/json; charset=utf-8';
       request.body = jsonEncode(body);

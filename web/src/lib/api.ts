@@ -12,6 +12,7 @@ import type {
   CursorPage,
   CursorParams,
   Itinerary,
+  KeyCheck,
   Me,
   Meta,
   PlanRequest,
@@ -43,14 +44,15 @@ export function errorMessage(error: unknown): string {
   return "알 수 없는 오류가 났어요. 잠시 뒤 다시 시도해 주세요.";
 }
 
-// 모든 요청이 지나가는 한 곳. token 이 있으면 Authorization 헤더를 붙입니다.
+// 모든 요청이 지나가는 한 곳. token 이 있으면 Authorization 헤더를, aiKey 가 있으면 X-Gemini-Key 헤더를 붙입니다.
 async function request<T>(
   path: string,
-  options: { method?: string; body?: unknown; token?: string | null } = {},
+  options: { method?: string; body?: unknown; token?: string | null; aiKey?: string | null } = {},
 ): Promise<T> {
   const headers: Record<string, string> = {};
   if (options.body !== undefined) headers["Content-Type"] = "application/json";
   if (options.token) headers.Authorization = `Bearer ${options.token}`;
+  if (options.aiKey) headers["X-Gemini-Key"] = options.aiKey; // 내 AI 키(설정 화면). 서버는 이 요청에만 씁니다
 
   let response: Response;
   try {
@@ -84,8 +86,11 @@ export const getMeta = () => request<Meta>("/meta");
 export const getSpots = (params: SpotsParams = {}) => request<SpotList>(`/spots${spotsQuery(params)}`);
 export const getSpot = (id: number | string) => request<Spot>(`/spots/${id}`);
 export const getWeather = () => request<Weather>("/weather");
-export const planTrip = (body: PlanRequest) =>
-  request<PlanResponse>("/agent/plan", { method: "POST", body });
+/** aiKey: 설정 화면에 넣은 내 AI 키. 있으면 그 키로, 없으면 서버의 기본 방식으로 일정을 짭니다. */
+export const planTrip = (body: PlanRequest, aiKey?: string | null) =>
+  request<PlanResponse>("/agent/plan", { method: "POST", body, aiKey });
+/** 내 AI 키가 쓸 수 있는 키인지 서버에 묻습니다. */
+export const checkAiKey = (aiKey: string) => request<KeyCheck>("/agent/key-check", { method: "POST", aiKey });
 
 // ---------- 로그인이 필요한 주소 (token = Supabase 액세스 토큰) ----------
 // 목록 주소는 { items, next_cursor } 를 돌려줍니다. 다음 묶음은 next_cursor 를 cursor 에 넣어 다시 부릅니다.

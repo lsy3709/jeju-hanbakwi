@@ -4,6 +4,7 @@
 // 로그인하러 갔다가 돌아와도 일정이 남도록, 받은 일정을 sessionStorage 에 보관하고 처음 열 때 되살립니다(lib/planDraft.ts).
 import { useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
+import { loadKey } from "@/lib/aiKey";
 import { errorMessage, planTrip, saveTrip } from "@/lib/api";
 import { clearSessionDraft, loadSessionDraft, saveSessionDraft } from "@/lib/planDraft";
 import type { PlanInput, PlanResponse } from "@/lib/types";
@@ -41,12 +42,16 @@ export function usePlanner(initialMessage: string) {
     setPlanning(true);
     setError(null);
     try {
-      const result = await planTrip({
-        message: request.message,
-        days: request.days,
-        companions: request.companions || undefined,
-        start_date: request.startDate || undefined,
-      });
+      // 설정 화면에 넣어 둔 내 AI 키가 있으면 함께 보냅니다(없으면 서버의 기본 방식).
+      const result = await planTrip(
+        {
+          message: request.message,
+          days: request.days,
+          companions: request.companions || undefined,
+          start_date: request.startDate || undefined,
+        },
+        loadKey(window.localStorage),
+      );
       setPlan(result);
       // 새 일정이니 저장 상태를 처음으로 되돌리고, 보관본도 새 것으로 바꿉니다.
       setTitle("");

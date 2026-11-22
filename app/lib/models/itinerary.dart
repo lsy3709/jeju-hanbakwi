@@ -50,7 +50,10 @@ class PlanResult {
   final List<ItineraryDay> itinerary;
   final List<Spot> sources;
 
-  const PlanResult({required this.mode, required this.answer, required this.itinerary, required this.sources});
+  /// 보낸 내 AI 키로 일정을 받지 못해 다른 방식으로 대신했을 때만 오는 안내 글.
+  final String? notice;
+
+  const PlanResult({required this.mode, required this.answer, required this.itinerary, required this.sources, this.notice});
 
   /// rule 이면 AI 가 아니라 규칙으로 짠 "간단 추천".
   bool get isSimple => mode == 'rule';
@@ -60,5 +63,6 @@ class PlanResult {
         answer: (json['answer'] ?? '') as String,
         itinerary: itineraryFromJson(json['itinerary'] as List),
         sources: (json['sources'] as List).map((e) => Spot.fromJson(e as Map<String, dynamic>)).toList(),
+        notice: json['notice'] as String?,
       );
 }
