@@ -33,6 +33,25 @@ body {
   outline-offset: 2px;
 }
 
+/* 폰에서 입력칸 글자가 16px 보다 작으면, 아이폰 브라우저가 칸을 누를 때 화면을 확대해 버립니다.
+   그래서 폰 폭에서는 입력칸 글자를 16px 로 맞춥니다(PC 는 디자인대로 14px). */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* 지도의 확대·축소 단추를 손가락으로 누르기 좋게 키웁니다(기본 30px → 40px). */
+/* Leaflet 의 기본 스타일이 나중에 불려 와도 이기도록 단추 이름까지 적습니다. */
+.leaflet-touch .leaflet-bar a.leaflet-control-zoom-in,
+.leaflet-touch .leaflet-bar a.leaflet-control-zoom-out {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+
 /* 칩 가로 스크롤 줄에서 스크롤바를 숨깁니다. */
 .no-scrollbar {
   scrollbar-width: none;

@@ -59,7 +59,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    await getSupabase()?.auth.signOut();
+    const supabase = getSupabase();
+    if (!supabase) return;
+    const { error } = await supabase.auth.signOut();
+    // Supabase 에 닿지 못하면(네트워크 끊김 등) 로그인 정보가 이 기기에 그대로 남습니다.
+    // 그때는 이 기기에 저장된 것만이라도 지워, 로그아웃을 눌렀는데 계속 로그인돼 있는 일이 없게 합니다.
+    if (error) await supabase.auth.signOut({ scope: "local" });
   }, []);
 
   const token = session?.access_token ?? null;

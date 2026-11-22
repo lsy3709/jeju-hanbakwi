@@ -24,7 +24,8 @@ export function ItineraryView({ itinerary }: { itinerary: Itinerary }) {
                 {/* 타임라인 점 */}
                 <span className="absolute -left-[27px] top-1.5 h-3 w-3 rounded-full bg-primary" aria-hidden="true" />
                 <p className="text-xs font-semibold text-primary">{item.time}</p>
-                <Link href={`/spots/${item.spot_id}`} className="font-bold hover:text-secondary hover:underline">
+                <Link href={`/spots/${item.spot_id}`} // 손가락으로 누르기 좋게 위아래로 누름 영역을 넓힙니다(글자 크기는 그대로)
+                  className="-my-1 inline-flex min-h-9 items-center font-bold hover:text-secondary hover:underline">
                   {item.title}
                 </Link>
                 <p className="text-sm text-muted">{item.reason}</p>
