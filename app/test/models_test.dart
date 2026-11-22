@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:jeju_hanbakwi/models/cursor_page.dart';
 import 'package:jeju_hanbakwi/models/itinerary.dart';
 import 'package:jeju_hanbakwi/models/spot.dart';
 import 'package:jeju_hanbakwi/models/trip.dart';
@@ -52,15 +53,28 @@ void main() {
     });
   });
 
-  test('SpotPage.fromJson', () {
+  test('SpotPage.fromJson: 첫 묶음은 total 이 숫자', () {
     final page = SpotPage.fromJson({
       'items': [spotJson(id: 1), spotJson(id: 2, title: '한라산')],
+      'next_cursor': 2,
       'total': 42,
-      'page': 1,
       'size': 20,
     });
     expect(page.items.map((s) => s.title), ['성산일출봉', '한라산']);
     expect(page.total, 42);
+    expect(page.nextCursor, 2);
+  });
+
+  test('SpotPage.fromJson: 마지막 묶음은 total·next_cursor 가 null', () {
+    final page = SpotPage.fromJson({'items': [spotJson(id: 9)], 'next_cursor': null, 'total': null, 'size': 20});
+    expect(page.total, isNull);
+    expect(page.nextCursor, isNull);
+  });
+
+  test('CursorPage.fromJson', () {
+    final page = CursorPage.fromJson({'items': [spotJson(id: 3)], 'next_cursor': 31}, Spot.fromJson);
+    expect(page.items.single.id, 3);
+    expect(page.nextCursor, 31);
   });
 
   test('Weather.fromJson', () {

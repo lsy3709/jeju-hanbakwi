@@ -41,6 +41,8 @@ class _SpotDetailScreenState extends State<SpotDetailScreen> {
     if (!_started) {
       _started = true;
       _spot = widget.initial;
+      // 하트가 맞게 보이도록, 받아 둔 찜 목록에 없으면 서버에 한 번 묻습니다.
+      AppScope.of(context).favorites.check(widget.spotId);
       // 목록에서 넘어왔으면 그 내용을 바로 보여 주고, 아니면(일정·딥링크 등) 서버에서 불러옵니다.
       if (_spot == null) _load();
     }

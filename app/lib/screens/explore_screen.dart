@@ -6,6 +6,7 @@ import '../controllers/explore_controller.dart';
 import '../models/spot.dart';
 import '../theme.dart';
 import '../widgets/filter_menu.dart';
+import '../widgets/load_more_footer.dart';
 import '../widgets/login_prompt.dart';
 import '../widgets/spot_card.dart';
 import '../widgets/spot_map.dart';
@@ -189,16 +190,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           ),
         ),
         SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Center(
-              child: c.hasMore
-                  ? (c.loadingMore
-                        ? const CircularProgressIndicator()
-                        : OutlinedButton(onPressed: _loadMore, child: const Text('더 보기')))
-                  : const SizedBox.shrink(),
-            ),
-          ),
+          child: LoadMoreFooter(hasMore: c.hasMore, loadingMore: c.loadingMore, onPressed: _loadMore),
         ),
       ],
     );

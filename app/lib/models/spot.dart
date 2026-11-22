@@ -53,20 +53,21 @@ class Spot {
   }
 }
 
-/// `GET /spots` 의 응답: 목록 + 전체 개수 + 쪽 정보.
+/// `GET /spots` 의 응답: 목록 + 다음 커서 + 전체 개수.
+/// `total` 은 첫 묶음에서만 숫자이고 이어지는 묶음에서는 null 입니다(그래서 nullable).
 class SpotPage {
   final List<Spot> items;
-  final int total;
-  final int page;
+  final int? nextCursor; // null 이면 끝
+  final int? total;
   final int size;
 
-  const SpotPage({required this.items, required this.total, required this.page, required this.size});
+  const SpotPage({required this.items, required this.nextCursor, required this.total, required this.size});
 
   factory SpotPage.fromJson(Map<String, dynamic> json) {
     return SpotPage(
       items: (json['items'] as List).map((e) => Spot.fromJson(e as Map<String, dynamic>)).toList(),
-      total: json['total'] as int,
-      page: json['page'] as int,
+      nextCursor: json['next_cursor'] as int?,
+      total: json['total'] as int?,
       size: json['size'] as int,
     );
   }

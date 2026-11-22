@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:jeju_hanbakwi/api/api_client.dart';
 import 'package:jeju_hanbakwi/auth/auth_service.dart';
 import 'package:jeju_hanbakwi/auth/favorites_store.dart';
+import 'package:jeju_hanbakwi/models/cursor_page.dart';
 import 'package:jeju_hanbakwi/models/spot.dart';
 
 import 'support.dart';
@@ -27,7 +29,7 @@ class FakeAuth extends AuthService {
 class FavApi extends FakeApi {
   final addCalls = <int>[];
   final addGate = Completer<void>();
-  final favoritesGate = Completer<List<Spot>>();
+  final favoritesGate = Completer<CursorPage<Spot>>();
 
   @override
   Future<void> addFavorite(int spotId) async {
@@ -36,7 +38,35 @@ class FavApi extends FakeApi {
   }
 
   @override
-  Future<List<Spot>> getFavorites() => favoritesGate.future;
+  Future<CursorPage<Spot>> getFavorites({int? cursor, int size = 20}) => favoritesGate.future;
+}
+
+/// 찜 목록을 묶음으로 돌려주는 가짜 서버(커서 = 이미 준 개수).
+class PagedFavApi extends FakeApi {
+  PagedFavApi(this.all);
+  final List<Spot> all;
+  final cursors = <int?>[];
+  bool fail = false;
+
+  @override
+  Future<CursorPage<Spot>> getFavorites({int? cursor, int size = 20}) async {
+    cursors.add(cursor);
+    if (fail) throw const ApiException('이용이 정지된 계정입니다. 관리자에게 문의해 주세요.', statusCode: 403);
+    final start = cursor ?? 0;
+    final end = (start + size).clamp(0, all.length);
+    return CursorPage(items: all.sublist(start, end), nextCursor: end < all.length ? end : null);
+  }
+
+  @override
+  Future<void> removeFavorite(int spotId) async {}
+
+  final asked = <int>[];
+
+  @override
+  Future<bool> hasFavorite(int spotId) async {
+    asked.add(spotId);
+    return all.any((s) => s.id == spotId);
+  }
 }
 
 void main() {
@@ -61,10 +91,88 @@ void main() {
     final store = FavoritesStore(api: api, auth: auth); // 생성 즉시 refresh 시작
 
     auth.setLoggedIn(false); // 응답이 오기 전에 로그아웃
-    api.favoritesGate.complete([spot]);
+    api.favoritesGate.complete(CursorPage(items: [spot], nextCursor: null));
     await Future<void>.delayed(Duration.zero);
 
     expect(store.items, isEmpty);
+    expect(store.loading, false);
+  });
+
+  List<Spot> manySpots(int n) => [for (var i = 1; i <= n; i++) Spot.fromJson(spotJson(id: i, title: '찜 $i'))];
+
+  // 로그인 상태로 만들면 생성자가 첫 묶음을 불러오므로, 그것이 끝나기를 기다립니다.
+  Future<FavoritesStore> loggedInStore(ApiClient api) async {
+    final store = FavoritesStore(api: api, auth: FakeAuth(loggedIn: true));
+    await pumpEventQueue();
+    return store;
+  }
+
+  test('더 보기: next_cursor 를 그대로 보내 다음 묶음을 이어 붙이고, 끝나면 hasMore 가 false', () async {
+    final api = PagedFavApi(manySpots(45));
+    final store = await loggedInStore(api);
+    expect(store.items.length, 20);
+    expect(store.hasMore, true);
+
+    expect(await store.loadMore(), isNull);
+    expect(api.cursors, [null, 20]);
+    expect(store.items.length, 40);
+    expect(store.items.map((s) => s.id).toSet().length, 40); // 겹치지 않음
+
+    await store.loadMore();
+    expect(api.cursors, [null, 20, 40]);
+    expect(store.items.length, 45);
+    expect(store.hasMore, false);
+
+    final before = api.cursors.length;
+    await store.loadMore(); // 끝났으면 서버를 부르지 않는다
+    expect(api.cursors.length, before);
+  });
+
+  test('check: 아직 받지 않은 뒤쪽 찜도 서버에 물어 하트를 맞게 보여 준다', () async {
+    final api = PagedFavApi(manySpots(45));
+    final store = await loggedInStore(api);
+    final last = api.all.last; // 45번째 — 첫 묶음(20개)에 없음
+    expect(store.isFavorite(last.id), false);
+
+    await store.check(last.id);
+    expect(store.isFavorite(last.id), true);
+    expect(api.asked, [last.id]);
+
+    await store.check(store.items.first.id); // 이미 아는 곳은 묻지 않는다
+    await store.check(last.id);
+    expect(api.asked, [last.id]);
+
+    await store.check(99999); // 찜하지 않은 곳
+    expect(store.isFavorite(99999), false);
+
+    await store.toggle(last); // 해제하면 빈 하트로
+    expect(store.isFavorite(last.id), false);
+  });
+
+  test('check: 목록을 끝까지 받았으면 서버에 묻지 않는다', () async {
+    final api = PagedFavApi(manySpots(5));
+    final store = await loggedInStore(api);
+    await store.check(99999);
+    expect(api.asked, isEmpty);
+  });
+
+  test('찜 해제 뒤에도 커서는 그대로라 이어 받기가 어긋나지 않는다', () async {
+    final api = PagedFavApi(manySpots(45));
+    final store = await loggedInStore(api);
+
+    await store.toggle(store.items.first); // 해제
+    expect(store.items.length, 19);
+    await store.loadMore();
+
+    expect(api.cursors.last, 20);
+    expect(store.items.length, 19 + 20);
+  });
+
+  test('이용 정지(403): 서버 문구가 error 로 남는다', () async {
+    final api = PagedFavApi(const [])..fail = true;
+    final store = await loggedInStore(api);
+
+    expect(store.error, '이용이 정지된 계정입니다. 관리자에게 문의해 주세요.');
     expect(store.loading, false);
   });
 }

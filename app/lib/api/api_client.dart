@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../config.dart';
+import '../models/cursor_page.dart';
 import '../models/itinerary.dart';
 import '../models/spot.dart';
 import '../models/trip.dart';
@@ -50,7 +51,7 @@ class ApiClient {
     String? area,
     String? category,
     bool? indoor,
-    int page = 1,
+    int? cursor, // 앞 응답의 next_cursor. 처음에는 null
     int size = 20,
   }) async {
     // 비어 있는 조건은 아예 보내지 않습니다.
@@ -60,7 +61,7 @@ class ApiClient {
       if (area != null && area.isNotEmpty) 'area': area,
       if (category != null && category.isNotEmpty) 'category': category,
       if (indoor != null) 'indoor': indoor.toString(),
-      'page': '$page',
+      if (cursor != null) 'cursor': '$cursor',
       'size': '$size',
     };
     return SpotPage.fromJson(await _get('/spots', query: query) as Map<String, dynamic>);
@@ -89,9 +90,16 @@ class ApiClient {
 
   Future<Map<String, dynamic>> getMe() async => await _get('/me') as Map<String, dynamic>;
 
-  Future<List<Spot>> getFavorites() async {
-    final list = await _get('/me/favorites') as List;
-    return list.map((e) => Spot.fromJson(e as Map<String, dynamic>)).toList();
+  /// 찜한 곳 한 묶음. 정지된 계정은 403 + 서버 문구가 ApiException 으로 나옵니다.
+  Future<CursorPage<Spot>> getFavorites({int? cursor, int size = 20}) async {
+    final json = await _get('/me/favorites', query: _cursorQuery(cursor, size)) as Map<String, dynamic>;
+    return CursorPage.fromJson(json, Spot.fromJson);
+  }
+
+  /// 이 한 곳을 찜했는지. 찜 목록은 나뉘어 오므로 목록에서 찾지 않고 따로 묻습니다.
+  Future<bool> hasFavorite(int spotId) async {
+    final json = await _get('/me/favorites/$spotId') as Map<String, dynamic>;
+    return json['favorite'] == true;
   }
 
   Future<void> addFavorite(int spotId) async {
@@ -102,10 +110,16 @@ class ApiClient {
     await _send('DELETE', '/me/favorites/$spotId');
   }
 
-  Future<List<Trip>> getTrips() async {
-    final list = await _get('/me/trips') as List;
-    return list.map((e) => Trip.fromJson(e as Map<String, dynamic>)).toList();
+  /// 저장한 일정 한 묶음(최근 저장한 순).
+  Future<CursorPage<Trip>> getTrips({int? cursor, int size = 20}) async {
+    final json = await _get('/me/trips', query: _cursorQuery(cursor, size)) as Map<String, dynamic>;
+    return CursorPage.fromJson(json, Trip.fromJson);
   }
+
+  Map<String, String> _cursorQuery(int? cursor, int size) => {
+        if (cursor != null) 'cursor': '$cursor',
+        'size': '$size',
+      };
 
   Future<Trip> saveTrip({required String title, required List<ItineraryDay> itinerary}) async {
     final body = {'title': title, 'itinerary': itinerary.map((d) => d.toJson()).toList()};

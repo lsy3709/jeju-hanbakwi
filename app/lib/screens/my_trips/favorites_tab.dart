@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../api/api_client.dart';
 import '../../app_scope.dart';
 import '../../theme.dart';
+import '../../widgets/load_more_footer.dart';
 import '../../widgets/login_prompt.dart';
 import '../../widgets/spot_card.dart';
 import '../../widgets/state_views.dart';
@@ -24,33 +25,49 @@ class FavoritesTab extends StatelessWidget {
         if (favorites.items.isEmpty) {
           return const EmptyView(message: '아직 찜한 곳이 없어요.\n마음에 드는 곳에서 하트를 눌러 보세요.', icon: Icons.favorite_border);
         }
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 320,
-            mainAxisExtent: SpotCard.height,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-          ),
-          itemCount: favorites.items.length,
-          itemBuilder: (context, i) {
-            final spot = favorites.items[i];
-            return SpotCard(
-              spot: spot,
-              onTap: () => SpotDetailScreen.open(context, spotId: spot.id, initial: spot),
-              corner: IconButton.filledTonal(
-                tooltip: '찜 해제',
-                icon: const Icon(Icons.favorite, color: AppColors.primary),
-                onPressed: () async {
-                  try {
-                    await favorites.toggle(spot);
-                  } on ApiException catch (e) {
-                    if (context.mounted) showSnack(context, e.message);
-                  }
+        return CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverGrid.builder(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 320,
+                  mainAxisExtent: SpotCard.height,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemCount: favorites.items.length,
+                itemBuilder: (context, i) {
+                  final spot = favorites.items[i];
+                  return SpotCard(
+                    spot: spot,
+                    onTap: () => SpotDetailScreen.open(context, spotId: spot.id, initial: spot),
+                    corner: IconButton.filledTonal(
+                      tooltip: '찜 해제',
+                      icon: const Icon(Icons.favorite, color: AppColors.primary),
+                      onPressed: () async {
+                        try {
+                          await favorites.toggle(spot);
+                        } on ApiException catch (e) {
+                          if (context.mounted) showSnack(context, e.message);
+                        }
+                      },
+                    ),
+                  );
                 },
               ),
-            );
-          },
+            ),
+            SliverToBoxAdapter(
+              child: LoadMoreFooter(
+                hasMore: favorites.hasMore,
+                loadingMore: favorites.loadingMore,
+                onPressed: () async {
+                  final message = await favorites.loadMore();
+                  if (message != null && context.mounted) showSnack(context, message);
+                },
+              ),
+            ),
+          ],
         );
       },
     );

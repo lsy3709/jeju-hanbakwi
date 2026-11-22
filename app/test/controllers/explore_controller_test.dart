@@ -21,31 +21,76 @@ void main() {
     expect(c.error, isNull);
   });
 
-  test('조건을 바꾸면 1쪽부터 다시 불러온다', () async {
+  test('조건을 바꾸면 커서를 버리고 처음부터 다시 불러온다', () async {
     final api = FakeApi(spots: spots(2), total: 45);
     final c = ExploreController(api: api);
     await c.start();
     await c.loadMore();
-    expect(api.spotCalls.last, containsPair('page', 2));
+    expect(api.spotCalls.last, containsPair('cursor', 2));
     expect(c.items.length, 4);
 
     await c.setTheme('바다');
 
     expect(api.spotCalls.last, containsPair('theme', '바다'));
-    expect(api.spotCalls.last, containsPair('page', 1));
-    expect(c.items.length, 2); // 2쪽 분량이 남지 않고 새 1쪽으로 교체
+    expect(api.spotCalls.last, containsPair('cursor', null));
+    expect(c.items.length, 2); // 이어 받은 분량이 남지 않고 새 첫 묶음으로 교체
+    expect(c.nextCursor, 2);
   });
 
-  test('더 보기는 다음 쪽을 이어 붙인다', () async {
+  test('더 보기는 서버가 준 next_cursor 를 그대로 보내 다음 묶음을 이어 붙인다', () async {
     final api = FakeApi(spots: spots(2), total: 45);
     final c = ExploreController(api: api);
     await c.start();
+    expect(api.spotCalls.last, containsPair('cursor', null));
+
+    await c.loadMore();
+    expect(api.spotCalls.last, containsPair('cursor', 2));
+    await c.loadMore();
+    expect(api.spotCalls.last, containsPair('cursor', 4));
+
+    expect(c.items.length, 6);
+    expect(c.hasMore, true);
+  });
+
+  test('이어 받은 묶음이 겹치지 않는다(묶음마다 다른 줄)', () async {
+    final api = GatedApi(total: 4);
+    final c = ExploreController(api: api);
+    api.gated = true;
+    final start = c.reload();
+    api.pending.single.done.complete(pageOf(['1', '2'], total: 4, nextCursor: 2, startId: 1));
+    await start;
+
+    final more = c.loadMore();
+    expect(api.pending.last.cursor, 2);
+    api.pending.last.done.complete(pageOf(['3', '4'], total: null, nextCursor: null, startId: 3));
+    await more;
+
+    expect(c.items.map((s) => s.id), [1, 2, 3, 4]);
+    expect(c.items.map((s) => s.id).toSet().length, 4);
+  });
+
+  test('next_cursor 가 null 이면 hasMore 는 false 이고 더 보기는 서버를 부르지 않는다', () async {
+    final api = FakeApi(spots: spots(2)); // total 2 → 첫 묶음에서 끝
+    final c = ExploreController(api: api);
+    await c.start();
+
+    expect(c.nextCursor, isNull);
+    expect(c.hasMore, false);
+    final callsBefore = api.spotCalls.length;
+    expect(await c.loadMore(), isNull);
+    expect(api.spotCalls.length, callsBefore);
+  });
+
+  test('이어지는 묶음의 total 이 null 이어도 첫 묶음의 total 을 기억한다', () async {
+    final api = FakeApi(spots: spots(2), total: 45); // 첫 응답만 total 45, 이후는 null
+    final c = ExploreController(api: api);
+    await c.start();
+    expect(c.total, 45);
 
     await c.loadMore();
 
-    expect(api.spotCalls.last, containsPair('page', 2));
+    expect(c.total, 45);
     expect(c.items.length, 4);
-    expect(c.hasMore, true);
   });
 
   test('검색어·지역·실내/실외 조건이 요청에 실린다', () async {
@@ -96,7 +141,7 @@ void main() {
     expect(c.loading, false);
   });
 
-  test('더 보기 중에 조건을 바꾸면 옛 조건의 2쪽이 섞이지 않는다', () async {
+  test('더 보기 중에 조건을 바꾸면 옛 조건의 다음 묶음이 섞이지 않는다', () async {
     final api = GatedApi(spots: spots(2), total: 40);
     final c = ExploreController(api: api);
     await c.start();
@@ -104,16 +149,18 @@ void main() {
 
     final more = c.loadMore();
     expect(c.loadingMore, true);
-    final oldPage2 = api.pending.firstWhere((p) => p.page == 2);
+    final oldMore = api.pending.firstWhere((p) => p.cursor == 2);
 
     final fresh = c.setTheme('바다');
-    final newPage1 = api.pending.firstWhere((p) => p.theme == '바다');
-    newPage1.done.complete(pageOf(['바다1쪽'], total: 40));
+    final newFirst = api.pending.firstWhere((p) => p.theme == '바다');
+    newFirst.done.complete(pageOf(['바다첫묶음'], total: 40, nextCursor: 1));
     await fresh;
-    oldPage2.done.complete(pageOf(['옛조건2쪽'], total: 40, page: 2));
+    oldMore.done.complete(pageOf(['옛조건다음묶음'], total: null, nextCursor: 4, startId: 200));
     await more;
 
-    expect(c.items.map((s) => s.title), ['바다1쪽']);
+    expect(c.items.map((s) => s.title), ['바다첫묶음']);
+    expect(c.nextCursor, 1); // 옛 응답의 커서가 새 목록에 섞이지 않는다
+    expect(c.total, 40);
     expect(c.loadingMore, false); // 버려진 "더 보기"가 로딩 표시를 남기지 않는다
   });
 

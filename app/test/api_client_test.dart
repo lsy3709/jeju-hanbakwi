@@ -22,13 +22,70 @@ void main() {
       baseUrl: 'http://fake',
       client: MockClient((req) async {
         seen = req.url;
-        return jsonResponse({'items': [spotJson()], 'total': 1, 'page': 2, 'size': 8});
+        return jsonResponse({'items': [spotJson()], 'next_cursor': 16, 'total': null, 'size': 8});
       }),
     );
-    final page = await api.getSpots(q: ' 폭포 ', theme: '바다', area: '', indoor: true, page: 2, size: 8);
+    final page = await api.getSpots(q: ' 폭포 ', theme: '바다', area: '', indoor: true, cursor: 8, size: 8);
     expect(seen.path, '/spots');
-    expect(seen.queryParameters, {'q': '폭포', 'theme': '바다', 'indoor': 'true', 'page': '2', 'size': '8'});
+    expect(seen.queryParameters, {'q': '폭포', 'theme': '바다', 'indoor': 'true', 'cursor': '8', 'size': '8'});
     expect(page.items.single.title, '성산일출봉');
+    expect(page.nextCursor, 16);
+    expect(page.total, isNull);
+  });
+
+  test('getSpots: 처음에는 cursor 를 보내지 않고 page 도 보내지 않는다', () async {
+    late Uri seen;
+    final api = ApiClient(
+      baseUrl: 'http://fake',
+      client: MockClient((req) async {
+        seen = req.url;
+        return jsonResponse({'items': <Object>[], 'next_cursor': null, 'total': 0, 'size': 20});
+      }),
+    );
+    await api.getSpots();
+    expect(seen.queryParameters, {'size': '20'});
+  });
+
+  test('getFavorites·getTrips: 묶음 응답을 읽고 cursor·size 를 보낸다', () async {
+    final seen = <Uri>[];
+    final api = ApiClient(
+      baseUrl: 'http://fake',
+      tokenProvider: () => 't',
+      client: MockClient((req) async {
+        seen.add(req.url);
+        if (req.url.path == '/me/favorites') {
+          return jsonResponse({'items': [spotJson(id: 5)], 'next_cursor': 31});
+        }
+        return jsonResponse({
+          'items': [
+            {'id': 3, 'title': '제목', 'itinerary': [], 'created_at': '2026-12-01T03:00:00+00:00'},
+          ],
+          'next_cursor': null,
+        });
+      }),
+    );
+    final favs = await api.getFavorites(cursor: 12, size: 10);
+    final trips = await api.getTrips();
+    expect(seen[0].queryParameters, {'cursor': '12', 'size': '10'});
+    expect(seen[1].queryParameters, {'size': '20'});
+    expect(favs.items.single.id, 5);
+    expect(favs.nextCursor, 31);
+    expect(trips.items.single.id, 3);
+    expect(trips.nextCursor, isNull);
+  });
+
+  test('이용 정지(403): 서버가 준 detail 문구가 그대로 ApiException 에 담긴다', () async {
+    const text = '이용이 정지된 계정입니다. 관리자에게 문의해 주세요.';
+    final api = ApiClient(
+      baseUrl: 'http://fake',
+      client: MockClient((req) async => jsonResponse({'detail': text}, 403)),
+    );
+    for (final call in [api.getFavorites(), api.getTrips()]) {
+      await expectLater(
+        call,
+        throwsA(isA<ApiException>().having((e) => e.message, 'message', text).having((e) => e.statusCode, 'status', 403)),
+      );
+    }
   });
 
   test('로그인 상태면 Authorization: Bearer 헤더를 붙인다', () async {

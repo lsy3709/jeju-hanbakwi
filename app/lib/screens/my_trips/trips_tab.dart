@@ -5,6 +5,7 @@ import '../../controllers/trips_controller.dart';
 import '../../models/trip.dart';
 import '../../theme.dart';
 import '../../widgets/itinerary_view.dart';
+import '../../widgets/load_more_footer.dart';
 import '../../widgets/login_prompt.dart';
 import '../../widgets/state_views.dart';
 import '../spot_detail_screen.dart';
@@ -51,6 +52,11 @@ class _TripsTabState extends State<TripsTab> {
     }
   }
 
+  Future<void> _loadMore() async {
+    final message = await _controller.loadMore();
+    if (message != null && mounted) showSnack(context, message);
+  }
+
   Future<void> _delete(Trip trip) async {
     final ok = await showDialog<bool>(
       context: context,
@@ -81,9 +87,12 @@ class _TripsTabState extends State<TripsTab> {
         }
         return ListView.separated(
           padding: const EdgeInsets.all(16),
-          itemCount: c.trips.length,
+          itemCount: c.trips.length + 1, // 마지막 한 칸은 "더 보기" 자리
           separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (context, i) {
+            if (i == c.trips.length) {
+              return LoadMoreFooter(hasMore: c.hasMore, loadingMore: c.loadingMore, onPressed: _loadMore);
+            }
             final trip = c.trips[i];
             return Card(
               child: ExpansionTile(

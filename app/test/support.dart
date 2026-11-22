@@ -60,12 +60,20 @@ class FakeApi extends ApiClient {
     String? area,
     String? category,
     bool? indoor,
-    int page = 1,
+    int? cursor,
     int size = 20,
   }) async {
-    spotCalls.add({'q': q, 'theme': theme, 'area': area, 'indoor': indoor, 'page': page, 'size': size});
+    spotCalls.add({'q': q, 'theme': theme, 'area': area, 'indoor': indoor, 'cursor': cursor, 'size': size});
     if (failSpots) throw const ApiException('서버에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.');
-    return SpotPage(items: spots, total: total ?? spots.length, page: page, size: size);
+    // 진짜 서버처럼: total 은 첫 묶음(cursor 없음)에서만, 아직 남았으면 next_cursor 를 줍니다.
+    final all = total ?? spots.length;
+    final received = (cursor ?? 0) + spots.length;
+    return SpotPage(
+      items: spots,
+      nextCursor: received < all ? received : null,
+      total: cursor == null ? all : null,
+      size: size,
+    );
   }
 }
 
@@ -73,7 +81,7 @@ class FakeApi extends ApiClient {
 class GatedApi extends FakeApi {
   GatedApi({super.spots, super.total});
   bool gated = false;
-  final pending = <({String? theme, int page, Completer<SpotPage> done})>[];
+  final pending = <({String? theme, int? cursor, Completer<SpotPage> done})>[];
 
   @override
   Future<SpotPage> getSpots({
@@ -82,22 +90,23 @@ class GatedApi extends FakeApi {
     String? area,
     String? category,
     bool? indoor,
-    int page = 1,
+    int? cursor,
     int size = 20,
   }) {
     if (!gated) {
-      return super.getSpots(q: q, theme: theme, area: area, category: category, indoor: indoor, page: page, size: size);
+      return super.getSpots(q: q, theme: theme, area: area, category: category, indoor: indoor, cursor: cursor, size: size);
     }
     final done = Completer<SpotPage>();
-    pending.add((theme: theme, page: page, done: done));
+    pending.add((theme: theme, cursor: cursor, done: done));
     return done.future;
   }
 }
 
-SpotPage pageOf(List<String> titles, {int total = 2, int page = 1}) => SpotPage(
-  items: [for (var i = 0; i < titles.length; i++) Spot.fromJson(spotJson(id: 100 + i + page * 10, title: titles[i]))],
+/// 테스트용 묶음. 첫 묶음(기본)은 total 이 숫자, 이어지는 묶음은 total 을 null 로 줍니다.
+SpotPage pageOf(List<String> titles, {int? total = 2, int? nextCursor, int startId = 100}) => SpotPage(
+  items: [for (var i = 0; i < titles.length; i++) Spot.fromJson(spotJson(id: startId + i, title: titles[i]))],
+  nextCursor: nextCursor,
   total: total,
-  page: page,
   size: 20,
 );
 

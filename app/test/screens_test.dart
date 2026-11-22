@@ -46,7 +46,7 @@ void main() {
     expect(find.text('A결과'), findsNothing);
   });
 
-  testWidgets('탐색: "더 보기" 요청 중 칩을 바꾸면 옛 조건의 2쪽이 섞이지 않는다', (tester) async {
+  testWidgets('탐색: "더 보기" 요청 중 칩을 바꾸면 옛 조건의 다음 묶음이 섞이지 않는다', (tester) async {
     final api = GatedApi(spots: sampleSpots(2), total: 40);
     await pumpApp(tester, api);
     await tester.tap(find.text('탐색'));
@@ -55,18 +55,18 @@ void main() {
 
     await tester.tap(find.text('더 보기'));
     await tester.pump();
-    final more = api.pending.firstWhere((c) => c.page == 2);
+    final more = api.pending.firstWhere((c) => c.cursor == 2);
 
     await tester.tap(exploreText('바다'));
     await tester.pump();
     final fresh = api.pending.firstWhere((c) => c.theme == '바다');
-    fresh.done.complete(pageOf(['바다1쪽'], total: 40));
+    fresh.done.complete(pageOf(['바다첫묶음'], total: 40, nextCursor: 1));
     await tester.pump();
-    more.done.complete(pageOf(['옛조건2쪽'], total: 40, page: 2));
+    more.done.complete(pageOf(['옛조건다음묶음'], total: null, nextCursor: 4, startId: 200));
     await tester.pump();
 
-    expect(find.text('바다1쪽'), findsOneWidget);
-    expect(find.text('옛조건2쪽'), findsNothing);
+    expect(find.text('바다첫묶음'), findsOneWidget);
+    expect(find.text('옛조건다음묶음'), findsNothing);
     // 버려진 "더 보기"가 로딩 상태를 남기지 않아 버튼이 다시 보인다.
     expect(find.text('더 보기'), findsOneWidget);
   });
@@ -96,7 +96,7 @@ void main() {
     expect(find.text('총 2곳'), findsOneWidget);
   });
 
-  testWidgets('탐색: 결과가 20개를 넘으면 더 보기가 보이고 누르면 다음 쪽을 불러온다', (tester) async {
+  testWidgets('탐색: 결과가 20개를 넘으면 더 보기가 보이고 누르면 next_cursor 로 이어 불러온다', (tester) async {
     final api = FakeApi(spots: sampleSpots(20), total: 45);
     await pumpApp(tester, api);
 
@@ -107,7 +107,7 @@ void main() {
     await tester.scrollUntilVisible(find.text('더 보기'), 400, scrollable: find.byType(Scrollable).last);
     await tester.tap(find.text('더 보기'));
     await tester.pumpAndSettle();
-    expect(api.spotCalls.last, containsPair('page', 2));
+    expect(api.spotCalls.last, containsPair('cursor', 20));
   });
 
   testWidgets('탐색: 결과가 없으면 안내 문구', (tester) async {
