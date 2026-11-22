@@ -77,10 +77,12 @@ function Recommended({ indoor }: { indoor: boolean }) {
   if (!spots.data || spots.data.items.length === 0) {
     return <p className="text-sm text-muted">추천할 장소가 아직 없어요.</p>;
   }
+  // 폰: 옆으로 넘기는 한 줄(손가락으로 밀 수 있음).
+  // PC: 스크롤바를 숨긴 한 줄은 마우스로 넘길 수 없어 뒤 카드가 잘린 채 남으므로, 격자로 모두 보여 줍니다.
   return (
-    <div className="no-scrollbar -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2">
+    <div className="no-scrollbar -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 lg:grid-cols-4">
       {spots.data.items.map((spot) => (
-        <SpotCard key={spot.id} spot={spot} className="w-64 shrink-0 snap-start" />
+        <SpotCard key={spot.id} spot={spot} className="w-64 shrink-0 snap-start md:w-auto" />
       ))}
     </div>
   );
