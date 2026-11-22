@@ -20,7 +20,7 @@
 1. **New project** 를 누르고 이름과 DB 비밀번호를 정합니다. 비밀번호는 **Generate a password** 로 만들고 내 비밀번호 관리 도구에 적어 둡니다. 이 수업의 코드에는 쓰지 않습니다.
 2. **지역은 Northeast Asia (Seoul)** 을 고릅니다. 지역 칸이 보이지 않으면 "Need a specific region?" 을 눌러 목록을 엽니다. 목록이 길어 아래로 내려야 서울이 보입니다.
 3. 아래쪽 Data access 의 선택 칸은 처음 값 그대로 둡니다(Data API 켬, 테이블 자동 공개 켬, 자동 RLS 끔). RLS 는 우리 SQL 이 직접 켭니다.
-4. 프로젝트가 준비되면(1 ~ 2분) **SQL Editor** 에서 [`supabase/migrations/`](../supabase/migrations) 의 파일을 **번호 순서대로** 붙여 넣고 **Run** 을 누릅니다 (001 → 002). 결과 칸에 "Success. No rows returned" 가 나오면 된 것입니다. 편집기가 "자동 저장하지 않는다"는 안내 창을 띄우면 닫고 계속합니다.
+4. 프로젝트가 준비되면(1 ~ 2분) **SQL Editor** 에서 [`supabase/migrations/`](../supabase/migrations) 의 파일을 **번호 순서대로** 붙여 넣고 **Run** 을 누릅니다 (001 → 002 → 003). 결과 칸에 "Success. No rows returned" 가 나오면 된 것입니다. 편집기가 "자동 저장하지 않는다"는 안내 창을 띄우면 닫고 계속합니다.
 5. **Project Settings → API Keys** 에서 키를, **Project Settings → Data API**(또는 화면 위 **Connect**)에서 주소를 확인합니다.
 
 | 값 | 화면에 보이는 이름 | 생김새 | 어디에 쓰나 | 공개해도 되나 |
@@ -53,6 +53,7 @@ python -m tools.sync_spots --sample
 | `GEMINI_API_KEY` | AI 키 (없으면 만들지 않음) | **Secret** |
 | `ALLOWED_ORIGINS` | 웹 주소. 3단계 뒤에 넣음 | Config |
 | `PUBLIC_API_URL` | 이 서버의 주소. 첫 배포 뒤에 넣음 | Config |
+| `ADMIN_EMAILS` | 관리자로 쓸 구글 계정 이메일(여럿이면 쉼표로). 넣지 않으면 관리자 화면을 아무도 못 씀 | Config |
 
 변수를 더하는 창에서 종류(Secret · Config)를 고릅니다. Secret 은 저장한 뒤 다시 볼 수 없으므로 비밀 키에 씁니다. 적용 환경은 처음 값인 Production 그대로 둡니다.
 
@@ -211,8 +212,23 @@ python -m tools.check_live --api https://<서버 주소>
 | 구글이 "액세스 차단됨"으로 막음 | 게시 상태가 "테스트 중"인데 그 계정이 테스트 사용자에 없음 | 4-2 의 3번 — **대상** → 테스트 사용자에 계정 추가 |
 | "구글로 로그인"을 눌러도 구글 화면이 안 뜨고 오류 글이 나옴 | Supabase 의 Google 공급자가 꺼져 있거나 값을 저장하지 않음 | 4-3 — 켜고 **Save** |
 | AI 일정이 "간단 추천"으로만 나옴 | AI 키가 없거나 한도 초과, 또는 모델 이름이 바뀜 | `/status` 의 `ai`, Vercel 의 서버 로그, `GEMINI_MODEL` |
+| 관리자 메뉴가 안 보임, `/admin/users` 가 403 | 서버의 `ADMIN_EMAILS` 에 내 이메일이 없거나, 넣고 다시 배포하지 않음 | 값을 넣고 Redeploy. `/me` 의 `is_admin` 이 `true` 인지 확인 |
+| 코드를 올린 뒤 `/spots` 가 500 | 새 SQL(`003_admin.sql`)을 실행하지 않음 | SQL 을 실행. Vercel Logs 에 `column spots.hidden does not exist` 가 보임 |
 | 며칠 뒤 DB 가 응답하지 않음 | 무료 Supabase 프로젝트는 오래 쓰지 않으면 일시 정지됨 | Supabase 대시보드에서 다시 켜기 |
 | 사진이 안 나옴 | 사진 주소가 `http://` 로 나옴 | `PUBLIC_API_URL` 설정 |
+
+## 이미 올린 서비스에 SQL 을 더할 때 — 순서가 중요합니다
+
+서버 코드가 새 칸이나 새 표를 쓰게 바뀌었으면(예: `003_admin.sql` 의 `hidden`, `profiles`), **SQL 을 먼저 실행하고 그다음에 코드를 올립니다.** 거꾸로 하면 새 서버가 없는 칸을 찾다가 목록 주소부터 500 을 냅니다.
+
+| 순서 | 할 일 |
+|---|---|
+| 1 | Supabase SQL Editor 에서 새 SQL 파일 실행 (여러 번 실행해도 안전하게 써 두었습니다) |
+| 2 | 새 환경변수가 있으면 Vercel 에 넣기 (예: `ADMIN_EMAILS`) |
+| 3 | 코드 푸시 → 자동 배포 |
+| 4 | `/status`, `python -m tools.check_live --api <서버 주소>` 로 확인 |
+
+SQL 은 "더하기"만 하도록 씁니다(새 칸은 기본값을 주고, 있던 칸은 지우거나 이름을 바꾸지 않음). 그래야 SQL 을 먼저 실행해도 옛 서버가 그대로 돕니다.
 
 ## 다시 배포하기
 
