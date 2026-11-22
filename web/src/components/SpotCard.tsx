@@ -6,7 +6,7 @@ import { SpotImage } from "./SpotImage";
 
 export function IndoorBadge({ indoor }: { indoor: boolean }) {
   return (
-    <span className="rounded-pill bg-teal-50 px-2.5 py-0.5 text-xs font-semibold text-secondary">
+    <span className="whitespace-nowrap rounded-pill bg-teal-50 px-2.5 py-0.5 text-xs font-semibold text-secondary">
       {indoor ? "실내" : "실외"}
     </span>
   );
@@ -24,11 +24,12 @@ export function SpotCard({ spot, className = "", footer }: Props) {
     <article className={`overflow-hidden rounded-card border border-line bg-surface ${className}`}>
       <Link href={`/spots/${spot.id}`} className="block">
         <SpotImage imageUrl={spot.image_url} title={spot.title} tags={spot.theme_tags} className="aspect-4/3 w-full" />
-        <div className="space-y-1.5 p-4">
-          <div className="flex items-center gap-2 text-xs text-muted">
-            <span>{spot.category}</span>
-            <span aria-hidden="true">·</span>
-            <span>{spot.area}</span>
+        {/* 폰에서는 카드가 두 칸으로 좁아지므로 안쪽 여백을 줄이고, 분류 줄은 글자가 세로로 쪼개지지 않게 통째로 줄을 바꿉니다. */}
+        <div className="space-y-1.5 p-3 sm:p-4">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+            <span className="whitespace-nowrap">
+              {spot.category} <span aria-hidden="true">·</span> {spot.area}
+            </span>
             <span className="ml-auto">
               <IndoorBadge indoor={spot.indoor} />
             </span>

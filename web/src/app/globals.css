@@ -52,14 +52,6 @@ body {
   line-height: 40px;
 }
 
-/* 칩 가로 스크롤 줄에서 스크롤바를 숨깁니다. */
-.no-scrollbar {
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
 /* 지도 핀(divIcon)에 쓰는 모양 */
 .jeju-pin {
   background: var(--color-primary);
