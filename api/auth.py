@@ -6,9 +6,10 @@
 """
 
 import httpx
-from fastapi import Header, HTTPException
+from fastapi import Depends, Header, HTTPException
 
 from config import settings
+from repo import get_repo
 from schemas import User
 
 
@@ -43,4 +44,23 @@ def get_current_user(authorization: str | None = Header(default=None)) -> User:
     user = verify_token(authorization[7:].strip())
     if user is None:
         raise HTTPException(status_code=401, detail="로그인 정보가 올바르지 않거나 만료되었습니다.")
+    return user
+
+
+def is_admin(user: User) -> bool:
+    """서버 환경변수 ADMIN_EMAILS 에 적힌 이메일인가. 이메일은 Supabase 가 확인해 준 값만 씁니다."""
+    return bool(user.email) and user.email.lower() in settings.admin_emails
+
+
+def get_active_user(user: User = Depends(get_current_user), repo=Depends(get_repo)) -> User:
+    """로그인했고 이용 정지가 아닌 사람. 찜·일정 주소에 붙입니다. 정지면 403."""
+    if repo.is_suspended(user.id):
+        raise HTTPException(status_code=403, detail="이용이 정지된 계정입니다. 관리자에게 문의해 주세요.")
+    return user
+
+
+def get_admin_user(user: User = Depends(get_current_user)) -> User:
+    """관리자 주소에 붙이는 문지기. 로그인은 했지만 관리자가 아니면 403."""
+    if not is_admin(user):
+        raise HTTPException(status_code=403, detail="관리자만 쓸 수 있습니다.")
     return user

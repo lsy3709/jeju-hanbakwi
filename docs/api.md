@@ -6,6 +6,7 @@
 - 직접 눌러 보기: `http://localhost:8000/docs`
 - 모든 응답은 JSON, 오류는 `{ "detail": "설명" }`
 - 로그인이 필요한 주소는 `Authorization: Bearer <Supabase 액세스 토큰>` 헤더가 있어야 하고, 없거나 틀리면 `401`
+- 목록을 주는 주소는 모두 **커서 방식**으로 나눠 줍니다 → 아래 "목록을 나눠 받기"
 
 ## 자료 모양
 
@@ -53,6 +54,29 @@
 - `time`: 오전 · 점심 · 오후 · 저녁
 - `date`, `weather` 는 `null` 일 수 있습니다.
 
+## 목록을 나눠 받기 — 커서 페이징
+
+목록 주소(`/spots`, `/me/favorites`, `/me/trips`, `/admin/users`, `/admin/spots`)는 같은 약속을 씁니다.
+
+| 쿼리 | 뜻 |
+|---|---|
+| `size` | 한 번에 받을 개수(1~50, 기본 20) |
+| `cursor` | 앞 응답의 `next_cursor`. 처음에는 보내지 않습니다 |
+
+응답에는 `items` 와 `next_cursor` 가 있습니다. `next_cursor` 가 `null` 이면 끝입니다. 숫자면 그 값을 `cursor` 에 넣어 다시 부르면 이어지는 묶음이 옵니다.
+
+```
+GET /spots?size=20              → { "items": [1번 ~ 20번], "next_cursor": 20, "total": 68, ... }
+GET /spots?size=20&cursor=20    → { "items": [21번 ~ 40번], "next_cursor": 40, "total": null, ... }
+...
+GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": null, "total": null, ... }
+```
+
+- 커서는 "마지막으로 받은 줄의 번호"입니다. 화면은 뜻을 풀지 말고 받은 값을 그대로 돌려보냅니다.
+- 필터(`q`, `theme` 등)는 이어지는 요청에도 똑같이 붙입니다. 필터가 바뀌면 커서를 버리고 처음부터 받습니다.
+- `total`(전체 개수)은 첫 묶음에서만 옵니다. 이어지는 묶음에서는 `null` 이므로, 화면은 첫 응답의 값을 기억해 둡니다.
+- 쪽 번호(`page=3`) 방식을 쓰지 않는 이유: 쪽 번호는 "앞의 40개를 건너뛰고"로 찾기 때문에 뒤로 갈수록 느려지고, 보는 사이에 줄이 더해지거나 빠지면 같은 줄이 두 번 나오거나 한 줄을 건너뜁니다. 커서는 "20번 다음부터"로 찾으므로 그런 일이 없습니다.
+
 ## 주소 목록
 
 | 방법 | 주소 | 로그인 | 설명 |
@@ -71,6 +95,11 @@
 | GET | `/me/trips` | 필요 | 저장한 일정 목록 |
 | POST | `/me/trips` | 필요 | 일정 저장 |
 | DELETE | `/me/trips/{id}` | 필요 | 일정 삭제 |
+| GET | `/admin/users` | 관리자 | 사용자 목록(찜 수 · 일정 수) |
+| PATCH | `/admin/users/{id}` | 관리자 | 이용 정지 / 해제 |
+| GET | `/admin/spots` | 관리자 | 여행지 목록(숨긴 곳 포함) |
+| POST | `/admin/spots` | 관리자 | 여행지 추가 |
+| PATCH | `/admin/spots/{id}` | 관리자 | 여행지 수정 · 숨김 |
 
 ### GET /status
 
@@ -107,14 +136,16 @@
 | `area` | `동부` | 지역 |
 | `category` | `관광지` | 분류 |
 | `indoor` | `true` / `false` | 실내 / 실외 |
-| `page` | `1` | 쪽 번호(1부터) |
-| `size` | `20` | 한 쪽 개수(1~50, 기본 20) |
+| `cursor` | `20` | 앞 응답의 `next_cursor`(처음에는 보내지 않음) |
+| `size` | `20` | 한 번에 받을 개수(1~50, 기본 20) |
 
 응답:
 
 ```json
-{ "items": [ Spot, ... ], "total": 42, "page": 1, "size": 20 }
+{ "items": [ Spot, ... ], "next_cursor": 20, "total": 42, "size": 20 }
 ```
+
+- 번호(`id`)가 작은 순으로 옵니다. 관리자가 숨긴 곳은 목록에도 상세(`/spots/{id}` → 404)에도 나오지 않습니다.
 
 ### GET /weather
 
@@ -166,17 +197,47 @@
 ### GET /me
 
 ```json
-{ "id": "사용자 UUID", "email": "user@example.com" }
+{ "id": "사용자 UUID", "email": "user@example.com", "is_admin": false, "suspended": false }
 ```
+
+- `is_admin`: 관리자면 `true`. 화면은 이 값으로 관리자 메뉴를 보일지 정합니다(막는 일은 서버가 합니다).
+- `suspended`: 이용 정지된 계정이면 `true`. 정지된 계정은 찜 · 일정 주소가 모두 `403` 입니다. `/me` 와 누구나 보는 주소는 그대로 됩니다.
 
 ### 찜
 
-- `GET /me/favorites` → `[ Spot, ... ]` (최근에 찜한 순)
+- `GET /me/favorites?size=20&cursor=` → `{ "items": [ Spot, ... ], "next_cursor": 31 }` (최근에 찜한 순. 숨긴 곳은 빠짐)
 - `POST /me/favorites` 요청 `{ "spot_id": 12 }` → `201` `{ "spot_id": 12 }` (이미 찜했어도 201, 없는 관광지면 404)
 - `DELETE /me/favorites/12` → `204` (본문 없음)
 
 ### 저장한 일정
 
-- `GET /me/trips` → `[ { "id": 3, "title": "부모님과 제주", "itinerary": [ ... ], "created_at": "2026-12-01T03:00:00+00:00" } ]`
+- `GET /me/trips?size=20&cursor=` → `{ "items": [ { "id": 3, "title": "부모님과 제주", "itinerary": [ ... ], "created_at": "2026-12-01T03:00:00+00:00" } ], "next_cursor": null }` (최근에 저장한 순)
 - `POST /me/trips` 요청 `{ "title": "부모님과 제주", "itinerary": [ ... ] }` → `201` 저장된 일정
 - `DELETE /me/trips/3` → `204` (내 일정이 아니면 404)
+
+## 관리자 주소
+
+서버 환경변수 `ADMIN_EMAILS` 에 적힌 이메일로 로그인한 사람만 쓸 수 있습니다. 토큰이 없으면 `401`, 로그인은 했지만 관리자가 아니면 `403` 입니다. 지우는 주소는 없습니다 — 사용자는 정지하고 여행지는 숨깁니다(둘 다 되돌릴 수 있음).
+
+### 사용자
+
+- `GET /admin/users?q=&size=20&cursor=` → 최근에 가입한 순. `q` 는 이메일 일부.
+
+```json
+{
+  "items": [
+    { "id": "사용자 UUID", "email": "user@example.com", "suspended": false, "created_at": "2026-12-01T03:00:00+00:00", "favorite_count": 4, "trip_count": 1 }
+  ],
+  "next_cursor": null
+}
+```
+
+- `PATCH /admin/users/{id}` 요청 `{ "suspended": true }` → 고친 뒤의 사용자. 없는 사용자면 `404`, 자기 자신을 정지하려 하면 `400`.
+
+### 여행지
+
+- `GET /admin/spots?q=&hidden=&size=20&cursor=` → `{ "items": [ AdminSpot, ... ], "next_cursor": 20, "total": 68 }`. 숨긴 곳도 함께 옵니다. `hidden=true` 면 숨긴 곳만, `hidden=false` 면 보이는 곳만.
+- AdminSpot 은 Spot 에 `hidden`(숨김 여부)과 `source`(`sample` · `tourapi` · `admin`)가 더해진 모양입니다.
+- `POST /admin/spots` → `201` AdminSpot. 필수는 `title`(1~60자), `category`, `area`. 선택은 `address`, `one_liner`, `overview`, `theme_tags`(5개까지), `indoor`, `lat`, `lng`, `image_url`(`https://` 로 시작).
+- `PATCH /admin/spots/{id}` → 고친 뒤의 AdminSpot. 보낸 칸만 고칩니다. 숨기려면 `{ "hidden": true }`, 다시 보이려면 `{ "hidden": false }`. 없는 번호면 `404`, 보낸 칸이 없으면 `400`.
+- `category` · `area` · `theme_tags` 는 `/meta` 의 선택지 안에서만 받습니다. 밖의 값이면 `422`.

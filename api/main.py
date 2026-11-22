@@ -16,10 +16,10 @@ from fastapi.staticfiles import StaticFiles
 
 from config import settings
 from deps import get_weather_service  # noqa: F401  (테스트에서 main.get_weather_service 로 바꿔 끼웁니다)
-from routers import agent, me, spots, system, weather
+from routers import admin, agent, me, spots, system, weather
 from services.photos import PHOTO_DIR
 
-app = FastAPI(title="제주 한 바퀴 API", version="1.1.0")
+app = FastAPI(title="제주 한 바퀴 API", version="1.2.0")
 
 # 다른 주소의 화면(웹·앱)이 이 서버를 부를 수 있게 허락합니다.
 app.add_middleware(
@@ -40,3 +40,4 @@ app.include_router(spots.router)    # /meta, /spots
 app.include_router(weather.router)  # /weather
 app.include_router(agent.router)    # /agent/plan
 app.include_router(me.router)       # /me, /me/favorites, /me/trips
+app.include_router(admin.router)    # /admin/users, /admin/spots (관리자만)

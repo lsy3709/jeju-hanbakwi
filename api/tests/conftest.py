@@ -16,6 +16,7 @@ from tests.fakes import FakeRepo, make_weather  # noqa: E402
 
 ALICE = User(id="00000000-0000-0000-0000-00000000000a", email="alice@example.com")
 BOB = User(id="00000000-0000-0000-0000-00000000000b", email="bob@example.com")
+ADMIN = User(id="00000000-0000-0000-0000-0000000000ad", email="admin@example.com")
 
 
 @pytest.fixture(autouse=True)
@@ -24,6 +25,7 @@ def no_real_keys(monkeypatch):
     monkeypatch.setattr(settings, "gemini_api_key", "")
     monkeypatch.setattr(settings, "supabase_url", "")
     monkeypatch.setattr(settings, "supabase_service_role_key", "")
+    monkeypatch.setattr(settings, "admin_emails", ["admin@example.com"])
 
 
 @pytest.fixture

@@ -1,10 +1,11 @@
-"""관광지 주소: 선택지, 목록(검색·필터·쪽 나눔), 상세. 누구나 볼 수 있습니다."""
+"""관광지 주소: 선택지, 목록(검색·필터·커서 페이징), 상세. 누구나 볼 수 있습니다."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from constants import AREAS, CATEGORIES, THEMES
 from repo import get_repo
 from schemas import Meta, Spot, SpotList
+from services.paging import cut_page
 from services.photos import with_photo_address, with_photo_addresses
 
 router = APIRouter(tags=["관광지"])
@@ -23,12 +24,16 @@ def list_spots(
     area: str | None = None,
     category: str | None = None,
     indoor: bool | None = None,
-    page: int = Query(default=1, ge=1),
+    cursor: int | None = Query(default=None, ge=0, description="앞 응답의 next_cursor. 없으면 처음부터"),
     size: int = Query(default=20, ge=1, le=50),
     repo=Depends(get_repo),
 ):
-    items, total = repo.list_spots(q=q, theme=theme, area=area, category=category, indoor=indoor, page=page, size=size)
-    return {"items": with_photo_addresses(items, request), "total": total, "page": page, "size": size}
+    # 하나 더 가져와서 "뒤에 더 있는지"를 봅니다. (services/paging.py)
+    rows, total = repo.list_spots(
+        q=q, theme=theme, area=area, category=category, indoor=indoor, after_id=cursor, size=size + 1
+    )
+    items, next_cursor = cut_page(rows, size, lambda spot: spot["id"])
+    return {"items": with_photo_addresses(items, request), "next_cursor": next_cursor, "total": total, "size": size}
 
 
 @router.get("/spots/{spot_id}", response_model=Spot)

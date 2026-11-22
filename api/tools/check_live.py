@@ -12,6 +12,7 @@ api 폴더에서 실행합니다. (서버가 먼저 켜져 있어야 합니다)
   python -m tools.check_live --skip-ai                    AI 일정은 건너뛰기 (호출 한도 아끼기)
 
 찜·일정 점검은 만든 것을 스스로 지우고 끝납니다.
+토큰의 주인이 관리자(서버의 ADMIN_EMAILS)면 관리자 주소도 점검합니다. 숨긴 여행지는 바로 되돌립니다.
 """
 
 import argparse
@@ -35,6 +36,20 @@ def call(client: httpx.Client, method: str, url: str, **kwargs):
     started = time.perf_counter()
     response = client.request(method, url, **kwargs)
     return response, (time.perf_counter() - started) * 1000
+
+
+def walk(client: httpx.Client, url: str, size: int, headers: dict | None = None, **params):
+    """next_cursor 를 따라 끝까지 받습니다. → (받은 번호들, 묶음 수)"""
+    ids, pages, cursor = [], 0, None
+    while pages < 200:  # 혹시 커서가 제자리를 돌아도 멈추게
+        query = {**params, "size": size, **({"cursor": cursor} if cursor is not None else {})}
+        body = client.get(url, params=query, headers=headers).json()
+        ids += [item["id"] for item in body["items"]]
+        pages += 1
+        cursor = body.get("next_cursor")
+        if cursor is None:
+            break
+    return ids, pages
 
 
 def check_public(client: httpx.Client) -> None:
@@ -64,10 +79,18 @@ def check_public(client: httpx.Client) -> None:
         print("     DB 에 데이터가 없으면: python -m tools.sync_spots --sample")
         return
 
-    r2, ms = call(client, "GET", "/spots", params={"size": 5, "page": 2})
-    second = r2.json().get("items", [])
-    overlap = {s["id"] for s in items} & {s["id"] for s in second}
-    check("쪽 나눔 (1쪽과 2쪽이 겹치지 않음)", r2.status_code == 200 and not overlap, ms=ms)
+    # 커서를 따라 끝까지 받아 봅니다. 겹치지도 빠지지도 않고 전체 개수와 맞아야 합니다.
+    started = time.perf_counter()
+    ids, pages = walk(client, "/spots", size=20)
+    ms = (time.perf_counter() - started) * 1000
+    check(
+        "커서 페이징 (끝까지 받아도 겹치거나 빠지지 않음)",
+        len(ids) == len(set(ids)) == total and ids == sorted(ids),
+        f"{pages}묶음, {len(ids)}건",
+        ms,
+    )
+    r, ms = call(client, "GET", "/spots", params={"size": 5, "cursor": ids[-1]})
+    check("마지막 커서 뒤는 빈 묶음", r.status_code == 200 and r.json()["items"] == [] and r.json()["next_cursor"] is None, ms=ms)
 
     theme = meta.get("themes", [""])[0]
     r, ms = call(client, "GET", "/spots", params={"theme": theme, "size": 50})
@@ -140,22 +163,30 @@ def check_login(client: httpx.Client, token: str | None) -> None:
 
     auth = {"Authorization": f"Bearer {token}"}
     r, ms = call(client, "GET", "/me", headers=auth)
-    if not check("내 정보 /me", r.status_code == 200 and bool(r.json().get("id")), r.json().get("email", "") if r.status_code == 200 else f"응답 {r.status_code}", ms):
+    me = r.json() if r.status_code == 200 else {}
+    if not check("내 정보 /me", bool(me.get("id")), f"{me.get('email', '')}{' (관리자)' if me.get('is_admin') else ''}" if me else f"응답 {r.status_code}", ms):
+        return
+    if me.get("suspended"):
+        print("  (이용 정지된 계정이라 찜·일정 점검을 건너뜁니다)")
         return
 
     print("\n[6] DB 연동 — 찜과 저장한 일정 (만들고, 확인하고, 지웁니다)")
     spot = client.get("/spots", params={"size": 1}).json()["items"][0]
-    before = {s["id"] for s in client.get("/me/favorites", headers=auth).json()}
+    before, _ = walk(client, "/me/favorites", size=50, headers=auth)
 
     r, ms = call(client, "POST", "/me/favorites", json={"spot_id": spot["id"]}, headers=auth)
     check("찜 추가", r.status_code == 201, spot["title"], ms)
     r, ms = call(client, "GET", "/me/favorites", headers=auth)
-    check("찜 목록에 보인다", any(s["id"] == spot["id"] for s in r.json()), ms=ms)
+    body = r.json()
+    check("찜 목록에 보인다 (최근에 찜한 것이 맨 앞)", body["items"][0]["id"] == spot["id"] or spot["id"] in before, ms=ms)
+    r, ms = call(client, "GET", "/me/favorites", params={"size": 1}, headers=auth)
+    more = r.json()
+    check("찜 목록 커서", (more["next_cursor"] is None) == (len(before) + (spot["id"] not in before) <= 1), f"next_cursor {more['next_cursor']}", ms)
     r, ms = call(client, "POST", "/me/favorites", json={"spot_id": 999999999}, headers=auth)
     check("없는 관광지는 찜할 수 없다 (404)", r.status_code == 404, ms=ms)
     if spot["id"] not in before:  # 원래 찜해 둔 것이면 지우지 않습니다
         r, ms = call(client, "DELETE", f"/me/favorites/{spot['id']}", headers=auth)
-        gone = all(s["id"] != spot["id"] for s in client.get("/me/favorites", headers=auth).json())
+        gone = spot["id"] not in walk(client, "/me/favorites", size=50, headers=auth)[0]
         check("찜 삭제", r.status_code == 204 and gone, ms=ms)
 
     itinerary = [{"day": 1, "date": None, "weather": None, "items": [{"time": "오전", "spot_id": spot["id"], "title": spot["title"], "reason": "실측 점검"}]}]
@@ -163,13 +194,51 @@ def check_login(client: httpx.Client, token: str | None) -> None:
     if check("일정 저장", r.status_code == 201, ms=ms):
         trip_id = r.json()["id"]
         r, ms = call(client, "GET", "/me/trips", headers=auth)
-        saved = next((t for t in r.json() if t["id"] == trip_id), None)
+        saved = next((t for t in r.json()["items"] if t["id"] == trip_id), None)
         check("저장한 일정이 그대로 돌아온다", bool(saved) and saved["itinerary"][0]["items"][0]["spot_id"] == spot["id"], ms=ms)
         r, ms = call(client, "DELETE", f"/me/trips/{trip_id}", headers=auth)
-        gone = all(t["id"] != trip_id for t in client.get("/me/trips", headers=auth).json())
+        gone = trip_id not in walk(client, "/me/trips", size=50, headers=auth)[0]
         check("일정 삭제", r.status_code == 204 and gone, ms=ms)
         r, ms = call(client, "DELETE", f"/me/trips/{trip_id}", headers=auth)
         check("이미 지운 일정은 404", r.status_code == 404, ms=ms)
+
+    check_admin(client, auth, is_admin=bool(me.get("is_admin")), spot=spot)
+
+
+def check_admin(client: httpx.Client, auth: dict, is_admin: bool, spot: dict) -> None:
+    print("\n[7] 관리자 주소")
+    r, ms = call(client, "GET", "/admin/users")
+    check("토큰이 없으면 401", r.status_code == 401, ms=ms)
+    r, ms = call(client, "GET", "/admin/users", params={"size": 5}, headers=auth)
+    if not is_admin:
+        check("관리자가 아니면 403", r.status_code == 403, ms=ms)
+        print("  (이 토큰은 관리자가 아니어서 관리자 기능은 점검하지 않았습니다. 서버의 ADMIN_EMAILS 를 확인하세요)")
+        return
+
+    users = r.json().get("items", []) if r.status_code == 200 else []
+    if not check("사용자 목록", r.status_code == 200 and bool(users), f"{len(users)}명, 찜 {users[0]['favorite_count']}건" if users else f"응답 {r.status_code}", ms):
+        print("     profiles 표가 없으면: supabase/migrations/003_admin.sql 을 실행하세요")
+        return
+    ids, pages = walk(client, "/admin/users", size=2, headers=auth)
+    check("사용자 목록 커서", len(ids) == len(set(ids)), f"{pages}묶음, {len(ids)}명")
+
+    me_id = client.get("/me", headers=auth).json()["id"]
+    r, ms = call(client, "PATCH", f"/admin/users/{me_id}", json={"suspended": True}, headers=auth)
+    check("자기 자신은 정지할 수 없다 (400)", r.status_code == 400, ms=ms)
+
+    # 숨겼다가 되돌립니다. 숨긴 동안 일반 주소에서는 404 여야 합니다.
+    r, ms = call(client, "PATCH", f"/admin/spots/{spot['id']}", json={"hidden": True}, headers=auth)
+    hidden_ok = r.status_code == 200 and r.json()["hidden"] is True
+    try:
+        public = client.get(f"/spots/{spot['id']}").status_code
+        in_admin = client.get("/admin/spots", params={"hidden": "true", "size": 50}, headers=auth).json()
+        check("여행지 숨김 (일반 화면에서는 404, 관리자 목록에는 남음)", hidden_ok and public == 404 and any(s["id"] == spot["id"] for s in in_admin["items"]), spot["title"], ms)
+    finally:
+        r, ms = call(client, "PATCH", f"/admin/spots/{spot['id']}", json={"hidden": False}, headers=auth)
+    check("여행지 다시 보이기", r.status_code == 200 and client.get(f"/spots/{spot['id']}").status_code == 200, ms=ms)
+
+    r, ms = call(client, "PATCH", f"/admin/spots/{spot['id']}", json={"category": "우주선"}, headers=auth)
+    check("정해 둔 분류 밖의 값은 거절 (422)", r.status_code == 422, ms=ms)
 
 
 def main() -> int:

@@ -14,12 +14,16 @@ class FakeRepo:
         self.spots = []
         for index, item in enumerate(raw, start=1):
             row = to_spot_row(item, source="sample")
-            self.spots.append({"id": index, **row})
-        self.favorites: list[tuple[str, int]] = []
+            self.spots.append({"id": index, "hidden": False, **row})
+        self.favorites: list[dict] = []      # {"id", "user_id", "spot_id"}
+        self._favorite_id = 0
         self.trips: list[dict] = []
         self._trip_id = 0
+        self.profiles: list[dict] = []       # {"no", "id", "email", "suspended", "created_at"}
 
-    def list_spots(self, q=None, theme=None, area=None, category=None, indoor=None, page=1, size=20):
+    # ---------- 관광지 ----------
+    def list_spots(self, q=None, theme=None, area=None, category=None, indoor=None,
+                   after_id=None, size=20, include_hidden=False, hidden=None):
         items = self.spots
         if q:
             items = [s for s in items if q in s["title"] or q in s["one_liner"]]
@@ -31,25 +35,51 @@ class FakeRepo:
             items = [s for s in items if s["category"] == category]
         if indoor is not None:
             items = [s for s in items if s["indoor"] == indoor]
-        start = (page - 1) * size
-        return items[start : start + size], len(items)
+        if not include_hidden:
+            items = [s for s in items if not s["hidden"]]
+        elif hidden is not None:
+            items = [s for s in items if s["hidden"] == hidden]
+        if after_id is None:
+            return items[:size], len(items)
+        return [s for s in items if s["id"] > after_id][:size], None
 
-    def get_spot(self, spot_id):
-        return next((s for s in self.spots if s["id"] == spot_id), None)
+    def get_spot(self, spot_id, include_hidden=False):
+        return next((s for s in self.spots if s["id"] == spot_id and (include_hidden or not s["hidden"])), None)
 
-    def list_favorites(self, user_id):
-        ids = [spot_id for uid, spot_id in reversed(self.favorites) if uid == user_id]
-        return [self.get_spot(i) for i in ids]
+    def add_spot(self, row):
+        spot = {"id": max(s["id"] for s in self.spots) + 1, "hidden": False, "image_credit": None, "image_source_url": None, **row}
+        self.spots.append(spot)
+        return spot
+
+    def update_spot(self, spot_id, changes):
+        spot = next((s for s in self.spots if s["id"] == spot_id), None)
+        if spot is None:
+            return None
+        spot.update(changes)
+        return spot
+
+    # ---------- 찜 ----------
+    def list_favorites(self, user_id, before_id=None, size=20):
+        rows = [f for f in reversed(self.favorites) if f["user_id"] == user_id]
+        if before_id is not None:
+            rows = [f for f in rows if f["id"] < before_id]
+        pairs = [(f["id"], self.get_spot(f["spot_id"])) for f in rows]
+        return [(fid, spot) for fid, spot in pairs if spot][:size]
 
     def add_favorite(self, user_id, spot_id):
-        if (user_id, spot_id) not in self.favorites:
-            self.favorites.append((user_id, spot_id))
+        if not any(f["user_id"] == user_id and f["spot_id"] == spot_id for f in self.favorites):
+            self._favorite_id += 1
+            self.favorites.append({"id": self._favorite_id, "user_id": user_id, "spot_id": spot_id})
 
     def remove_favorite(self, user_id, spot_id):
-        self.favorites = [f for f in self.favorites if f != (user_id, spot_id)]
+        self.favorites = [f for f in self.favorites if not (f["user_id"] == user_id and f["spot_id"] == spot_id)]
 
-    def list_trips(self, user_id):
-        return [self._public(t) for t in reversed(self.trips) if t["user_id"] == user_id]
+    # ---------- 저장한 일정 ----------
+    def list_trips(self, user_id, before_id=None, size=20):
+        rows = [t for t in reversed(self.trips) if t["user_id"] == user_id]
+        if before_id is not None:
+            rows = [t for t in rows if t["id"] < before_id]
+        return [self._public(t) for t in rows][:size]
 
     def add_trip(self, user_id, title, itinerary):
         self._trip_id += 1
@@ -65,6 +95,38 @@ class FakeRepo:
     @staticmethod
     def _public(trip):
         return {k: trip[k] for k in ("id", "title", "itinerary", "created_at")}
+
+    # ---------- 사용자 ----------
+    def add_profile(self, user_id, email):
+        """테스트에서 "가입한 사람"을 만드는 도우미. (진짜 DB 에서는 가입할 때 트리거가 넣습니다)"""
+        row = {"no": len(self.profiles) + 1, "id": user_id, "email": email, "suspended": False, "created_at": "2026-12-01T00:00:00+00:00"}
+        self.profiles.append(row)
+        return row
+
+    def is_suspended(self, user_id):
+        return any(p["id"] == user_id and p["suspended"] for p in self.profiles)
+
+    def _admin_row(self, profile):
+        return {
+            **profile,
+            "favorite_count": sum(1 for f in self.favorites if f["user_id"] == profile["id"]),
+            "trip_count": sum(1 for t in self.trips if t["user_id"] == profile["id"]),
+        }
+
+    def list_users(self, q=None, before_no=None, size=20):
+        rows = list(reversed(self.profiles))
+        if q:
+            rows = [p for p in rows if q.lower() in (p["email"] or "").lower()]
+        if before_no is not None:
+            rows = [p for p in rows if p["no"] < before_no]
+        return [self._admin_row(p) for p in rows][:size]
+
+    def set_suspended(self, user_id, suspended):
+        profile = next((p for p in self.profiles if p["id"] == user_id), None)
+        if profile is None:
+            return None
+        profile["suspended"] = suspended
+        return self._admin_row(profile)
 
 
 def make_weather(first_day_rainy: bool):

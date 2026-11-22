@@ -37,5 +37,9 @@ class Settings:
     # 이 서버를 불러도 되는 화면 주소들(쉼표로 구분). 배포한 웹·앱 주소를 여기에 추가합니다.
     allowed_origins = [o.strip() for o in _env("ALLOWED_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
 
+    # 관리자 이메일(쉼표로 구분). 이 이메일로 구글 로그인한 사람만 /admin 주소를 쓸 수 있습니다.
+    # 비밀 값은 아니지만 서버에만 둡니다(화면이 "나는 관리자"라고 우기지 못하게 서버가 판단).
+    admin_emails = [e.strip().lower() for e in _env("ADMIN_EMAILS").split(",") if e.strip()]
+
 
 settings = Settings()

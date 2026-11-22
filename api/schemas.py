@@ -24,9 +24,10 @@ class Spot(BaseModel):
 
 
 class SpotList(BaseModel):
+    """관광지 한 묶음. next_cursor 를 다음 요청의 cursor 로 보내면 이어지는 묶음을 받습니다."""
     items: list[Spot]
-    total: int
-    page: int
+    next_cursor: int | None = None   # None 이면 끝
+    total: int | None = None         # 조건에 맞는 전체 개수. 첫 묶음에서만 셉니다
     size: int
 
 
@@ -89,6 +90,12 @@ class User(BaseModel):
     email: str | None = None
 
 
+class Me(User):
+    """GET /me 응답. 화면이 관리자 메뉴와 이용 정지 안내를 보여 줄지 정하는 데 씁니다."""
+    is_admin: bool = False
+    suspended: bool = False
+
+
 class FavoriteIn(BaseModel):
     spot_id: int
 
@@ -103,6 +110,74 @@ class Trip(BaseModel):
     title: str
     itinerary: list[PlanDay]
     created_at: str
+
+
+class FavoritePage(BaseModel):
+    items: list[Spot]
+    next_cursor: int | None = None
+
+
+class TripPage(BaseModel):
+    items: list[Trip]
+    next_cursor: int | None = None
+
+
+# ---------------------------------------------------------------- 관리자
+
+class AdminUser(BaseModel):
+    id: str
+    email: str | None = None
+    suspended: bool
+    created_at: str
+    favorite_count: int
+    trip_count: int
+
+
+class AdminUserPage(BaseModel):
+    items: list[AdminUser]
+    next_cursor: int | None = None
+
+
+class AdminUserPatch(BaseModel):
+    suspended: bool
+
+
+class AdminSpot(Spot):
+    hidden: bool = False
+    source: str = ""
+
+
+class AdminSpotPage(BaseModel):
+    items: list[AdminSpot]
+    next_cursor: int | None = None
+    total: int | None = None
+
+
+class SpotCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=60)
+    category: str
+    area: str
+    address: str = Field(default="", max_length=120)
+    one_liner: str = Field(default="", max_length=120)
+    overview: str = Field(default="", max_length=2000)
+    theme_tags: list[str] = Field(default=[], max_length=5)
+    indoor: bool = False
+    lat: float | None = Field(default=None, ge=32.5, le=34.5)    # 제주 근처만
+    lng: float | None = Field(default=None, ge=125.5, le=127.5)
+    image_url: str | None = Field(default=None, max_length=300, pattern=r"^https://")
+
+
+class SpotPatch(BaseModel):
+    """보낸 칸만 고칩니다. 숨김(hidden)도 여기로 바꿉니다."""
+    title: str | None = Field(default=None, min_length=1, max_length=60)
+    category: str | None = None
+    area: str | None = None
+    address: str | None = Field(default=None, max_length=120)
+    one_liner: str | None = Field(default=None, max_length=120)
+    overview: str | None = Field(default=None, max_length=2000)
+    theme_tags: list[str] | None = Field(default=None, max_length=5)
+    indoor: bool | None = None
+    hidden: bool | None = None
 
 
 class Status(BaseModel):

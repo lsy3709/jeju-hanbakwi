@@ -13,19 +13,61 @@ def test_health_and_meta(client):
 
 # ---------------------------------------------------------------- 관광지
 
-def test_spots_default_page(client):
+def test_spots_first_page(client):
     body = client.get("/spots").json()
-    assert body["page"] == 1 and body["size"] == 20
+    assert body["size"] == 20
     assert len(body["items"]) == 20
     assert body["total"] == 68
+    assert body["next_cursor"] == body["items"][-1]["id"]  # 커서 = 마지막으로 준 줄의 번호
     first = body["items"][0]
     assert set(first) == {"id", "title", "category", "area", "address", "lat", "lng", "image_url", "image_credit", "image_source_url", "overview", "one_liner", "theme_tags", "indoor"}
 
 
-def test_spots_paging(client):
-    last = client.get("/spots", params={"page": 4, "size": 20}).json()
-    assert len(last["items"]) == 8
-    assert client.get("/spots", params={"page": 5, "size": 20}).json()["items"] == []
+def walk(client, url, **params):
+    """next_cursor 를 따라 끝까지 받아 모든 묶음을 돌려줍니다."""
+    pages, cursor = [], None
+    while True:
+        query = {**params, **({"cursor": cursor} if cursor is not None else {})}
+        body = client.get(url, params=query).json()
+        pages.append(body)
+        cursor = body["next_cursor"]
+        if cursor is None:
+            return pages
+
+
+def test_spots_cursor_walks_to_the_end(client):
+    pages = walk(client, "/spots", size=20)
+    assert [len(p["items"]) for p in pages] == [20, 20, 20, 8]
+    ids = [s["id"] for p in pages for s in p["items"]]
+    assert ids == sorted(set(ids)) and len(ids) == 68       # 겹치지도 빠지지도 않음
+    assert pages[0]["total"] == 68
+    assert all(p["total"] is None for p in pages[1:])        # 전체 개수는 첫 묶음에서만
+
+
+def test_spots_exact_multiple_has_no_empty_last_page(client):
+    """딱 나누어떨어질 때 빈 묶음을 한 번 더 받지 않아야 합니다. (하나 더 가져와 보는 이유)"""
+    pages = walk(client, "/spots", size=34)
+    assert [len(p["items"]) for p in pages] == [34, 34]
+
+
+def test_spots_cursor_keeps_filters(client):
+    pages = walk(client, "/spots", theme="바다", size=5)
+    items = [s for p in pages for s in p["items"]]
+    assert len(items) == pages[0]["total"] and all("바다" in s["theme_tags"] for s in items)
+
+
+def test_spots_cursor_survives_a_row_removed_in_between(client, repo):
+    """쪽 번호 방식이면 앞쪽 줄이 빠질 때 한 줄을 건너뜁니다. 커서 방식은 건너뛰지 않습니다."""
+    first = client.get("/spots", params={"size": 20}).json()
+    repo.spots[0]["hidden"] = True                            # 이미 받은 묶음의 한 곳이 숨겨짐
+    second = client.get("/spots", params={"size": 20, "cursor": first["next_cursor"]}).json()
+    assert second["items"][0]["id"] == first["items"][-1]["id"] + 1
+
+
+def test_hidden_spot_is_not_shown(client, repo):
+    repo.spots[0]["hidden"] = True
+    assert client.get("/spots/1").status_code == 404
+    assert client.get("/spots").json()["total"] == 67
 
 
 def test_spots_filters(client):
@@ -47,7 +89,8 @@ def test_spots_filters(client):
 def test_spots_bad_query_is_rejected(client):
     assert client.get("/spots", params={"size": 0}).status_code == 422
     assert client.get("/spots", params={"size": 51}).status_code == 422
-    assert client.get("/spots", params={"page": 0}).status_code == 422
+    assert client.get("/spots", params={"cursor": -1}).status_code == 422
+    assert client.get("/spots", params={"cursor": "abc"}).status_code == 422
 
 
 def test_spot_detail_and_404(client):
@@ -101,23 +144,23 @@ def test_wrong_token_is_401(client):
 
 def test_me(client, login):
     login(ALICE)
-    assert client.get("/me").json() == {"id": ALICE.id, "email": "alice@example.com"}
+    assert client.get("/me").json() == {"id": ALICE.id, "email": "alice@example.com", "is_admin": False, "suspended": False}
 
 
 def test_favorites_flow(client, login):
     login(ALICE)
-    assert client.get("/me/favorites").json() == []
+    assert client.get("/me/favorites").json() == {"items": [], "next_cursor": None}
 
     added = client.post("/me/favorites", json={"spot_id": 1})
     assert added.status_code == 201 and added.json() == {"spot_id": 1}
     client.post("/me/favorites", json={"spot_id": 3})
     assert client.post("/me/favorites", json={"spot_id": 1}).status_code == 201  # 두 번 찜해도 괜찮음
 
-    titles = [s["title"] for s in client.get("/me/favorites").json()]
+    titles = [s["title"] for s in client.get("/me/favorites").json()["items"]]
     assert titles == ["만장굴", "성산일출봉"]  # 최근에 찜한 순, 중복 없음
 
     assert client.delete("/me/favorites/1").status_code == 204
-    assert [s["title"] for s in client.get("/me/favorites").json()] == ["만장굴"]
+    assert [s["title"] for s in client.get("/me/favorites").json()["items"]] == ["만장굴"]
 
 
 def test_favorite_of_missing_spot_is_404(client, login):
@@ -129,7 +172,7 @@ def test_favorites_are_private(client, login):
     login(ALICE)
     client.post("/me/favorites", json={"spot_id": 1})
     login(BOB)
-    assert client.get("/me/favorites").json() == []
+    assert client.get("/me/favorites").json()["items"] == []
 
 
 ITINERARY = [
@@ -146,9 +189,9 @@ def test_trips_flow(client, login):
     assert trip["itinerary"][0]["items"][0]["spot_id"] == 1
     assert trip["itinerary"][0]["date"] == "2026-12-01"
 
-    assert [t["id"] for t in client.get("/me/trips").json()] == [trip["id"]]
+    assert [t["id"] for t in client.get("/me/trips").json()["items"]] == [trip["id"]]
     assert client.delete(f"/me/trips/{trip['id']}").status_code == 204
-    assert client.get("/me/trips").json() == []
+    assert client.get("/me/trips").json() == {"items": [], "next_cursor": None}
 
 
 def test_trip_validation(client, login):
@@ -164,11 +207,11 @@ def test_cannot_see_or_delete_other_users_trip(client, login):
     trip_id = client.post("/me/trips", json={"title": "앨리스 일정", "itinerary": ITINERARY}).json()["id"]
 
     login(BOB)
-    assert client.get("/me/trips").json() == []
+    assert client.get("/me/trips").json()["items"] == []
     assert client.delete(f"/me/trips/{trip_id}").status_code == 404
 
     login(ALICE)
-    assert len(client.get("/me/trips").json()) == 1  # 지워지지 않았음
+    assert len(client.get("/me/trips").json()["items"]) == 1  # 지워지지 않았음
 
 
 # ---------------------------------------------------------------- 사진 주소
@@ -192,7 +235,7 @@ def test_outside_photo_and_no_photo_are_left_alone(client, repo):
 def test_photo_address_in_favorites_and_plan(client, login):
     login(ALICE)
     client.post("/me/favorites", json={"spot_id": 1})
-    assert client.get("/me/favorites").json()[0]["image_url"].startswith("http://testserver/photos/")
+    assert client.get("/me/favorites").json()["items"][0]["image_url"].startswith("http://testserver/photos/")
     plan = client.post("/agent/plan", json={"message": "성산일출봉을 포함한 일정", "days": 1}).json()
     with_photo = [s for s in plan["sources"] if s["image_url"]]
     assert with_photo and all(s["image_url"].startswith("http") for s in with_photo)
