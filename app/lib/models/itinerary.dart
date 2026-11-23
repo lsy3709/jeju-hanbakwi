@@ -53,7 +53,17 @@ class PlanResult {
   /// 보낸 내 AI 키로 일정을 받지 못해 다른 방식으로 대신했을 때만 오는 안내 글.
   final String? notice;
 
-  const PlanResult({required this.mode, required this.answer, required this.itinerary, required this.sources, this.notice});
+  /// 로그인한 채로 짰으면 서버가 "내 여행"에 자동 저장하고 그 일정의 번호와 제목을 알려 줍니다. 아니면 null.
+  final ({int id, String title})? savedTrip;
+
+  const PlanResult({
+    required this.mode,
+    required this.answer,
+    required this.itinerary,
+    required this.sources,
+    this.notice,
+    this.savedTrip,
+  });
 
   /// rule 이면 AI 가 아니라 규칙으로 짠 "간단 추천".
   bool get isSimple => mode == 'rule';
@@ -64,5 +74,9 @@ class PlanResult {
         itinerary: itineraryFromJson(json['itinerary'] as List),
         sources: (json['sources'] as List).map((e) => Spot.fromJson(e as Map<String, dynamic>)).toList(),
         notice: json['notice'] as String?,
+        savedTrip: switch (json['saved_trip']) {
+          {'id': final int id, 'title': final String title} => (id: id, title: title),
+          _ => null,
+        },
       );
 }

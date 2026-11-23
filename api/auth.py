@@ -47,6 +47,16 @@ def get_current_user(authorization: str | None = Header(default=None)) -> User:
     return user
 
 
+def get_optional_user(authorization: str | None = Header(default=None)) -> User | None:
+    """로그인이 "선택"인 주소에 붙입니다. 로그인했으면 그 사용자, 아니면 None (401 을 내지 않음).
+
+    토큰이 틀렸거나 만료된 경우에도 None 입니다. 로그인 없이도 되는 일을 토큰 때문에 막지 않으려는 것입니다.
+    """
+    if not authorization or not authorization.lower().startswith("bearer "):
+        return None
+    return verify_token(authorization[7:].strip())
+
+
 def is_admin(user: User) -> bool:
     """서버 환경변수 ADMIN_EMAILS 에 적힌 이메일인가. 이메일은 Supabase 가 확인해 준 값만 씁니다."""
     return bool(user.email) and user.email.lower() in settings.admin_emails

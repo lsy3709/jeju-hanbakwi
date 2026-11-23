@@ -92,6 +92,8 @@ export type PlanResponse = {
   sources: Spot[];
   /** 보낸 내 AI 키로 일정을 받지 못해 다른 방식으로 대신했을 때만 오는 안내 글 */
   notice?: string | null;
+  /** 로그인한 채로 짰으면 서버가 "내 여행"에 자동 저장하고 그 일정의 번호와 제목을 알려 줍니다. 아니면 null */
+  saved_trip?: { id: number; title: string } | null;
 };
 
 /** POST /agent/key-check 응답 */

@@ -61,11 +61,27 @@ class PlanResultView extends StatelessWidget {
         const SizedBox(height: 16),
         ItineraryView(days: result.itinerary, onSpotTap: onSpotTap),
         const SizedBox(height: 4),
-        OutlinedButton.icon(
-          onPressed: onSave,
-          icon: const Icon(Icons.bookmark_add_outlined),
-          label: const Text('내 여행에 저장'),
-        ),
+        // 로그인한 채로 짠 일정은 서버가 바로 저장해 줍니다. 그때는 저장 단추 대신 안내만 보여 줍니다.
+        if (result.savedTrip != null)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.bookmark_added_outlined, color: AppColors.secondary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  '내 여행에 자동으로 저장했어요. 제목: ${result.savedTrip!.title}',
+                  style: const TextStyle(color: AppColors.secondary, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          )
+        else
+          OutlinedButton.icon(
+            onPressed: onSave,
+            icon: const Icon(Icons.bookmark_add_outlined),
+            label: const Text('내 여행에 저장'),
+          ),
       ],
     );
   }

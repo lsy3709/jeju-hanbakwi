@@ -87,7 +87,7 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
 | GET | `/spots` | - | 관광지 목록 |
 | GET | `/spots/{id}` | - | 관광지 한 곳 (없으면 404) |
 | GET | `/weather` | - | 제주시·서귀포시 오늘부터 4일 날씨 |
-| POST | `/agent/plan` | - | AI 일정 짜기 (`X-Gemini-Key` 헤더로 내 AI 키를 쓸 수 있음) |
+| POST | `/agent/plan` | 선택 | AI 일정 짜기 (`X-Gemini-Key` 헤더로 내 AI 키를 쓸 수 있음). 로그인한 채로 부르면 "내 여행"에 자동 저장 |
 | POST | `/agent/key-check` | - | 내 AI 키가 쓸 수 있는 키인지 확인 |
 | GET | `/me` | 필요 | 로그인한 사용자 |
 | GET | `/me/favorites` | 필요 | 찜한 관광지 목록 |
@@ -191,9 +191,15 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
   "answer": "짧은 설명 글",
   "itinerary": [ ... Itinerary ... ],
   "sources": [ Spot, ... ],
-  "notice": null
+  "notice": null,
+  "saved_trip": { "id": 12, "title": "부모님과 2박 3일, 많이 걷지 않는 코스" }
 }
 ```
+
+- `saved_trip`: 로그인 토큰(`Authorization: Bearer …`)을 함께 보냈으면 서버가 만든 일정을 그 사람의 "내 여행"에 바로 저장하고, 저장한 일정의 번호와 제목을 돌려줍니다. 로그인하지 않았으면 `null`.
+  - 제목은 `message` 의 앞 30자입니다. 지우려면 `DELETE /me/trips/{id}`.
+  - 토큰이 틀렸거나 만료됐으면 `401` 을 내지 않고 로그인하지 않은 것으로 봅니다(일정은 그대로 짜 줍니다). 이용 정지된 계정과 저장에 실패한 경우에도 `null` 이고 일정은 그대로 옵니다.
+  - 화면은 `saved_trip` 이 있으면 "자동으로 저장했어요"를 보여 주고, `null` 이면 지금까지처럼 "내 여행에 저장" 단추를 보여 줍니다.
 
 - `notice`: 보통 `null`. 보낸 내 키로 일정을 받지 못해 다른 방식(서버 키 또는 규칙)으로 대신했을 때만 안내 글이 옵니다. 화면은 이 글을 결과 위에 보여 줍니다.
 - `mode`: `ai`(AI 가 짠 일정) 또는 `rule`(AI 를 쓸 수 없을 때 규칙으로 짠 일정). 화면은 `rule` 일 때 "간단 추천" 표시를 붙입니다.

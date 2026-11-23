@@ -86,9 +86,12 @@ export const getMeta = () => request<Meta>("/meta");
 export const getSpots = (params: SpotsParams = {}) => request<SpotList>(`/spots${spotsQuery(params)}`);
 export const getSpot = (id: number | string) => request<Spot>(`/spots/${id}`);
 export const getWeather = () => request<Weather>("/weather");
-/** aiKey: 설정 화면에 넣은 내 AI 키. 있으면 그 키로, 없으면 서버의 기본 방식으로 일정을 짭니다. */
-export const planTrip = (body: PlanRequest, aiKey?: string | null) =>
-  request<PlanResponse>("/agent/plan", { method: "POST", body, aiKey });
+/**
+ * aiKey: 설정 화면에 넣은 내 AI 키. 있으면 그 키로, 없으면 서버의 기본 방식으로 일정을 짭니다.
+ * token: 로그인 토큰. 함께 보내면 서버가 만든 일정을 "내 여행"에 자동으로 저장합니다(응답의 saved_trip).
+ */
+export const planTrip = (body: PlanRequest, options: { aiKey?: string | null; token?: string | null } = {}) =>
+  request<PlanResponse>("/agent/plan", { method: "POST", body, ...options });
 /** 내 AI 키가 쓸 수 있는 키인지 서버에 묻습니다. */
 export const checkAiKey = (aiKey: string) => request<KeyCheck>("/agent/key-check", { method: "POST", aiKey });
 

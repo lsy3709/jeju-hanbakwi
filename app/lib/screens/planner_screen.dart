@@ -65,12 +65,15 @@ class _PlannerScreenState extends State<PlannerScreen> {
     if (picked != null) _controller.setStartDate(picked);
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_controller.hasMessage) {
       showSnack(context, '하고 싶은 여행을 적어 주세요.');
       return;
     }
-    _controller.submit();
+    final shell = AppScope.of(context).shell;
+    await _controller.submit();
+    // 서버가 자동으로 저장해 줬으면 "내 여행"이 목록을 다시 불러오게 알립니다.
+    if (mounted && _controller.result?.savedTrip != null) shell.tripsChanged();
   }
 
   Future<void> _save() async {

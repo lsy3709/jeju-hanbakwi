@@ -78,6 +78,13 @@ class PlanDay(BaseModel):
     items: list[PlanItem]
 
 
+class SavedTrip(BaseModel):
+    """자동 저장된 일정을 가리키는 값."""
+
+    id: int
+    title: str
+
+
 class PlanResponse(BaseModel):
     mode: Literal["ai", "rule"]
     answer: str
@@ -85,6 +92,8 @@ class PlanResponse(BaseModel):
     sources: list[Spot]
     # 사용자가 보낸 자기 AI 키로 일정을 받지 못해 다른 방식으로 대신했을 때만 안내 글이 옵니다.
     notice: str | None = None
+    # 로그인한 채로 불렀으면 "내 여행"에 자동 저장하고 그 일정의 번호와 제목을 돌려줍니다. 아니면 None.
+    saved_trip: SavedTrip | None = None
 
 
 class KeyCheck(BaseModel):

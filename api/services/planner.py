@@ -24,6 +24,12 @@ log = logging.getLogger("planner")
 USER_KEY_NOTICE = "넣어 주신 AI 키로는 일정을 받지 못해 다른 방식으로 대신 짰어요. 설정에서 키를 확인해 주세요."
 
 
+def auto_title(message: str) -> str:
+    """자동 저장할 일정의 제목. 요청 글을 한 줄로 만들어 앞 30자만 씁니다."""
+    one_line = " ".join(message.split())
+    return one_line if len(one_line) <= 30 else one_line[:30] + "…"
+
+
 def hide_key(text: str, key: str | None) -> str:
     """오류 글에 키가 섞여 있으면 가립니다. (키를 로그에 남기지 않기 위해)"""
     return text.replace(key, "(키 가림)") if key else text

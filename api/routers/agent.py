@@ -3,16 +3,19 @@
 여기서는 요청을 받아 넘기고 결과를 돌려주기만 합니다. 일정을 짜는 일은 services/planner.py 가 합니다.
 
 X-Gemini-Key 헤더: 사용자가 설정 화면에 넣은 자기 AI 키. 이 요청에만 쓰고 저장하지도, 로그에 남기지도 않습니다.
+로그인한 채로 부르면 만든 일정을 그 사람의 "내 여행"에 자동으로 저장합니다(로그인은 선택).
 """
 
 import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, Request
+from fastapi.encoders import jsonable_encoder
 
+from auth import get_optional_user
 from deps import get_ai_asker, get_key_checker, get_weather_service
 from repo import get_repo
-from schemas import KeyCheck, PlanRequest, PlanResponse
+from schemas import KeyCheck, PlanRequest, PlanResponse, User
 from services import planner
 from services.photos import with_photo_addresses
 
@@ -34,10 +37,30 @@ def plan(
     repo=Depends(get_repo),
     get_weather_fn=Depends(get_weather_service),
     ask_ai=Depends(get_ai_asker),
+    user: User | None = Depends(get_optional_user),
 ):
     result = planner.plan_trip(body, repo, get_weather_fn, ask_ai=ask_ai, user_key=user_key)
     result["sources"] = with_photo_addresses(result["sources"], request)
+    result["saved_trip"] = save_for(user, body, result, repo)
     return result
+
+
+def save_for(user: User | None, body: PlanRequest, result: dict, repo) -> dict | None:
+    """로그인한 사용자의 일정을 "내 여행"에 저장하고 {id, title} 을 돌려줍니다. 저장하지 않았으면 None.
+
+    저장은 덤입니다. 로그인하지 않았거나, 이용 정지거나, 저장에 실패해도 일정은 그대로 돌려줍니다.
+    """
+    if user is None:
+        return None
+    try:
+        if repo.is_suspended(user.id):
+            return None
+        # jsonable_encoder: 날짜 같은 값을 DB 에 넣을 수 있는 글자로 바꿉니다.
+        trip = repo.add_trip(user.id, planner.auto_title(body.message), jsonable_encoder(result["itinerary"]))
+    except Exception as error:
+        log.warning("일정 자동 저장 실패(일정은 그대로 돌려줍니다): %s", error)
+        return None
+    return {"id": trip["id"], "title": trip["title"]}
 
 
 @router.post("/agent/key-check", response_model=KeyCheck)

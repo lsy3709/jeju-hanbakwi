@@ -121,6 +121,9 @@ const planDay = ItineraryDay(
 class PlanApi extends FakeApi {
   bool failPlan = false;
   bool failSave = false;
+
+  /// true 면 서버가 일정을 자동으로 저장해 준 것처럼 답합니다(로그인한 채로 짠 경우).
+  bool autoSaved = false;
   final planCalls = <Map<String, Object?>>[];
   final saveCalls = <String>[];
 
@@ -128,7 +131,13 @@ class PlanApi extends FakeApi {
   Future<PlanResult> plan({required String message, int days = 2, String? companions, String? startDate}) async {
     planCalls.add({'message': message, 'days': days, 'companions': companions, 'startDate': startDate});
     if (failPlan) throw const ApiException('지금은 이 기능을 쓸 수 없어요.', statusCode: 503);
-    return const PlanResult(mode: 'ai', answer: '추천이에요', itinerary: [planDay], sources: []);
+    return PlanResult(
+      mode: 'ai',
+      answer: '추천이에요',
+      itinerary: const [planDay],
+      sources: const [],
+      savedTrip: autoSaved ? (id: 7, title: message) : null,
+    );
   }
 
   @override

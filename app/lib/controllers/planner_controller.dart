@@ -64,6 +64,7 @@ class PlannerController extends ChangeNotifier with SafeNotifier {
       );
       if (isDisposed) return;
       result = plan;
+      saved = plan.savedTrip != null; // 서버가 자동으로 저장해 준 일정이면 처음부터 "저장됨"
     } on ApiException catch (e) {
       if (isDisposed) return;
       error = e.message;
