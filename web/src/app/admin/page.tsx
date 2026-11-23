@@ -1,6 +1,6 @@
 "use client";
 
-// 이 파일이 하는 일: 관리자 화면 조립. 로그인 · 관리자 여부를 확인한 뒤 "사용자" / "여행지" 탭을 보여 줍니다.
+// 이 파일이 하는 일: 관리자 화면 조립. 로그인 · 관리자 여부를 확인한 뒤 "사용자" / "여행지" / "AI 사용량" 탭을 보여 줍니다.
 // 화면에서 막는 것은 안내일 뿐이고, 진짜로 막는 일은 서버가 합니다(관리자가 아니면 /admin 주소가 403).
 // 데이터는 hooks/useAdminUsers.ts · useAdminSpots.ts, 표와 폼은 components/admin/ 에 있습니다.
 import { useState } from "react";
@@ -9,6 +9,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { LoginPanel } from "@/components/LoginPanel";
 import { MoreButton } from "@/components/MoreButton";
 import { SearchBar } from "@/components/SearchBar";
+import { UsageView } from "@/components/UsageView";
 import { Empty, ErrorBox, Loading } from "@/components/States";
 import { AdminSpotTable } from "@/components/admin/AdminSpotTable";
 import { AdminUserTable } from "@/components/admin/AdminUserTable";
@@ -51,7 +52,7 @@ function Notice({ title, text, children }: { title: string; text: string; childr
 }
 
 function AdminContent({ token, myId }: { token: string; myId: string }) {
-  const [tab, setTab] = useState<"users" | "spots">("users");
+  const [tab, setTab] = useState<"users" | "spots" | "usage">("users");
 
   return (
     <div className="space-y-5">
@@ -63,9 +64,20 @@ function AdminContent({ token, myId }: { token: string; myId: string }) {
         <button type="button" role="tab" aria-selected={tab === "spots"} onClick={() => setTab("spots")} className={chip(tab === "spots")}>
           여행지
         </button>
+        <button type="button" role="tab" aria-selected={tab === "usage"} onClick={() => setTab("usage")} className={chip(tab === "usage")}>
+          AI 사용량
+        </button>
       </div>
       {/* 탭을 열 때만 데이터를 불러오도록 탭마다 작은 함수로 나눴습니다. */}
-      {tab === "users" ? <UsersTab token={token} myId={myId} /> : <SpotsTab token={token} />}
+      {tab === "users" ? (
+        <UsersTab token={token} myId={myId} />
+      ) : tab === "spots" ? (
+        <SpotsTab token={token} />
+      ) : (
+        <section aria-label="AI 사용량">
+          <UsageView scope="admin" token={token} />
+        </section>
+      )}
     </div>
   );
 }

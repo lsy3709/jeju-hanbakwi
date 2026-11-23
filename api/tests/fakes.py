@@ -1,6 +1,7 @@
 """테스트용 가짜 DB. repo.SupabaseRepo 와 같은 함수를 메모리 안에서 흉내 냅니다."""
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 from transform import to_spot_row
@@ -20,6 +21,7 @@ class FakeRepo:
         self.trips: list[dict] = []
         self._trip_id = 0
         self.profiles: list[dict] = []       # {"no", "id", "email", "suspended", "created_at"}
+        self.ai_usage: list[dict] = []       # ai_usage 표의 줄
 
     # ---------- 관광지 ----------
     def list_spots(self, q=None, theme=None, area=None, category=None, indoor=None,
@@ -98,6 +100,19 @@ class FakeRepo:
     @staticmethod
     def _public(trip):
         return {k: trip[k] for k in ("id", "title", "itinerary", "created_at")}
+
+    # ---------- AI 사용량 ----------
+    def add_ai_usage(self, row):
+        self.ai_usage.append({"created_at": datetime.now(timezone.utc).isoformat(), **row})
+
+    def list_ai_usage(self, since, user_id=None, limit=1000):
+        rows = [r for r in self.ai_usage if datetime.fromisoformat(r["created_at"]) >= datetime.fromisoformat(since)]
+        if user_id:
+            rows = [r for r in rows if r["user_id"] == user_id]
+        return list(reversed(rows))[:limit]
+
+    def profile_emails(self, user_ids):
+        return {p["id"]: p["email"] for p in self.profiles if p["id"] in user_ids}
 
     # ---------- 사용자 ----------
     def add_profile(self, user_id, email):

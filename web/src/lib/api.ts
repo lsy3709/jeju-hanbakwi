@@ -23,6 +23,7 @@ import type {
   SpotPatch,
   SpotsParams,
   Trip,
+  UsageReport,
   Weather,
 } from "./types";
 
@@ -98,6 +99,11 @@ export const checkAiKey = (aiKey: string) => request<KeyCheck>("/agent/key-check
 // ---------- 로그인이 필요한 주소 (token = Supabase 액세스 토큰) ----------
 // 목록 주소는 { items, next_cursor } 를 돌려줍니다. 다음 묶음은 next_cursor 를 cursor 에 넣어 다시 부릅니다.
 export const getMe = (token: string) => request<Me>("/me", { token });
+/** 내 AI 사용량(최근 days 일). */
+export const getMyAiUsage = (token: string, days = 30) => request<UsageReport>(`/me/ai-usage${buildQuery({ days })}`, { token });
+/** 전체 AI 사용량(관리자). by_user 가 함께 옵니다. */
+export const getAdminAiUsage = (token: string, days = 30) =>
+  request<UsageReport>(`/admin/ai-usage${buildQuery({ days })}`, { token });
 export const getFavorites = (token: string, page: CursorParams = {}) =>
   request<CursorPage<Spot>>(`/me/favorites${buildQuery(page)}`, { token });
 export const addFavorite = (token: string, spotId: number) =>

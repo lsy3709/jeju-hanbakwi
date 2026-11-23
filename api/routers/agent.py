@@ -4,9 +4,11 @@
 
 X-Gemini-Key 헤더: 사용자가 설정 화면에 넣은 자기 AI 키. 이 요청에만 쓰고 저장하지도, 로그에 남기지도 않습니다.
 로그인한 채로 부르면 만든 일정을 그 사람의 "내 여행"에 자동으로 저장합니다(로그인은 선택).
+부를 때마다 사용량 한 줄을 적습니다(누가 · 어떤 방식으로 · 토큰을 얼마나). 요청 글과 키는 적지 않습니다.
 """
 
 import logging
+import time
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, Request
@@ -39,10 +41,22 @@ def plan(
     ask_ai=Depends(get_ai_asker),
     user: User | None = Depends(get_optional_user),
 ):
+    started = time.monotonic()
     result = planner.plan_trip(body, repo, get_weather_fn, ask_ai=ask_ai, user_key=user_key)
+    record_usage(repo, user, body, result, int((time.monotonic() - started) * 1000))
     result["sources"] = with_photo_addresses(result["sources"], request)
     result["saved_trip"] = save_for(user, body, result, repo)
     return result
+
+
+def record_usage(repo, user: User | None, body: PlanRequest, result: dict, duration_ms: int) -> None:
+    """이번 요청의 사용량을 한 줄 적습니다. 적지 못해도 일정은 그대로 돌려줍니다."""
+    used = result.pop("usage")   # 응답에는 싣지 않습니다
+    row = {"user_id": user.id if user else None, "mode": result["mode"], "days": body.days, "duration_ms": duration_ms, **used}
+    try:
+        repo.add_ai_usage(row)
+    except Exception as error:
+        log.warning("AI 사용량 기록 실패(일정은 그대로 돌려줍니다): %s", error)
 
 
 def save_for(user: User | None, body: PlanRequest, result: dict, repo) -> dict | None:

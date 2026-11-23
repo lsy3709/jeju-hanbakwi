@@ -214,6 +214,7 @@ python -m tools.check_live --api https://<서버 주소>
 | "구글로 로그인"을 눌러도 구글 화면이 안 뜨고 오류 글이 나옴 | Supabase 의 Google 공급자가 꺼져 있거나 값을 저장하지 않음 | 4-3 — 켜고 **Save** |
 | AI 일정이 "간단 추천"으로만 나옴 | AI 키가 없거나 한도 초과, 또는 모델 이름이 바뀜 | `/status` 의 `ai`, Vercel 의 서버 로그, `GEMINI_MODEL` |
 | 관리자 메뉴가 안 보임, `/admin/users` 가 403 | 서버의 `ADMIN_EMAILS` 에 내 이메일이 없거나, 넣고 다시 배포하지 않음 | 값을 넣고 Redeploy. `/me` 의 `is_admin` 이 `true` 인지 확인 |
+| 설정 · 관리자 화면의 AI 사용량이 "읽지 못했습니다(503)" | `004_ai_usage.sql` 을 실행하지 않음 | SQL 을 실행. 실행 전에도 일정 짜기는 그대로 됩니다(사용량만 적히지 않음) |
 | 코드를 올린 뒤 `/spots` 가 500 | 새 SQL(`003_admin.sql`)을 실행하지 않음 | SQL 을 실행. Vercel Logs 에 `column spots.hidden does not exist` 가 보임 |
 | 며칠 뒤 DB 가 응답하지 않음 | 무료 Supabase 프로젝트는 오래 쓰지 않으면 일시 정지됨 | Supabase 대시보드에서 다시 켜기 |
 | 사진이 안 나옴 | 사진 주소가 `http://` 로 나옴 | `PUBLIC_API_URL` 설정 |

@@ -198,6 +198,38 @@ class SpotPatch(BaseModel):
     hidden: bool | None = None
 
 
+class UsageSummary(BaseModel):
+    """AI 사용량을 더한 값. server_tokens_total 은 서버 키로 쓴 토큰(서비스가 내는 몫)입니다."""
+
+    requests: int
+    ai_requests: int
+    rule_requests: int
+    user_key_requests: int
+    server_key_requests: int
+    tokens_in: int
+    tokens_out: int
+    tokens_total: int
+    server_tokens_total: int
+
+
+class UsageDay(UsageSummary):
+    date: str
+
+
+class UsageUser(UsageSummary):
+    user_id: str | None = None   # 로그인하지 않은 요청은 None 한 줄로 묶임
+    email: str | None = None
+
+
+class UsageReport(BaseModel):
+    days: int
+    total: UsageSummary
+    today: UsageSummary
+    by_day: list[UsageDay]
+    by_user: list[UsageUser] | None = None   # 관리자 주소에만 있음
+    truncated: bool = False
+
+
 class Status(BaseModel):
     """운영 확인용 응답. 키 값은 담지 않고 "있다/없다"만 담습니다."""
 

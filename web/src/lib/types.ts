@@ -96,6 +96,30 @@ export type PlanResponse = {
   saved_trip?: { id: number; title: string } | null;
 };
 
+/** AI 사용량을 더한 값. server_tokens_total 은 서버 키로 쓴 토큰(서비스가 내는 몫) */
+export type UsageSummary = {
+  requests: number;
+  ai_requests: number;
+  rule_requests: number;
+  user_key_requests: number;
+  server_key_requests: number;
+  tokens_in: number;
+  tokens_out: number;
+  tokens_total: number;
+  server_tokens_total: number;
+};
+export type UsageDay = UsageSummary & { date: string };
+export type UsageUser = UsageSummary & { user_id: string | null; email: string | null };
+/** GET /me/ai-usage · GET /admin/ai-usage 응답. by_user 는 관리자 주소에만 있습니다. */
+export type UsageReport = {
+  days: number;
+  total: UsageSummary;
+  today: UsageSummary;
+  by_day: UsageDay[];
+  by_user?: UsageUser[] | null;
+  truncated: boolean;
+};
+
 /** POST /agent/key-check 응답 */
 export type KeyCheck = { ok: boolean; message: string };
 

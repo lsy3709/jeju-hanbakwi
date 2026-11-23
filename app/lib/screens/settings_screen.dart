@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../api/api_client.dart';
 import '../app_scope.dart';
 import '../theme.dart';
+import '../widgets/usage_panel.dart';
 
-/// 설정 화면. 지금은 "내 AI 키" 한 묶음입니다.
+/// 설정 화면. "내 AI 키"와 "내 AI 사용량" 두 묶음입니다.
 /// 키를 다루는 일은 [AiKeyStore] 가 하고, 이 화면은 그리기와 서버 확인 요청만 맡습니다.
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -77,7 +78,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final store = AppScope.of(context).aiKey;
+    final scope = AppScope.of(context);
+    final store = scope.aiKey;
     return Scaffold(
       appBar: AppBar(title: const Text('설정')),
       body: SafeArea(
@@ -139,6 +141,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 12),
                 Text(_status!, style: TextStyle(color: _statusGood ? AppColors.secondary : AppColors.primaryDark)),
               ],
+              const Divider(height: 40),
+              Text('내 AI 사용량', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+              const SizedBox(height: 8),
+              const Text(
+                '로그인한 채로 AI 플래너를 쓴 횟수와 토큰 수입니다. 요청한 글이나 일정 내용은 기록하지 않습니다.',
+                style: TextStyle(color: AppColors.muted, height: 1.6),
+              ),
+              const SizedBox(height: 12),
+              // 로그인 · 로그아웃이 바뀌면 다시 그립니다.
+              ListenableBuilder(
+                listenable: scope.auth,
+                builder: (context, _) => scope.auth.loggedIn
+                    ? UsagePanel(load: (days) => scope.api.getMyAiUsage(days: days))
+                    : const Text('로그인하면 내 사용량을 볼 수 있어요. (내 여행 탭에서 로그인)'),
+              ),
             ],
           ),
         ),

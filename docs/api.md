@@ -94,6 +94,7 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
 | GET | `/me/favorites/{spot_id}` | 필요 | 이 한 곳을 찜했는지 |
 | POST | `/me/favorites` | 필요 | 찜 추가 |
 | DELETE | `/me/favorites/{spot_id}` | 필요 | 찜 삭제 |
+| GET | `/me/ai-usage` | 필요 | 내 AI 사용량(횟수 · 토큰 수) |
 | GET | `/me/trips` | 필요 | 저장한 일정 목록 |
 | POST | `/me/trips` | 필요 | 일정 저장 |
 | DELETE | `/me/trips/{id}` | 필요 | 일정 삭제 |
@@ -102,6 +103,7 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
 | GET | `/admin/spots` | 관리자 | 여행지 목록(숨긴 곳 포함) |
 | POST | `/admin/spots` | 관리자 | 여행지 추가 |
 | PATCH | `/admin/spots/{id}` | 관리자 | 여행지 수정 · 숨김 |
+| GET | `/admin/ai-usage` | 관리자 | 전체 AI 사용량(날짜별 · 사용자별) |
 
 ### GET /status
 
@@ -206,6 +208,33 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
 - `sources` 는 일정에 나온 관광지입니다. 일정의 `spot_id` 는 항상 `sources` 안에 있습니다.
 - 하루 안의 항목은 오전 → 점심 → 오후 → 저녁 순으로 옵니다.
 - 글에서 말한 관광지는 먼저 넣습니다(규칙 방식은 하루 3곳까지). 다 넣지 못하면 `answer` 에 넣지 못한 곳을 적어 줍니다.
+
+### AI 사용량 — GET /me/ai-usage · GET /admin/ai-usage
+
+`POST /agent/plan` 이 한 번 불릴 때마다 서버가 사용량 한 줄을 적습니다(로그인하지 않은 요청도 적고, 그때는 사용자 없음).
+적는 것: 방식(`ai` · `rule`), 쓴 키(`user` 내 키 · `server` 서버 키 · `none` AI 를 쓰지 않음), 며칠 일정인지, 걸린 시간, AI 를 부른 횟수, 토큰 수. **요청 글 · 일정 내용 · 키는 적지 않습니다.**
+토큰 수는 AI 가 도구를 부르며 오간 모든 왕복의 합입니다. 적는 데 실패해도 일정은 그대로 돌려줍니다.
+
+두 주소 모두 `days`(1 ~ 90, 기본 30)를 받습니다. 날짜는 한국 시간 기준입니다.
+
+```json
+{
+  "days": 30,
+  "total": { "requests": 12, "ai_requests": 10, "rule_requests": 2, "user_key_requests": 3, "server_key_requests": 7,
+             "tokens_in": 41200, "tokens_out": 5300, "tokens_total": 46500, "server_tokens_total": 31000 },
+  "today": { ... 같은 모양 ... },
+  "by_day": [ { "date": "2026-12-01", ... 같은 모양 ... } ],
+  "by_user": [ { "user_id": "…", "email": "a@example.com", ... 같은 모양 ... } ],
+  "truncated": false
+}
+```
+
+- `server_tokens_total`: 서버 키로 쓴 토큰만 더한 값(서비스가 내는 몫). 내 키로 쓴 것은 그 사람의 몫입니다.
+- `by_day`: 사용이 있던 날만, 최근 날짜가 먼저.
+- `by_user`: `/admin/ai-usage` 에만 있습니다. 토큰을 많이 쓴 순으로 50명까지. 로그인하지 않은 요청은 `user_id` · `email` 이 `null` 인 한 줄로 묶입니다.
+- `/me/ai-usage` 는 로그인한 본인의 것만 셉니다(이용 정지된 계정도 자기 사용량은 볼 수 있음).
+- `truncated`: 기간 안의 기록이 1000줄 이상이라 최근 1000줄만 센 경우 `true`.
+- 사용량 표가 아직 없으면(SQL `004_ai_usage.sql` 을 실행하지 않음) `503`.
 
 ### POST /agent/key-check
 

@@ -10,7 +10,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 
 from auth import get_active_user, get_current_user, is_admin
 from repo import get_repo
-from schemas import FavoriteIn, FavoritePage, Me, Trip, TripIn, TripPage, User
+from schemas import FavoriteIn, FavoritePage, Me, Trip, TripIn, TripPage, UsageReport, User
+from services import usage
 from services.paging import cut_page
 from services.photos import with_photo_addresses
 
@@ -55,6 +56,17 @@ def add_favorite(body: FavoriteIn, user: User = Depends(get_active_user), repo=D
 def remove_favorite(spot_id: int, user: User = Depends(get_active_user), repo=Depends(get_repo)):
     repo.remove_favorite(user.id, spot_id)
     return Response(status_code=204)
+
+
+# ---------------------------------------------------------------- 내 AI 사용량
+
+@router.get("/ai-usage", response_model=UsageReport)
+def my_ai_usage(
+    days: int = Query(default=30, ge=1, le=90),
+    user: User = Depends(get_current_user),   # 이용 정지된 사람도 자기 사용량은 볼 수 있습니다
+    repo=Depends(get_repo),
+):
+    return usage.report(usage.read_usage(repo, days, user_id=user.id), days)
 
 
 # ---------------------------------------------------------------- 저장한 일정

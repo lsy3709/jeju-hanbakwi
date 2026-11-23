@@ -52,10 +52,12 @@ def plan_trip(request: PlanRequest, repo, get_weather, ask_ai=ask_gemini, user_k
     사용자 키로 한 시도가 실패해 다른 방식으로 대신했으면 결과의 notice 에 안내 글을 담습니다.
     """
     planners = choose_planners(repo, get_weather, ask_ai, user_key)
-    result, user_key_failed = None, False
+    result, user_key_failed, winner, tried = None, False, planners[-1], []
     for planner in planners[:-1]:
+        tried.append(planner)
         try:
             result = planner.plan(request)
+            winner = planner
             break
         except Exception as error:  # AI 쪽 문제(키·한도·시간 초과·이상한 답)는 무엇이든 다음 방식으로 넘깁니다
             if getattr(planner, "api_key", None):
@@ -64,4 +66,19 @@ def plan_trip(request: PlanRequest, repo, get_weather, ask_ai=ask_gemini, user_k
     if result is None:
         result = planners[-1].plan(request)
     result["notice"] = USER_KEY_NOTICE if user_key_failed else None
+    result["usage"] = usage_of(winner, tried)
     return result
+
+
+def usage_of(winner, tried: list) -> dict:
+    """이번 요청이 쓴 양. 사용량 기록(ai_usage 표)에 적을 값입니다.
+
+    tried 는 시도한 AI 방식들(실패한 것 포함)입니다. 실패한 시도에서 쓴 토큰도 쓴 것이므로 모두 더합니다.
+    key_source: user(사용자가 보낸 키) · server(서버 설정의 키) · none(AI 를 한 번도 부르지 않음)
+      일정을 짠 방식의 키를 적고, 규칙으로 짰으면 마지막으로 시도한 AI 의 키를 적습니다.
+    """
+    names = ("ai_calls", "tokens_in", "tokens_out", "tokens_total")
+    total = {name: sum(int((p.last_usage or {}).get(name, 0)) for p in tried) for name in names}
+    who = winner if winner.name == "ai" else (tried[-1] if tried else None)
+    source = "none" if who is None else ("user" if who.api_key else "server")
+    return {"key_source": source, **total}

@@ -30,3 +30,14 @@ String formatSavedAt(String iso) {
   if (saved == null) return '';
   return '${saved.year}년 ${saved.month}월 ${saved.day}일';
 }
+
+/// 세 자리마다 쉼표: 46500 → "46,500". (AI 사용량의 요청 수 · 토큰 수)
+String formatCount(int value) {
+  final digits = value.abs().toString();
+  final out = StringBuffer(value < 0 ? '-' : '');
+  for (var i = 0; i < digits.length; i++) {
+    if (i > 0 && (digits.length - i) % 3 == 0) out.write(',');
+    out.write(digits[i]);
+  }
+  return out.toString();
+}

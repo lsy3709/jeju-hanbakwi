@@ -177,6 +177,29 @@ class SupabaseRepo:
         result = self.db.table("admin_users").select("*").eq("id", user_id).limit(1).execute()
         return result.data[0] if result.data else None
 
+    # ---------- AI 사용량 ----------
+    def add_ai_usage(self, row: dict) -> None:
+        """일정 짜기 한 번을 한 줄로 적습니다. (요청 글 · 일정 내용 · 키는 적지 않습니다)"""
+        self.db.table("ai_usage").insert(row).execute()
+
+    def list_ai_usage(self, since: str, user_id: str | None = None, limit: int = 1000) -> list[dict]:
+        """since(시각 글자) 뒤의 기록을 최근 것부터. user_id 를 주면 그 사람 것만."""
+        query = (
+            self.db.table("ai_usage")
+            .select("user_id,mode,key_source,tokens_in,tokens_out,tokens_total,created_at")
+            .gte("created_at", since)
+        )
+        if user_id:
+            query = query.eq("user_id", user_id)
+        return query.order("id", desc=True).limit(limit).execute().data
+
+    def profile_emails(self, user_ids: list[str]) -> dict[str, str]:
+        """사용자 번호 → 이메일. (사용량 표에 이름을 붙이는 데 씁니다)"""
+        if not user_ids:
+            return {}
+        rows = self.db.table("profiles").select("id,email").in_("id", user_ids).execute().data
+        return {row["id"]: row["email"] for row in rows}
+
 
 def get_repo() -> SupabaseRepo:
     return SupabaseRepo(get_client())

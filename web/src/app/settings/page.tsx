@@ -1,7 +1,8 @@
-// 이 파일이 하는 일: 설정 화면 조립. 지금은 "내 AI 키" 한 묶음입니다.
+// 이 파일이 하는 일: 설정 화면 조립. "내 AI 키"와 "내 AI 사용량" 두 묶음입니다.
 import type { Metadata } from "next";
 import { Settings } from "lucide-react";
 import { AiKeySettings } from "@/components/AiKeySettings";
+import { MyUsageSettings } from "@/components/MyUsageSettings";
 
 export const metadata: Metadata = { title: "설정" };
 
@@ -13,6 +14,7 @@ export default function SettingsPage() {
         설정
       </h1>
       <AiKeySettings />
+      <MyUsageSettings />
     </div>
   );
 }

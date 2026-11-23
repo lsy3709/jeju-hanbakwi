@@ -6,6 +6,7 @@ AI 가 준 답은 그대로 믿지 않고 검사합니다. 우리가 찾아 준 
 
 import json
 import re
+import time
 
 from config import settings
 from constants import AREAS, CATEGORIES, THEMES, TIMES
@@ -16,6 +17,10 @@ from services.weather import WeatherUnavailable, is_rainy
 # AI 에게 한 번 묻고 기다리는 최대 시간(밀리초). 넘으면 오류가 나고 규칙 방식으로 넘어갑니다.
 # 제한이 없으면 AI 가 멈췄을 때 끝없이 기다리다가, 배포 환경의 응답 시간 제한에 걸려 아무 답도 못 줍니다.
 AI_TIMEOUT_MS = 20_000
+
+# AI 는 도구를 부르고 결과를 받아 다시 생각하기를 몇 번 되풀이합니다(한 번 오가는 것을 "왕복"이라 부릅니다).
+MAX_AI_ROUNDS = 7          # 도구를 부르는 왕복 6번 + 마지막 답
+AI_TOTAL_TIMEOUT_S = 50    # 모든 왕복을 합친 시간 한도. 넘으면 오류가 나고 규칙 방식으로 넘어갑니다.
 
 # AI 의 역할과 규칙. 내 주제로 바꿀 때 가장 먼저 고치는 곳입니다.
 SYSTEM_PROMPT = f"""너는 제주 여행 일정을 짜 주는 플래너다.
@@ -88,10 +93,34 @@ def check_gemini_key(api_key: str) -> bool:
     return True
 
 
-def ask_gemini(request: PlanRequest, repo, get_weather_fn, found: dict[int, dict], api_key: str | None = None) -> str:
-    """Gemini 에게 도구 두 개를 쥐여 주고 일정을 받아 옵니다. 돌려주는 값은 AI 의 마지막 글.
+def add_tokens(used: dict, meta) -> None:
+    """AI 응답 한 번이 알려 준 토큰 수를 더합니다. (생각하는 데 쓴 토큰은 출력에 넣습니다)"""
+    used["ai_calls"] += 1
+    if meta is None:
+        return
+    used["tokens_in"] += meta.prompt_token_count or 0
+    used["tokens_out"] += (meta.candidates_token_count or 0) + (meta.thoughts_token_count or 0)
+    used["tokens_total"] += meta.total_token_count or 0
+
+
+def run_tool(tools: dict, call) -> dict:
+    """AI 가 부르라고 한 도구를 실행합니다. 없는 도구거나 인자가 이상하면 오류를 AI 에게 알려 줍니다."""
+    tool = tools.get(call.name)
+    if tool is None:
+        return {"error": f"{call.name} 라는 도구는 없습니다."}
+    try:
+        return {"result": tool(**(call.args or {}))}
+    except TypeError as error:
+        return {"error": f"인자가 맞지 않습니다: {error}"}
+
+
+def ask_gemini(
+    request: PlanRequest, repo, get_weather_fn, found: dict[int, dict], api_key: str | None = None
+) -> tuple[str, dict]:
+    """Gemini 에게 도구 두 개를 쥐여 주고 일정을 받아 옵니다. 돌려주는 값은 (AI 의 마지막 글, 사용량).
 
     api_key 가 있으면(사용자가 보낸 자기 키) 그 키로, 없으면 서버 설정의 키로 부릅니다.
+    사용량은 {ai_calls, tokens_in, tokens_out, tokens_total} — 도구를 부르며 오간 모든 왕복의 합입니다.
     """
     from google import genai
     from google.genai import types
@@ -136,20 +165,39 @@ def ask_gemini(request: PlanRequest, repo, get_weather_fn, found: dict[int, dict
         f"기간: {request.days}일 ({dates[0]} 부터)\n"
         f"동행: {request.companions or '정해지지 않음'}"
     )
+    tools = {"search_spots": search_spots, "get_weather": get_weather}
     client = genai.Client(api_key=api_key or settings.gemini_api_key, http_options=types.HttpOptions(timeout=AI_TIMEOUT_MS))
-    response = client.models.generate_content(
-        model=settings.gemini_model,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-            tools=[search_spots, get_weather],  # 파이썬 함수를 그대로 넘기면 SDK 가 알아서 불러 줍니다
-            automatic_function_calling=types.AutomaticFunctionCallingConfig(maximum_remote_calls=6),
-            temperature=0.4,
-            # 깊이 생각하는 정도를 낮춰 응답을 빠르게 합니다. (서버 함수에는 응답 시간 제한이 있습니다)
-            thinking_config=types.ThinkingConfig(thinking_level="low"),
-        ),
+    config = types.GenerateContentConfig(
+        system_instruction=SYSTEM_PROMPT,
+        tools=list(tools.values()),  # 파이썬 함수를 그대로 넘기면 SDK 가 이름 · 설명 · 인자를 AI 에게 알려 줍니다
+        # 도구는 SDK 에 맡기지 않고 아래에서 직접 실행합니다. 왕복마다 쓴 토큰 수를 더하려는 것입니다.
+        # (SDK 에 맡기면 마지막 왕복의 토큰 수만 알 수 있어 실제보다 적게 잡힙니다)
+        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+        temperature=0.4,
+        # 깊이 생각하는 정도를 낮춰 응답을 빠르게 합니다. (서버 함수에는 응답 시간 제한이 있습니다)
+        thinking_config=types.ThinkingConfig(thinking_level="low"),
     )
-    return response.text or ""
+    contents = [types.Content(role="user", parts=[types.Part(text=prompt)])]
+    used = {"ai_calls": 0, "tokens_in": 0, "tokens_out": 0, "tokens_total": 0}
+    started = time.monotonic()
+    try:
+        for _ in range(MAX_AI_ROUNDS):
+            if time.monotonic() - started > AI_TOTAL_TIMEOUT_S:
+                raise TimeoutError("AI 가 정해 둔 시간 안에 답하지 못했습니다.")
+            response = client.models.generate_content(model=settings.gemini_model, contents=contents, config=config)
+            add_tokens(used, response.usage_metadata)
+            calls = response.function_calls or []
+            if not calls:  # 도구를 더 부르지 않으면 이것이 마지막 답입니다
+                return response.text or "", used
+            # AI 의 말(도구를 불러 달라는 요청)과 도구가 돌려준 결과를 대화에 이어 붙이고 다시 묻습니다.
+            contents.append(response.candidates[0].content)
+            results = [types.Part.from_function_response(name=call.name, response=run_tool(tools, call)) for call in calls]
+            contents.append(types.Content(role="user", parts=results))
+        raise ValueError("AI 가 도구만 부르다 답을 내지 못했습니다.")
+    except Exception as error:
+        # 도중에 실패해도 그때까지 쓴 토큰은 쓴 것입니다. 오류에 실어 올려 사용량 기록에 잡히게 합니다.
+        error.usage = used
+        raise
 
 
 class AiPlanner:
@@ -166,10 +214,18 @@ class AiPlanner:
         self.get_weather = get_weather
         self.ask = ask
         self.api_key = api_key
+        self.last_usage: dict | None = None   # 마지막으로 일정을 짤 때 쓴 양(없으면 None)
 
     def plan(self, request: PlanRequest) -> dict:
         found: dict[int, dict] = {}
         # 사용자 키가 있을 때만 api_key 를 넘깁니다(없으면 묻는 함수가 서버 설정의 키를 씁니다).
         extra = {"api_key": self.api_key} if self.api_key else {}
-        text = self.ask(request, self.repo, self.get_weather, found, **extra)
+        self.last_usage = None
+        try:
+            answer = self.ask(request, self.repo, self.get_weather, found, **extra)
+        except Exception as error:
+            self.last_usage = getattr(error, "usage", None)   # 실패한 시도에서 쓴 양
+            raise
+        # 묻는 함수는 (글, 사용량)을 돌려줍니다. 글만 돌려주는 함수(테스트의 가짜)도 받습니다.
+        text, self.last_usage = answer if isinstance(answer, tuple) else (answer, None)
         return build_plan_from_ai(extract_json(text), found, request, weather_by_date(self.get_weather))

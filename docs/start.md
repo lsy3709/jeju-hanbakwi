@@ -75,7 +75,7 @@ Docker Desktop 을 먼저 켭니다.
 docker compose -f dev/docker-compose.yml up -d
 ```
 
-- 처음 켤 때 `supabase/migrations/` 의 SQL(001 → 003)이 자동으로 실행됩니다.
+- 처음 켤 때 `supabase/migrations/` 의 SQL(001 → 004)이 자동으로 실행됩니다. 이미 만들어 둔 로컬 DB 에 새 SQL 을 더할 때는 `docker compose -f dev/docker-compose.yml exec -T db psql -U postgres < supabase/migrations/004_ai_usage.sql` 처럼 직접 넣습니다.
 - `api/.env` 에는 이렇게 넣어 둡니다.
 
   ```

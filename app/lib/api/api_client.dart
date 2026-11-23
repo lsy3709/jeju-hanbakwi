@@ -10,6 +10,7 @@ import '../models/cursor_page.dart';
 import '../models/itinerary.dart';
 import '../models/spot.dart';
 import '../models/trip.dart';
+import '../models/usage.dart';
 import '../models/weather.dart';
 
 /// 서버가 돌려준 오류(또는 서버에 닿지 못한 상황)를 한국어 메시지로 담습니다.
@@ -102,6 +103,10 @@ class ApiClient {
   // ---- 로그인이 필요한 주소 ----
 
   Future<Map<String, dynamic>> getMe() async => await _get('/me') as Map<String, dynamic>;
+
+  /// 내 AI 사용량(최근 [days] 일). 로그인이 필요합니다.
+  Future<UsageReport> getMyAiUsage({int days = 30}) async =>
+      UsageReport.fromJson(await _get('/me/ai-usage', query: {'days': '$days'}) as Map<String, dynamic>);
 
   /// 찜한 곳 한 묶음. 정지된 계정은 403 + 서버 문구가 ApiException 으로 나옵니다.
   Future<CursorPage<Spot>> getFavorites({int? cursor, int size = 20}) async {

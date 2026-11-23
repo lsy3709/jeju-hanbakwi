@@ -14,7 +14,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from auth import get_admin_user
 from constants import AREAS, CATEGORIES, THEMES
 from repo import get_repo
-from schemas import AdminSpot, AdminSpotPage, AdminUser, AdminUserPage, AdminUserPatch, SpotCreate, SpotPatch, User
+from schemas import AdminSpot, AdminSpotPage, AdminUser, AdminUserPage, AdminUserPatch, SpotCreate, SpotPatch, UsageReport, User
+from services import usage
 from services.paging import cut_page
 from services.photos import with_photo_address, with_photo_addresses
 
@@ -98,3 +99,12 @@ def update_spot(spot_id: int, body: SpotPatch, request: Request, repo=Depends(ge
     if row is None:
         raise HTTPException(status_code=404, detail="관광지를 찾을 수 없습니다.")
     return with_photo_address(row, request)
+
+# ---------------------------------------------------------------- AI 사용량
+
+@router.get("/ai-usage", response_model=UsageReport)
+def ai_usage(days: int = Query(default=30, ge=1, le=90), repo=Depends(get_repo)):
+    """전체 사용량: 기간 합계 · 오늘 · 날짜별 · 사용자별(토큰을 많이 쓴 순)."""
+    rows = usage.read_usage(repo, days)
+    user_ids = sorted({row["user_id"] for row in rows if row["user_id"]})
+    return usage.report(rows, days, emails=repo.profile_emails(user_ids))
