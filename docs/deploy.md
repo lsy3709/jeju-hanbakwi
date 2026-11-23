@@ -20,7 +20,7 @@
 1. **New project** 를 누르고 이름과 DB 비밀번호를 정합니다. 비밀번호는 **Generate a password** 로 만들고 내 비밀번호 관리 도구에 적어 둡니다. 이 수업의 코드에는 쓰지 않습니다.
 2. **지역은 Northeast Asia (Seoul)** 을 고릅니다. 지역 칸이 보이지 않으면 "Need a specific region?" 을 눌러 목록을 엽니다. 목록이 길어 아래로 내려야 서울이 보입니다.
 3. 아래쪽 Data access 의 선택 칸은 처음 값 그대로 둡니다(Data API 켬, 테이블 자동 공개 켬, 자동 RLS 끔). RLS 는 우리 SQL 이 직접 켭니다.
-4. 프로젝트가 준비되면(1 ~ 2분) **SQL Editor** 에서 [`supabase/migrations/`](../supabase/migrations) 의 파일을 **번호 순서대로** 붙여 넣고 **Run** 을 누릅니다 (001 → 002 → 003). 결과 칸에 "Success. No rows returned" 가 나오면 된 것입니다. 편집기가 "자동 저장하지 않는다"는 안내 창을 띄우면 닫고 계속합니다.
+4. 프로젝트가 준비되면(1 ~ 2분) **SQL Editor** 에서 [`supabase/migrations/`](../supabase/migrations) 의 파일을 **번호 순서대로** 붙여 넣고 **Run** 을 누릅니다 (001 → 002 → 003 → 004). 결과 칸에 "Success. No rows returned" 가 나오면 된 것입니다. 편집기가 "자동 저장하지 않는다"는 안내 창을 띄우면 닫고 계속합니다.
 5. **Project Settings → API Keys** 에서 키를, **Project Settings → Data API**(또는 화면 위 **Connect**)에서 주소를 확인합니다.
 
 | 값 | 화면에 보이는 이름 | 생김새 | 어디에 쓰나 | 공개해도 되나 |
