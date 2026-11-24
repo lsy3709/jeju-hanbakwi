@@ -66,7 +66,8 @@ class SpotMap extends StatelessWidget {
               ),
           ],
         ),
-        const SimpleAttributionWidget(source: Text('© OpenStreetMap contributors')),
+        // 위젯이 앞에 'flutter_map | © ' 를 붙이므로 글자에는 © 를 넣지 않습니다.
+        const SimpleAttributionWidget(source: Text('OpenStreetMap contributors')),
       ],
     );
   }
