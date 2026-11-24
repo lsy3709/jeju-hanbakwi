@@ -9,6 +9,19 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../config.dart';
 
+/// 앱(안드로이드)이 로그인 뒤 돌아올 딥링크 주소.
+/// AndroidManifest.xml 의 intent-filter, Supabase 의 Redirect URLs 와 글자까지 같아야 합니다.
+// const 는 값이 절대 바뀌지 않는 상수라는 뜻입니다. 같은 글자를 여러 곳에 쓰다 틀리지 않도록 한곳에 둡니다.
+const String appLoginCallback = 'com.goldmagnet.jejuhanbakwi://login-callback';
+
+/// 로그인 뒤 돌아올 주소. 웹은 지금 열려 있는 주소의 origin(예: `https://내앱.vercel.app`), 앱은 딥링크.
+/// 웹에서 비워 두면 Supabase 가 Site URL(Next.js 웹)로 보내 버리므로 꼭 넘깁니다.
+/// 이 주소도 Supabase 의 Redirect URLs 에 있어야 합니다.
+// origin 은 주소에서 "https://이름:포트" 까지만 뗀 것입니다(#/planner 같은 뒷부분은 버림).
+// 화면 없이 계산만 하는 함수라 테스트(test/auth_redirect_test.dart)로 바로 확인할 수 있습니다.
+String loginRedirectUrl({required bool isWeb, required Uri base}) =>
+    isWeb ? base.origin : appLoginCallback;
+
 /// 로그인 상태를 들고 있는 곳. Supabase 는 "로그인"에만 씁니다.
 /// (데이터 조회·저장은 전부 API 서버를 거칩니다.)
 class AuthService extends ChangeNotifier {
@@ -50,14 +63,13 @@ class AuthService extends ChangeNotifier {
     );
   }
 
-  /// 구글 로그인. 웹은 현재 주소로 돌아오고, 앱은 딥링크 스킴으로 돌아옵니다.
-  /// (안드로이드 AndroidManifest.xml 의 intent-filter 와 같은 스킴)
-  // redirectTo: 로그인을 마친 뒤 돌아올 곳입니다. 웹(kIsWeb)은 null 로 두면 현재 주소로 돌아오고, 앱은 AndroidManifest 에 등록한 약속된 주소(딥링크)로 돌아옵니다.
+  /// 구글 로그인. 웹은 지금 열려 있는 주소로, 앱은 딥링크로 돌아옵니다([loginRedirectUrl]).
+  // redirectTo: 로그인을 마친 뒤 돌아올 곳입니다. kIsWeb 은 "지금 웹(크롬)에서 돌고 있는가", Uri.base 는 "지금 열려 있는 주소"입니다.
   Future<void> signInWithGoogle() async {
     if (!configured) return;
     await Supabase.instance.client.auth.signInWithOAuth(
       OAuthProvider.google,
-      redirectTo: kIsWeb ? null : 'com.goldmagnet.jejuhanbakwi://login-callback',
+      redirectTo: loginRedirectUrl(isWeb: kIsWeb, base: Uri.base),
     );
   }
 
