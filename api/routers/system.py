@@ -6,6 +6,8 @@
 /status 는 "있다/없다"만 알려 줍니다. 키 값 자체는 절대 내보내지 않습니다.
 """
 
+# 층: 이 파일(주소) → repo.py 로 DB 에 한 번 닿아 보고, config.settings 로 키가 있는지만 봅니다.
+# 낱말: 헬스체크 = "살아 있나요?"를 주기적으로 묻는 확인. 배포 서비스가 /health 를 이 용도로 부릅니다.
 import logging
 
 from fastapi import APIRouter, Depends
@@ -24,6 +26,7 @@ def health():
     return {"status": "ok"}
 
 
+# 아래 `_, spots = ...` 의 `_` 는 "이 값은 안 쓴다"는 표시입니다. 목록은 버리고 전체 개수만 받습니다.
 @router.get("/status", response_model=Status)
 def status(repo=Depends(get_repo)):
     try:

@@ -1,3 +1,5 @@
+/* 이 파일이 하는 일: 사이트 전체에 한 번 적용되는 스타일입니다. 아래 @theme 안의 --color-이름 은 "디자인 토큰"으로, Tailwind 가 bg-이름 · text-이름 · border-이름 같은 클래스로 만들어 줍니다. */
+/* 그래서 컴포넌트의 className="bg-primary text-muted" 는 모두 여기 값을 가리킵니다. 색을 바꾸려면 이 파일 한 곳만 고치면 됩니다. */
 @import "tailwindcss";
 
 /*

@@ -1,3 +1,5 @@
+// 테스트 파일입니다. 화면 없이 planDraft.ts 의 함수 를 불러 결과가 맞는지 확인하며, `npm test`(vitest)가 실행합니다.
+// "describe" 는 비슷한 테스트를 묶고, "it" 은 하나의 확인 항목, "expect(...).toBe(...)" 는 "이 값이 이것과 같아야 한다"는 뜻입니다.
 import { describe, expect, it } from "vitest";
 import { clearDraft, DRAFT_TTL_MS, loadDraft, saveDraft, type PlanDraft } from "./planDraft";
 
@@ -28,6 +30,7 @@ const draft: PlanDraft = {
   savedAt: NOW,
 };
 
+// 일정 임시 보관의 저장·불러오기·30분 지난 것 버리기·깨진 값 거르기를 확인합니다.
 describe("planDraft", () => {
   it("저장한 것을 그대로 불러온다", () => {
     const storage = fakeStorage();

@@ -1,3 +1,6 @@
+// 찜 보관소(FavoritesStore)의 테스트입니다. 가짜 로그인(FakeAuth)과 가짜 서버(FavApi, PagedFavApi)로, 연달아 누르기 · 로그아웃 중 늦게 오는 응답 · 더 보기 · 정지 계정을 확인합니다.
+// await 로 기다리는 사이에 일어날 수 있는 일을 일부러 만드는 것이 핵심입니다.
+
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +12,7 @@ import 'package:jeju_hanbakwi/models/spot.dart';
 
 import 'support.dart';
 
+// super.disabled() 로 진짜 Supabase 없이 만들고, loggedIn 만 바꿔 끼웁니다. setLoggedIn 이 알림을 보내 FavoritesStore 가 반응하게 합니다.
 /// 로그인 상태를 테스트에서 마음대로 바꾸는 가짜.
 class FakeAuth extends AuthService {
   FakeAuth({bool loggedIn = false})
@@ -25,6 +29,7 @@ class FakeAuth extends AuthService {
   }
 }
 
+// Completer 로 응답 시점을 테스트가 정합니다(complete() 를 부를 때까지 서버가 답하지 않는 것처럼).
 /// 찜 요청의 응답 시점을 Completer 로 조절하는 가짜 API.
 class FavApi extends FakeApi {
   final addCalls = <int>[];
@@ -41,6 +46,7 @@ class FavApi extends FakeApi {
   Future<CursorPage<Spot>> getFavorites({int? cursor, int size = 20}) => favoritesGate.future;
 }
 
+// 커서 = 지금까지 준 개수인 가짜 서버입니다. 실제 서버처럼 20개씩 나눠 줍니다.
 /// 찜 목록을 묶음으로 돌려주는 가짜 서버(커서 = 이미 준 개수).
 class PagedFavApi extends FakeApi {
   PagedFavApi(this.all);
@@ -72,6 +78,7 @@ class PagedFavApi extends FakeApi {
 void main() {
   final spot = Spot.fromJson(spotJson(id: 7, title: '한라산'));
 
+  // 연달아 두 번 눌러도 요청은 한 번, 목록에는 한 개만 들어가는지 확인합니다.
   test('toggle: 기다리지 않고 두 번 눌러도 요청 1번, 목록에 1개', () async {
     final api = FavApi();
     final store = FavoritesStore(api: api, auth: FakeAuth());
@@ -85,6 +92,7 @@ void main() {
     expect(store.items.map((s) => s.id), [7]);
   });
 
+  // 응답을 기다리는 사이 로그아웃했을 때, 이전 사용자의 찜이 화면에 되살아나지 않는지 확인합니다.
   test('refresh: 기다리는 사이 로그아웃하면 이전 사용자의 찜을 다시 채우지 않는다', () async {
     final api = FavApi();
     final auth = FakeAuth(loggedIn: true);
@@ -107,6 +115,7 @@ void main() {
     return store;
   }
 
+  // 더 보기(커서) 이어 붙이기, 뒤쪽 찜을 서버에 물어 보기(check), 찜 해제 뒤에도 커서가 어긋나지 않는지, 정지 계정의 문구를 확인합니다.
   test('더 보기: next_cursor 를 그대로 보내 다음 묶음을 이어 붙이고, 끝나면 hasMore 가 false', () async {
     final api = PagedFavApi(manySpots(45));
     final store = await loggedInStore(api);

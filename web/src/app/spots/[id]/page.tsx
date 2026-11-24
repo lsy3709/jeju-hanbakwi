@@ -1,5 +1,8 @@
 "use client";
 
+// "use client" 는 이 화면이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하고 useState·useEffect 같은 훅을 쓰려면 필요합니다.
+// 층: 이 화면(app/) → hooks/ → lib/api.ts. 화면 파일은 fetch 를 직접 부르지 않습니다. page.tsx 는 폴더 이름에 해당하는 주소의 화면입니다.
+// 폴더 이름 [id] 의 대괄호는 "주소의 이 자리가 바뀌는 값"이라는 뜻입니다(/spots/12 의 12). useParams 로 읽습니다.
 // 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 글 → 주소 → 지도 → 버튼 2개
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -19,9 +22,11 @@ import { useAsync } from "@/hooks/useAsync";
 export default function SpotDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
+  // id 가 바뀔 때만 새 함수를 만들어, 같은 여행지를 두 번 불러오지 않게 합니다.
   const load = useCallback(() => getSpot(id), [id]);
   const { data: spot, loading, error, status, reload } = useAsync(load);
 
+  // 상태를 순서대로 확인합니다: 불러오는 중 → 없는 장소(404) → 오류 → 정상 화면. 서버가 꺼져 있어도 화면이 죽지 않습니다.
   if (loading) return <Loading />;
   // 서버가 404 를 주면 "없는 장소", 그 밖의 오류는 다시 시도 버튼
   if (status === 404) {

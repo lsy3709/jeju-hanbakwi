@@ -1,3 +1,6 @@
+// 설정 화면의 "내 AI 사용량" 묶음입니다. 기간(7 · 30 · 90일)을 고르면 서버에서 사용량을 불러와 합계 · 오늘 · 날짜별로 보여 줍니다.
+// 이 위젯은 ApiClient 를 직접 알지 못하고, 부모(settings_screen.dart)가 load 함수를 넘겨 줍니다. 그래서 테스트에서 가짜 함수를 넣기 쉽습니다.
+
 import 'package:flutter/material.dart';
 
 import '../api/api_client.dart';
@@ -9,6 +12,7 @@ import '../theme.dart';
 /// [load] 는 "최근 며칠"을 받아 사용량을 불러오는 함수입니다(화면이 ApiClient 의 메서드를 넘깁니다).
 class UsagePanel extends StatefulWidget {
   const UsagePanel({super.key, required this.load});
+  // 함수를 값으로 받는 자리입니다. 며칠치인지(days)를 받아 사용량 보고서를 기다려서 돌려주는 함수입니다.
   final Future<UsageReport> Function(int days) load;
 
   @override
@@ -24,11 +28,13 @@ class _UsagePanelState extends State<UsagePanel> {
   int _requestId = 0; // 기간을 빨리 바꿨을 때 늦게 온 응답을 버리려고 셉니다
 
   @override
+  // initState 는 이 위젯이 처음 만들어질 때 딱 한 번 불립니다. 여기서 첫 데이터를 불러옵니다.
   void initState() {
     super.initState();
     _load();
   }
 
+  // setState 로 로딩 표시를 켠 뒤 기다리고, 끝나면 setState 로 결과를 반영합니다. 기간을 빨리 바꿔서 응답이 뒤섞이는 것은 _requestId 번호로 막습니다.
   Future<void> _load() async {
     final id = ++_requestId;
     setState(() {
@@ -66,6 +72,7 @@ class _UsagePanelState extends State<UsagePanel> {
           },
         ),
         const SizedBox(height: 12),
+        // 로딩 → 오류 → 내용 중 하나만 보이도록 if / else if / else 로 고릅니다.
         if (_loading)
           const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator()))
         else if (_error != null)
@@ -82,6 +89,7 @@ class _UsagePanelState extends State<UsagePanel> {
     );
   }
 
+  // formatCount(format.dart)는 숫자에 세 자리마다 쉼표를 찍어 줍니다.
   Widget _content(UsageReport report) {
     final total = report.total;
     if (total.requests == 0) {

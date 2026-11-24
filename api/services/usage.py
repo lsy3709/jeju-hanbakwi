@@ -4,6 +4,8 @@ DB 를 읽는 일은 repo.py, 주소는 routers/me.py · admin.py 에 있고, �
 날짜는 한국 시간 기준으로 나눕니다(서버는 세계 표준시로 돕니다).
 """
 
+# 층: routers/me.py · admin.py 가 read_usage 로 읽고 report 로 더합니다. DB 는 repo.list_ai_usage 로만 만집니다.
+# 낱말: 집계 = 여러 줄을 날짜별·사용자별로 묶어 합계를 내는 일. 한국 날짜로 나누려고 KOREA 시간대를 씁니다.
 from datetime import datetime, time, timedelta, timezone
 
 from fastapi import HTTPException
@@ -31,6 +33,7 @@ def read_usage(repo, days: int, user_id: str | None = None) -> list[dict]:
     """기간 안의 기록을 DB 에서 읽습니다. 표가 아직 없으면(SQL 004 를 실행하지 않음) 503 으로 알려 줍니다."""
     try:
         return repo.list_ai_usage(period_start(days), user_id=user_id, limit=ROW_LIMIT)
+    # 표가 없는 것은 사용자 잘못도 서버 코드 잘못도 아닌 "준비가 덜 된" 상태라, 이유를 적어 503 으로 알립니다.
     except Exception as error:
         raise HTTPException(
             status_code=503,
@@ -59,6 +62,7 @@ def summarize(rows: list[dict]) -> dict:
     return total
 
 
+# key 함수가 같은 값을 돌려주는 줄끼리 모읍니다. 예: 날짜가 같은 줄끼리, 사용자가 같은 줄끼리.
 def _grouped(rows: list[dict], key) -> dict:
     groups: dict = {}
     for row in rows:

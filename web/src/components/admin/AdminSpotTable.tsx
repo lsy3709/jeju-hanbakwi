@@ -1,5 +1,6 @@
 "use client";
 
+// "use client" 는 이 파일이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하거나 useState 로 값을 기억하려면 필요합니다.
 // 이 파일이 하는 일: 관리자 "여행지" 탭의 표(번호 · 이름 · 분류 · 지역 · 실내외 · 출처 · 상태 · 수정/숨김 버튼). 데이터와 동작은 위(useAdminSpots)에서 받습니다.
 // 폰 폭: 넓은 표를 가로로 밀게 하면 폰 브라우저가 화면 전체를 넓혀 아래 탭까지 밀려납니다(실측).
 // 그래서 폰에서는 덜 중요한 칸을 숨기고(hidden md:table-cell) 그 내용을 첫 칸 아래 한 줄로 보여 줍니다.
@@ -10,6 +11,8 @@ import { StatusBadge } from "./StatusBadge";
 // 서버의 source 값 → 사람이 읽는 이름. 모르는 값이 오면 그대로 보여 줍니다.
 const SOURCE_LABELS: Record<string, string> = { sample: "샘플", tourapi: "관광공사", admin: "관리자" };
 
+// 컴포넌트 = 화면 조각을 그려 돌려주는 함수입니다. 중괄호 안의 이름들(props)은 부르는 쪽이 넘겨 주는 값입니다.
+// 받는 값: spots(표에 그릴 줄), busyId(요청 중인 줄 — 그 줄의 숨김 단추를 막음), onEdit·onSetHidden(단추를 누르면 부를 함수).
 export function AdminSpotTable({
   spots,
   busyId,
@@ -38,6 +41,8 @@ export function AdminSpotTable({
             </th>
           </tr>
         </thead>
+        {/* spots.map 은 여행지 한 곳을 표의 한 줄(tr)로 바꿉니다. key 는 React 가 줄을 구분하는 이름표입니다. */}
+        {/* spots.map 은 여행지 한 곳을 표의 한 줄(tr)로 바꿉니다. key 는 React 가 줄을 구분하는 이름표입니다. */}
         <tbody>
           {spots.map((spot) => (
             <tr key={spot.id} className="border-b border-line last:border-b-0">

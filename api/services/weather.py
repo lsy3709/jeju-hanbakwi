@@ -1,5 +1,8 @@
 """날씨: Open-Meteo(무료, 키 없음)에서 받아 우리 화면에 맞는 모양으로 바꿉니다."""
 
+# 층: deps.get_weather_service 가 이 파일의 get_weather 를 내주고, routers/weather.py 와 일정 짜기가 그것을 부릅니다.
+# 바깥(Open-Meteo)에서 받은 모양은 parse_days · build_weather 로 우리 화면 모양(schemas.Weather)에 맞춥니다.
+# 낱말: 캐시 = 받은 답을 잠시 기억해 두었다가 다시 쓰는 것. 같은 요청마다 바깥 서버를 부르지 않게 합니다.
 import time
 
 import httpx
@@ -47,6 +50,7 @@ def describe(code: int) -> tuple[str, str]:
 
 def parse_days(data: dict) -> list[dict]:
     """Open-Meteo 응답(날짜별 배열 여러 개) → 날짜 하나에 값이 모인 목록"""
+    # 바깥 서비스는 "날짜 목록, 최고기온 목록 …"처럼 항목별로 배열을 줍니다. i 번째끼리 묶어 하루치 사전으로 만듭니다.
     daily = data["daily"]
     days = []
     for i, day in enumerate(daily["time"]):
@@ -83,6 +87,7 @@ def build_weather(areas: list[dict]) -> dict:
 
 def get_weather() -> dict:
     """제주시·서귀포시 오늘부터 4일 날씨."""
+    # 10분 안에 받아 둔 값이 있으면 바깥 서버를 부르지 않고 그대로 돌려줍니다.
     if _cache["value"] and time.time() - _cache["at"] < CACHE_SECONDS:
         return _cache["value"]
     areas = []
@@ -100,6 +105,8 @@ def get_weather() -> dict:
             )
             response.raise_for_status()
             areas.append({"area": name, "days": parse_days(response.json())})
+    # 통신 실패(HTTPError)뿐 아니라 응답 모양이 예상과 다른 경우(KeyError · ValueError)도 "날씨 못 받음"으로 통일합니다.
+    # 부른 쪽(라우터·일정 짜기)은 이 오류 하나만 알면 됩니다.
     except (httpx.HTTPError, KeyError, ValueError) as error:
         raise WeatherUnavailable(str(error)) from error
     value = build_weather(areas)

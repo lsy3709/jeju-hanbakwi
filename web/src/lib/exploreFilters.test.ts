@@ -1,8 +1,11 @@
+// 테스트 파일입니다. 화면 없이 exploreFilters.ts 의 함수 를 불러 결과가 맞는지 확인하며, `npm test`(vitest)가 실행합니다.
+// "describe" 는 비슷한 테스트를 묶고, "it" 은 하나의 확인 항목, "expect(...).toBe(...)" 는 "이 값이 이것과 같아야 한다"는 뜻입니다.
 import { describe, expect, it } from "vitest";
 import { exploreHref, hasActiveFilter, parseExploreQuery } from "./exploreFilters";
 
 const parse = (query: string) => parseExploreQuery(new URLSearchParams(query));
 
+// 주소의 쿼리가 필터로 올바르게 읽히는지 확인합니다.
 describe("parseExploreQuery (주소 쿼리 → 필터)", () => {
   it("쿼리가 비어 있으면 모든 필터가 비어 있다", () => {
     const state = parse("");
@@ -40,6 +43,7 @@ describe("parseExploreQuery (주소 쿼리 → 필터)", () => {
   });
 });
 
+// 필터를 바꿨을 때 만들어지는 새 주소가 맞는지 확인합니다(한글은 %로 시작하는 글자로 바뀌어 주소에 들어갑니다).
 describe("exploreHref (바뀐 값으로 다음 주소 만들기)", () => {
   it("바뀐 값만 덮어쓰고 나머지는 유지한다", () => {
     const state = parse("q=폭포&area=동부");

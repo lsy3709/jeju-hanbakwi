@@ -4,6 +4,10 @@ AI 에게 도구 두 개(관광지 찾기 · 날씨 보기)를 쥐여 주면, AI
 AI 가 준 답은 그대로 믿지 않고 검사합니다. 우리가 찾아 준 관광지가 아니면 버립니다.
 """
 
+# 층: planner.py 가 AiPlanner 를 불러 이 파일로 옵니다. 이 파일은 repo(관광지 검색)와 날씨 함수를 AI 의 "도구"로 내주고,
+# 바깥의 AI 서비스(Gemini)는 ask_gemini 에서만 부릅니다. 실패하면 오류를 올려 planner.py 가 규칙 방식으로 넘어가게 합니다.
+# 낱말: 도구 호출 = AI 가 "이 함수를 이 값으로 불러 줘"라고 답하면, 우리가 실행해 결과를 돌려주는 방식입니다.
+# 낱말: 토큰 = AI 가 글을 세는 단위이자 요금 단위. 사용량 기록에 남깁니다.
 import json
 import re
 import time
@@ -38,6 +42,7 @@ SYSTEM_PROMPT = f"""너는 제주 여행 일정을 짜 주는 플래너다.
 
 def extract_json(text: str) -> dict:
     """AI 답에서 JSON 부분만 꺼냅니다. (```json 같은 장식이 붙어 와도 되게)"""
+    # 첫 { 부터 마지막 } 까지를 잡습니다. re.DOTALL 은 . 이 줄바꿈도 포함하게 하는 설정입니다.
     match = re.search(r"\{.*\}", text or "", re.DOTALL)
     if not match:
         raise ValueError("AI 답에 JSON 이 없습니다.")
@@ -46,6 +51,9 @@ def extract_json(text: str) -> dict:
 
 def build_plan_from_ai(data: dict, found: dict[int, dict], request: PlanRequest, forecast: dict) -> dict:
     """AI 가 준 일정을 검사합니다. 우리가 찾아 준 관광지가 아니면 버립니다."""
+    # AI 는 그럴듯한 장소를 지어낼 수 있습니다. found 는 "이번 요청에서 우리 DB 검색이 실제로 AI 에게 보여 준 관광지"이고,
+    # 아래 반복에서 그 안에 없는 spot_id, 이미 쓴 spot_id(seen), 알 수 없는 시간대는 건너뜁니다(continue).
+    # `or []` 는 값이 없을 때(None) 빈 목록으로 대신하는 안전장치이고, [: request.days] 는 요청한 일수까지만 자릅니다.
     dates = trip_dates(request)
     itinerary, sources, seen = [], {}, set()
     for index, raw_day in enumerate((data.get("itinerary") or [])[: request.days]):
@@ -71,6 +79,7 @@ def build_plan_from_ai(data: dict, found: dict[int, dict], request: PlanRequest,
             itinerary.append(
                 {"day": index + 1, "date": dates[index], "weather": weather["label"] if weather else None, "items": items}
             )
+    # 검사를 통과한 곳이 하나도 없으면 오류를 올려, 호출한 planner.py 가 규칙 방식으로 대신 짜게 합니다.
     if not itinerary:
         raise ValueError("AI 일정에 쓸 수 있는 관광지가 없습니다.")
     answer = str(data.get("answer") or "일정을 짜 보았어요.")[:600]
@@ -82,6 +91,7 @@ def check_gemini_key(api_key: str) -> bool:
 
     키가 틀렸으면 False. 서비스에 닿지 못한 것 같은 다른 문제는 오류를 그대로 올립니다.
     """
+    # 함수 안에서 불러오는(import) 이유: AI 를 쓰지 않는 요청과 테스트에서는 이 무거운 라이브러리를 읽지 않게 하려는 것입니다.
     from google import genai
     from google.genai import errors, types
 
@@ -95,6 +105,7 @@ def check_gemini_key(api_key: str) -> bool:
 
 def add_tokens(used: dict, meta) -> None:
     """AI 응답 한 번이 알려 준 토큰 수를 더합니다. (생각하는 데 쓴 토큰은 출력에 넣습니다)"""
+    # `x or 0` 는 값이 None 이면 0 으로 쳐서 덧셈이 깨지지 않게 합니다.
     used["ai_calls"] += 1
     if meta is None:
         return
@@ -105,6 +116,7 @@ def add_tokens(used: dict, meta) -> None:
 
 def run_tool(tools: dict, call) -> dict:
     """AI 가 부르라고 한 도구를 실행합니다. 없는 도구거나 인자가 이상하면 오류를 AI 에게 알려 줍니다."""
+    # `tool(**인자)` 는 AI 가 준 {이름: 값} 사전을 함수의 인자로 풀어 넣어 부르는 문법입니다.
     tool = tools.get(call.name)
     if tool is None:
         return {"error": f"{call.name} 라는 도구는 없습니다."}
@@ -144,6 +156,7 @@ def ask_gemini(
             indoor=True if indoor_only else None,
             size=8,
         )
+        # 검색 결과를 found 에 적어 두는 것이 "지어낸 장소를 버리는 검사"의 근거가 됩니다(build_plan_from_ai).
         for spot in items:
             found[spot["id"]] = spot  # AI 에게 보여 준 관광지를 기억해 둡니다 (나중에 검사용)
         return [brief(spot) for spot in items]
@@ -159,6 +172,7 @@ def ask_gemini(
             for d in weather["areas"][0]["days"]
         ]
 
+    # 아래부터 실제로 AI 와 주고받는 부분입니다. 질문(prompt) 만들기 → 도구 목록과 설정 → 답이 끝날 때까지 왕복.
     dates = trip_dates(request)
     prompt = (
         f"여행 요청: {request.message}\n"
@@ -180,6 +194,7 @@ def ask_gemini(
     contents = [types.Content(role="user", parts=[types.Part(text=prompt)])]
     used = {"ai_calls": 0, "tokens_in": 0, "tokens_out": 0, "tokens_total": 0}
     started = time.monotonic()
+    # 왕복 횟수와 전체 시간에 상한을 둔 반복입니다. `for _ in range(...)` 의 `_` 는 반복 번호를 쓰지 않는다는 표시입니다.
     try:
         for _ in range(MAX_AI_ROUNDS):
             if time.monotonic() - started > AI_TOTAL_TIMEOUT_S:
@@ -200,6 +215,7 @@ def ask_gemini(
         raise
 
 
+# 서버 키로 시도하는 AiPlanner 와 사용자 키로 시도하는 AiPlanner 가 따로 만들어집니다(planner.choose_planners).
 class AiPlanner:
     """AI 로 일정을 짜는 방식. (services/plan_common.py 의 Planner 모양을 따릅니다)
 
@@ -217,6 +233,7 @@ class AiPlanner:
         self.last_usage: dict | None = None   # 마지막으로 일정을 짤 때 쓴 양(없으면 None)
 
     def plan(self, request: PlanRequest) -> dict:
+        # found: 관광지 번호 → 관광지. 도구가 AI 에게 보여 준 곳을 모아 두는 빈 사전으로 시작합니다.
         found: dict[int, dict] = {}
         # 사용자 키가 있을 때만 api_key 를 넘깁니다(없으면 묻는 함수가 서버 설정의 키를 씁니다).
         extra = {"api_key": self.api_key} if self.api_key else {}

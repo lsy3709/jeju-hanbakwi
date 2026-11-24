@@ -1,5 +1,6 @@
 "use client";
 
+// "use client" 는 이 파일이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하거나 useState 로 값을 기억하려면 필요합니다.
 // 이 파일이 하는 일: 관리자 "여행지 추가·수정" 폼(같은 컴포넌트를 함께 씁니다). 창처럼 화면 위에 떠서, 닫아도 뒤 목록의 스크롤이 그대로입니다.
 // 무엇을 서버로 보낼지는 lib/spotForm.ts(순수 함수)와 useAdminSpots 가 정하고, 여기서는 입력만 받습니다.
 import { useState, type FormEvent } from "react";
@@ -9,11 +10,14 @@ import { errorMessage } from "@/lib/api";
 import { MAX_THEMES, emptySpotForm, spotToForm, toggleTheme, type SpotFormValues } from "@/lib/spotForm";
 import type { AdminSpot, Meta } from "@/lib/types";
 
+// 아래 네 줄은 입력칸마다 반복되는 Tailwind 클래스를 한 번만 적어 둔 것입니다.
 const fieldLabel = "block space-y-1.5 text-sm";
 const labelText = "font-semibold";
 const selectClass = "w-full rounded-pill border border-line bg-surface px-4 py-2.5 text-sm";
 const textareaClass = "w-full rounded-card border border-line bg-surface px-4 py-2.5 text-sm placeholder:text-muted";
 
+// 컴포넌트 = 화면 조각을 그려 돌려주는 함수입니다. 중괄호 안의 이름들(props)은 부르는 쪽이 넘겨 주는 값입니다.
+// meta 는 고를 수 있는 분류·지역·테마 목록, spot 이 null 이면 추가 폼이고 아니면 수정 폼입니다. 저장은 부른 쪽(onSubmit)이 서버에 보냅니다.
 export function SpotForm({
   meta,
   spot,
@@ -27,15 +31,18 @@ export function SpotForm({
   onSubmit: (values: SpotFormValues) => Promise<void>;
   onClose: () => void;
 }) {
+  // 같은 폼을 추가와 수정에 함께 쓰기 때문에, 어느 쪽인지에 따라 제목·단추 글자·입력칸이 달라집니다.
   const isNew = spot === null;
   const [values, setValues] = useState<SpotFormValues>(() => (spot ? spotToForm(spot) : emptySpotForm()));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // 입력칸 하나를 바꾸는 작은 도우미(칸마다 setValues 를 쓰지 않으려고)
+  // 제네릭 <K ...> 는 "칸 이름(key)에 맞는 값 모양만 받겠다"는 안전장치입니다. 나머지 칸은 그대로 두고 한 칸만 바꾼 새 값을 만듭니다.
   const set = <K extends keyof SpotFormValues>(key: K, value: SpotFormValues[K]) =>
     setValues((prev) => ({ ...prev, [key]: value }));
 
+  // 저장을 요청하고(await) 성공하면 폼을 닫습니다. 실패하면 서버가 알려 준 이유를 폼 아래에 보입니다.
   async function handleSubmit(event: FormEvent) {
     event.preventDefault(); // 페이지가 새로고침되지 않게 막기
     setBusy(true);

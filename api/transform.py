@@ -5,6 +5,9 @@
 => "남의 데이터를 받아 내 서비스에 맞게 고친다"의 핵심 파일입니다.
 """
 
+# 쓰는 곳: tools/sync_spots.py 가 TourAPI 에서 받은 원본을 to_spot_row 에 한 건씩 넣고, 나온 줄을 repo.upsert_spots 로 DB 에 넣습니다.
+# 이 파일은 DB 도 네트워크도 부르지 않는 "순수한 규칙"이라 테스트하기 쉽습니다(tests/test_transform*.py).
+# 낱말: 태그 = 관광지에 붙이는 테마 이름표(바다, 오름 …). 이름과 소개 글에 낱말이 들어 있는지로 붙입니다.
 import re
 
 # TourAPI 의 콘텐츠 유형 번호 → 우리 분류 이름. 여기에 없는 유형(숙박·여행코스 등)은 받지 않습니다.
@@ -61,6 +64,7 @@ def apply_corrections(row: dict, corrections: dict[str, dict] = CORRECTIONS) -> 
     change = corrections.get(row["title"])
     if not change:
         return row
+    # dict(row) 로 복사해서 고칩니다. 받은 원본 줄을 직접 바꾸면 부른 쪽 값이 몰래 달라지기 때문입니다.
     fixed = dict(row)
     if "indoor" in change:
         fixed["indoor"] = change["indoor"]
@@ -81,9 +85,12 @@ def _number(raw: dict, key: str) -> float | None:
         value = float(_text(raw, key))
     except ValueError:
         return None
+    # 원본은 좌표를 모를 때 0 을 넣어 보내므로, 0 도 "없음"으로 봅니다.
     return value if value != 0 else None
 
 
+# 아래 pick_* 세 함수는 주소·글에서 낱말을 찾아 지역·태그·실내 여부를 정합니다. 순서가 중요한 곳은 pick_area 입니다.
+# 동부/서부 마을 이름을 먼저 보고, 없을 때만 시 이름으로 나눕니다.
 def pick_area(address: str) -> str:
     if any(town in address for town in EAST_TOWNS):
         return "동부"
@@ -108,6 +115,7 @@ def pick_indoor(content_type: str, title: str, overview: str) -> bool:
 
 def make_one_liner(overview: str, category: str, area: str) -> str:
     """소개 글의 첫 문장을 한 줄 소개로 씁니다. 소개 글이 없으면 분류와 지역으로 만듭니다."""
+    # 마침표·느낌표·물음표 뒤의 공백에서 문장을 나누고 첫 문장만 씁니다. 너무 길면 60자로 줄입니다.
     first = re.split(r"(?<=[.!?。])\s+", overview.strip())[0] if overview.strip() else ""
     if not first:
         return f"{area}에서 만나는 {category}"
@@ -116,6 +124,7 @@ def make_one_liner(overview: str, category: str, area: str) -> str:
 
 def to_spot_row(raw: dict, source: str = "tourapi") -> dict | None:
     """원본 한 건 → spots 한 줄. 받지 않는 유형이거나 이름이 없으면 None."""
+    # 원본 필드 이름(contenttypeid, addr1, mapx …)은 TourAPI 가 정한 것이라 우리 이름과 다릅니다. 여기서 한 번만 바꿉니다.
     content_type = _text(raw, "contenttypeid")
     category = CATEGORY_BY_TYPE.get(content_type)
     title = _text(raw, "title")

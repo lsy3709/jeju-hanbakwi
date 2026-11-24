@@ -7,6 +7,9 @@ X-Gemini-Key 헤더: 사용자가 설정 화면에 넣은 자기 AI 키. 이 요
 부를 때마다 사용량 한 줄을 적습니다(누가 · 어떤 방식으로 · 토큰을 얼마나). 요청 글과 키는 적지 않습니다.
 """
 
+# 층: 이 파일(주소) → services/planner.py(일정 짜기) → plan_ai / plan_rule. DB 는 repo 로만 만집니다.
+# 날씨·AI 호출 함수는 deps.py 가 Depends 로 넣어 줍니다. 그래서 테스트에서 가짜로 바꿔 끼울 수 있습니다.
+# 낱말: 헤더 = 요청 본문과 별도로 붙는 부가 정보. 사용자의 AI 키는 본문이 아닌 헤더로 받습니다.
 import logging
 import time
 from typing import Annotated
@@ -27,10 +30,14 @@ log = logging.getLogger("agent")
 # 키의 모양만 봅니다(영문 · 숫자 · _ · - · . 20~200자). 맞는 키인지는 AI 서비스가 판단합니다.
 # 마침표는 "AQ." 로 시작하는 새 형식의 키에 들어 있습니다.
 KEY_PATTERN = r"^[A-Za-z0-9_.\-]{20,200}$"
+# Annotated[타입, Header(...)] 는 "이 값은 요청 헤더 X-Gemini-Key 에서 꺼내고, 모양(pattern)이 틀리면 422" 라는 표시입니다.
+# UserKey 는 없어도 되는 키(`str | None`), RequiredUserKey 는 반드시 있어야 하는 키입니다.
 UserKey = Annotated[str | None, Header(alias="X-Gemini-Key", pattern=KEY_PATTERN)]
 RequiredUserKey = Annotated[str, Header(alias="X-Gemini-Key", pattern=KEY_PATTERN)]
 
 
+# POST /agent/plan : 요청 글을 받아 일정을 짜서 돌려줍니다. 로그인은 선택이라 get_optional_user 를 씁니다.
+# 순서: 일정 짜기 → 사용량 기록 → 사진 주소 완성 → (로그인했으면) 자동 저장.
 @router.post("/agent/plan", response_model=PlanResponse)
 def plan(
     body: PlanRequest,
@@ -41,6 +48,7 @@ def plan(
     ask_ai=Depends(get_ai_asker),
     user: User | None = Depends(get_optional_user),
 ):
+    # monotonic 은 시계가 바뀌어도 거꾸로 가지 않는 시간이라, 걸린 시간을 재기에 알맞습니다.
     started = time.monotonic()
     result = planner.plan_trip(body, repo, get_weather_fn, ask_ai=ask_ai, user_key=user_key)
     record_usage(repo, user, body, result, int((time.monotonic() - started) * 1000))
@@ -53,6 +61,7 @@ def record_usage(repo, user: User | None, body: PlanRequest, result: dict, durat
     """이번 요청의 사용량을 한 줄 적습니다. 적지 못해도 일정은 그대로 돌려줍니다."""
     used = result.pop("usage")   # 응답에는 싣지 않습니다
     row = {"user_id": user.id if user else None, "mode": result["mode"], "days": body.days, "duration_ms": duration_ms, **used}
+    # 기록은 덤이라 실패해도 사용자에게 오류를 보이지 않고 로그만 남깁니다. (그래서 여기서 오류를 삼킵니다)
     try:
         repo.add_ai_usage(row)
     except Exception as error:
@@ -77,12 +86,14 @@ def save_for(user: User | None, body: PlanRequest, result: dict, repo) -> dict |
     return {"id": trip["id"], "title": trip["title"]}
 
 
+# POST /agent/key-check : 헤더로 받은 키가 쓸 수 있는 키인지만 확인합니다. 키는 저장하지도 로그에 남기지도 않습니다.
 @router.post("/agent/key-check", response_model=KeyCheck)
 def key_check(user_key: RequiredUserKey, check=Depends(get_key_checker)):
     """설정 화면의 "확인" 단추. 키가 쓸 수 있는 키인지만 알려 주고, 키는 저장하지 않습니다."""
     try:
         ok = check(user_key)
     except Exception as error:  # 키 문제가 아니라 AI 서비스에 닿지 못한 경우
+        # 오류 글에 키가 섞여 있을 수 있어, 로그에 쓰기 전에 hide_key 로 가립니다.
         log.warning("AI 키 확인 실패: %s", planner.hide_key(str(error), user_key))
         return {"ok": False, "message": "AI 서비스에 닿지 못했어요. 잠시 뒤 다시 확인해 주세요."}
     if ok:

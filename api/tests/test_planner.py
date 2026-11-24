@@ -1,5 +1,7 @@
 """일정 짜기. AI 는 가짜로 바꿔 끼워, 우리 쪽 검사 로직만 확인합니다."""
 
+# 일정 짜기의 중심 테스트. AI 방식은 "AI 가 이렇게 답했다"는 글을 직접 넘겨, 우리 쪽 검사(지어낸 장소 버리기,
+# 일수 넘는 날 자르기)와 규칙 방식으로 넘어가는 흐름을 확인합니다. 날씨는 make_weather 가짜를 씁니다.
 from datetime import date
 
 import pytest
@@ -85,6 +87,7 @@ def test_extract_json_ignores_decoration():
         planner.extract_json("JSON 이 없는 답")
 
 
+# 핵심: AI 가 우리가 보여 주지 않은(지어낸) 장소를 넣으면 그 장소는 결과에서 빠져야 합니다.
 def test_ai_plan_keeps_only_spots_we_showed(with_ai_key):
     repo = FakeRepo()
 

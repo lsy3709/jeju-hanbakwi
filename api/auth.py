@@ -5,6 +5,10 @@
 화면이 보낸 사용자 ID 를 그대로 믿지 않는 것이 핵심입니다.
 """
 
+# 이 파일은 "문지기" 함수 모음입니다. routers/ 의 주소가 Depends(...) 로 끼워 쓰면,
+# 주소 함수가 실행되기 전에 먼저 이 함수들이 불려 로그인 여부를 가려 줍니다.
+# 안에서는 Supabase 에 토큰을 물어보고(verify_token), repo.py 로 이용 정지 여부를 확인합니다.
+# 낱말: 토큰 = 로그인했다는 증표 글자. 401 = "누구인지 모름", 403 = "누구인지는 알지만 허락 안 됨".
 import httpx
 from fastapi import Depends, Header, HTTPException
 
@@ -20,8 +24,10 @@ _http = httpx.Client(timeout=5)
 
 def verify_token(token: str) -> User | None:
     """Supabase 에 토큰을 확인받습니다. 틀리거나 만료됐으면 None."""
+    # Supabase 주소가 설정돼 있지 않으면 확인할 곳이 없으니 "로그인 안 한 것"으로 봅니다.
     if not settings.supabase_url:
         return None
+    # 네트워크가 끊기거나 늦어도 서버가 죽지 않게, 오류는 "확인 실패(None)"로 바꿉니다.
     try:
         response = _http.get(
             f"{settings.supabase_url}/auth/v1/user",
@@ -37,8 +43,11 @@ def verify_token(token: str) -> User | None:
     return User(id=data["id"], email=data.get("email"))
 
 
+# Header(default=None) 은 요청 머리글(헤더)의 Authorization 값을 FastAPI 가 대신 꺼내 넣어 준다는 뜻입니다.
+# `str | None` 은 "글자이거나, 없을 수 있다(None)"는 타입 표시입니다.
 def get_current_user(authorization: str | None = Header(default=None)) -> User:
     """로그인이 필요한 주소에 붙이는 문지기. 통과 못 하면 401."""
+    # authorization[7:] 은 앞의 "Bearer "(7글자)를 잘라 낸 토큰 부분입니다.
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(status_code=401, detail="로그인이 필요합니다.")
     user = verify_token(authorization[7:].strip())
@@ -59,11 +68,14 @@ def get_optional_user(authorization: str | None = Header(default=None)) -> User 
 
 def is_admin(user: User) -> bool:
     """서버 환경변수 ADMIN_EMAILS 에 적힌 이메일인가. 이메일은 Supabase 가 확인해 준 값만 씁니다."""
+    # 대소문자가 달라도 같은 이메일로 보도록 둘 다 소문자로 맞춰 비교합니다.
     return bool(user.email) and user.email.lower() in settings.admin_emails
 
 
 def get_active_user(user: User = Depends(get_current_user), repo=Depends(get_repo)) -> User:
     """로그인했고 이용 정지가 아닌 사람. 찜·일정 주소에 붙입니다. 정지면 403."""
+    # Depends(get_current_user) 는 "먼저 그 문지기를 통과시킨 결과를 여기 넣어 달라"는 뜻입니다.
+    # Depends(get_repo) 는 DB 창구를 대신 넣어 주며, 테스트에서는 가짜 DB 로 바꿔 끼웁니다.
     if repo.is_suspended(user.id):
         raise HTTPException(status_code=403, detail="이용이 정지된 계정입니다. 관리자에게 문의해 주세요.")
     return user

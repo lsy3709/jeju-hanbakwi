@@ -1,8 +1,11 @@
+// 테스트 파일입니다. 화면 없이 aiKey.ts 의 함수 를 불러 결과가 맞는지 확인하며, `npm test`(vitest)가 실행합니다.
+// "describe" 는 비슷한 테스트를 묶고, "it" 은 하나의 확인 항목, "expect(...).toBe(...)" 는 "이 값이 이것과 같아야 한다"는 뜻입니다.
 import { describe, expect, it } from "vitest";
 import { AI_KEY_STORAGE, clearKey, isKeyShape, loadKey, maskKey, saveKey, type KeyStorage } from "./aiKey";
 
 const GOOD = "AIzaUserKey_1234567890-abcdefghij";
 
+// 진짜 localStorage 대신 쓰는 가짜 저장소입니다(테스트마다 깨끗한 상태로 시작하려고).
 function fakeStorage(initial: Record<string, string> = {}): KeyStorage & { data: Record<string, string> } {
   const data = { ...initial };
   return {
@@ -17,6 +20,7 @@ function fakeStorage(initial: Record<string, string> = {}): KeyStorage & { data:
   };
 }
 
+// 키 모양 검사가 맞는 키만 통과시키는지 확인합니다.
 describe("isKeyShape", () => {
   it("영문 · 숫자 · _ · - · . 20~200자만 통과", () => {
     expect(isKeyShape(GOOD)).toBe(true);
@@ -28,6 +32,7 @@ describe("isKeyShape", () => {
   });
 });
 
+// 화면에 키를 보일 때 가운데가 가려지는지 확인합니다.
 describe("maskKey", () => {
   it("앞 4자와 뒤 4자만 보여 준다", () => {
     expect(maskKey(GOOD)).toBe("AIza…ghij");
@@ -38,6 +43,7 @@ describe("maskKey", () => {
   });
 });
 
+// 보관·읽기·지우기가 정상일 때와 저장소가 막혔을 때 모두 확인합니다.
 describe("saveKey · loadKey · clearKey", () => {
   it("앞뒤 공백을 떼고 저장한 뒤 다시 읽는다", () => {
     const storage = fakeStorage();

@@ -1,4 +1,6 @@
 // 이 파일이 하는 일: "내 여행 > 찜한 곳" 탭 화면(불러오는 중 · 오류 · 빈 목록 · 카드 목록 · 더 보기). 데이터와 동작은 위(useFavorites)에서 받습니다.
+// 컴포넌트 = 화면 조각을 그려 돌려주는 함수입니다. 중괄호 안의 이름들(props)은 부르는 쪽이 넘겨 주는 값입니다.
+// 쓰는 곳: app/my/page.tsx. 이 컴포넌트는 그리기만 하고, 데이터와 동작은 훅(useFavorites)이 만들어 넘겨 줍니다.
 import { MoreButton } from "@/components/MoreButton";
 import { SpotCard } from "@/components/SpotCard";
 import { Empty, ErrorBox, Loading } from "@/components/States";
@@ -25,6 +27,7 @@ export function FavoriteList({
   onRetry: () => void;
   onUnfavorite: (spotId: number) => void;
 }) {
+  // 상태 순서대로 확인합니다: 불러오는 중 → 첫 불러오기 오류 → 빈 목록 → 카드 목록. 서버가 꺼져 있어도 화면이 죽지 않게 항상 이 상태들을 만듭니다.
   if (loading || !spots) return <Loading />;
   // 받은 것이 하나도 없는데 오류가 있으면 첫 묶음부터 실패한 것 → 큰 오류 상자 + 다시 시도
   if (error && spots.length === 0 && !hasMore) return <ErrorBox message={error} onRetry={onRetry} />;
@@ -38,6 +41,7 @@ export function FavoriteList({
           {actionError}
         </p>
       )}
+      {/* spots.map 은 목록의 각 줄을 카드 하나로 바꿉니다. key 는 React 가 줄을 구분하는 이름표입니다. */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {spots.map((spot) => (
           <SpotCard

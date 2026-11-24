@@ -1,6 +1,7 @@
 // 플래너에서 짠 일정을 브라우저 탭(sessionStorage)에 잠깐 보관하는 순수 함수입니다.
 // 왜: 로그아웃 상태로 일정을 짜고 구글 로그인을 하면 페이지가 통째로 새로 열려 일정이 사라집니다.
 //     돌아온 뒤에 되살려 "저장"을 누를 수 있게 합니다. 저장소는 인자로 받아 테스트에서 가짜를 넣습니다.
+// 쓰는 곳: hooks/usePlanner.ts. 낱말 풀이: sessionStorage = 이 탭이 열려 있는 동안만 글자를 보관하는 브라우저 창고입니다(탭을 닫으면 사라집니다). 테스트는 planDraft.test.ts 입니다.
 import type { PlanInput, PlanResponse } from "./types";
 
 export type PlanDraft = { request: PlanInput; plan: PlanResponse; savedAt: number };
@@ -69,6 +70,7 @@ export function clearDraft(storage: DraftStorage): void {
 // ---------- 브라우저의 sessionStorage 를 쓰는 얇은 껍데기 ----------
 // sessionStorage 는 브라우저에만 있어서(서버 렌더링 때는 없음) 이벤트 핸들러·초기화 함수 안에서만 부르세요.
 
+// "typeof window" 확인: 서버에서 먼저 그려질 때는 window(브라우저)가 없어서, 없으면 null 을 돌려줍니다.
 function browserStorage(): DraftStorage | null {
   try {
     return typeof window === "undefined" ? null : window.sessionStorage;

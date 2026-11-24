@@ -10,6 +10,8 @@ api 폴더에서 실행합니다. (서버가 켜져 있고, 관광지 데이터�
   python -m tools.seed_demo --token ... --clear          내 찜과 일정을 모두 지우기
 """
 
+# 이 도구는 DB 를 직접 만지지 않고, 켜져 있는 서버의 주소(/spots, /me/favorites, /me/trips)를 로그인 토큰과 함께 부릅니다.
+# 그래서 서버의 로그인 확인·이용 정지 같은 규칙을 그대로 지나갑니다. 일정 제목이 이미 있으면 건너뛰어 여러 번 돌려도 안전합니다.
 import argparse
 import sys
 from datetime import date, timedelta
@@ -68,6 +70,7 @@ def seed(client: httpx.Client) -> None:
             continue
         itinerary = []
         for index, items in enumerate(days):
+            # 이름으로 관광지를 찾아 번호(spot_id)를 알아냅니다. 이 DB 에 없는 이름은 None 이라 아래에서 빠집니다.
             found = [(time, find_spot(client, name), reason) for time, name, reason in items]
             day_items = [
                 {"time": time, "spot_id": spot["id"], "title": spot["title"], "reason": reason}
@@ -100,6 +103,7 @@ def main() -> int:
                 print("로그인 토큰이 올바르지 않습니다.")
                 return 1
             print(f"계정: {me.json().get('email')}")
+            # --clear 를 줬으면 지우고, 아니면 넣습니다. (한 줄짜리 if/else 식)
             clear(client) if args.clear else seed(client)
     except httpx.ConnectError:
         print(f"서버에 연결할 수 없습니다: {args.api}")

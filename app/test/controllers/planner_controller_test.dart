@@ -1,9 +1,12 @@
+// PlannerController 의 단위 테스트입니다. 입력값이 요청에 실리는 모양, 글이 비었을 때의 동작, 요청 성공 · 실패, 저장 성공 · 실패, 저장 중 중복 누르기를 가짜 서버(PlanApi)로 확인합니다.
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/controllers/planner_controller.dart';
 
 import '../support.dart';
 
 void main() {
+  // 입력: 날짜는 YYYY-MM-DD 로, 글은 앞뒤 공백을 떼어 보내고, 비어 있으면 요청하지 않는지 확인합니다.
   test('입력값이 요청에 실린다. 날짜는 YYYY-MM-DD, 글은 앞뒤 공백 제거', () async {
     final api = PlanApi();
     final c = PlannerController(api: api);
@@ -43,6 +46,7 @@ void main() {
     expect(c.result, isNull);
   });
 
+  // 일정 요청: 성공하면 결과가 채워지고, 실패하면 오류 문구만 남는지 확인합니다.
   test('요청 성공: 결과가 채워지고 요청 중이 꺼진다', () async {
     final c = PlannerController(api: PlanApi());
     c.message = '제주';
@@ -68,6 +72,7 @@ void main() {
     expect(c.result, isNull);
   });
 
+  // 저장: 성공하면 saved 가 켜지고, 실패하면 오류 문구를 돌려주며, 저장 중 또 눌러도 요청은 한 번인지 확인합니다.
   test('저장 성공: saved 가 켜지고 제목이 서버로 간다', () async {
     final api = PlanApi();
     final c = PlannerController(api: api);

@@ -1,7 +1,10 @@
+// 일정 제목 대화상자(askTripTitle)의 위젯 테스트입니다. 닫는 세 가지 방법(바깥 누르기 · 취소 · 저장)이 오류 없이 null 이나 제목을 돌려주는지 확인합니다.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/widgets/title_dialog.dart';
 
+// 대화상자는 다른 화면 위에 뜨는 것이라, 버튼 하나짜리 작은 화면을 만들어 그 버튼으로 엽니다.
 /// 버튼 하나만 있는 화면. 누르면 제목 대화상자를 열고, 돌려받은 값을 [results] 에 담습니다.
 Future<List<String?>> pumpOpener(WidgetTester tester) async {
   final results = <String?>[];
@@ -22,6 +25,7 @@ Future<List<String?>> pumpOpener(WidgetTester tester) async {
 }
 
 void main() {
+  // 닫히는 방법별 결과: 바깥을 누르거나 취소하면 null, 저장하면 적은 제목(비어 있으면 안 닫힘)을 돌려주는지 확인합니다.
   testWidgets('제목 대화상자: 바깥을 눌러 닫아도 오류 없이 null 을 돌려준다', (tester) async {
     final results = await pumpOpener(tester);
 

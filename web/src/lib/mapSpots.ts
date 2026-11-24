@@ -1,5 +1,6 @@
 // 지도에 그릴 수 있는 곳만 고르는 계산. 관리자가 위치 없이 추가한 여행지는 lat · lng 가 null 입니다.
 
+// 쓰는 곳: SpotMapView.tsx 와 SpotMap.tsx. 위치가 없는 여행지를 지도 그리기 전에 걸러 냅니다.
 export type MaybeLocated = { id: number; title: string; lat: number | null; lng: number | null };
 export type MapSpot = { id: number; title: string; lat: number; lng: number };
 

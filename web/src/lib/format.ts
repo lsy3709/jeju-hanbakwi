@@ -1,4 +1,6 @@
 // 화면 어디서나 쓰는 "순수 함수"(같은 입력 → 같은 출력)를 모았습니다. 테스트하기 쉬워요.
+// 쓰는 곳: api.ts(주소 뒤 쿼리 만들기)와 화면 컴포넌트(날짜·날씨 글자 만들기). 서버나 화면 상태를 부르지 않는 계산만 있습니다.
+// 낱말 풀이: 쿼리 = 주소 뒤 "?theme=바다&area=제주시" 처럼 붙는 조건 묶음입니다.
 import type { SpotsParams, WeatherDay } from "./types";
 
 /** 값이 있는 항목만 골라 "?a=1&b=2" 문자열을 만듭니다. 값이 하나도 없으면 빈 문자열. */
@@ -6,6 +8,7 @@ export function buildQuery(
   params: Record<string, string | number | boolean | undefined | null>,
 ): string {
   const search = new URLSearchParams();
+  // 값이 비어 있는 항목은 쿼리에 넣지 않아야 서버가 "조건 없음"으로 받습니다.
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined || value === null || value === "") continue;
     search.set(key, String(value));
@@ -41,6 +44,7 @@ export function photoCreditText(spot: { image_url: string | null; image_credit: 
 /** "2026-12-01" → "12월 1일 (화)". 날짜가 없거나 모양이 틀리면 null. */
 export function formatDate(date: string | null): string | null {
   if (!date) return null;
+  // 날짜 글자가 "숫자4-숫자2-숫자2" 모양인지 정규식(글자 모양을 적는 약속)으로 확인하고, 괄호 안 값을 뽑아냅니다.
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(date);
   if (!match) return null;
   const y = Number(match[1]);

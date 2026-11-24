@@ -1,5 +1,7 @@
 "use client";
 
+// "use client" 는 이 화면이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하고 useState·useEffect 같은 훅을 쓰려면 필요합니다.
+// 층: 이 화면(app/) → hooks/ → lib/api.ts. 화면 파일은 fetch 를 직접 부르지 않습니다. page.tsx 는 폴더 이름에 해당하는 주소의 화면입니다.
 // 이 파일이 하는 일: 탐색 화면 조립. 필터 상태는 주소의 쿼리(?q=&theme=&area=&category=&indoor=&view=map)와 항상 맞춥니다.
 // → 새로고침하거나 주소를 공유해도 같은 화면이 나옵니다. (쿼리 ↔ 필터 변환은 lib/exploreFilters.ts, 검색 상태는 hooks/useSpotSearch.ts)
 import { Suspense, useMemo } from "react";
@@ -19,6 +21,7 @@ import { getMeta } from "@/lib/api";
 import { exploreHref, hasActiveFilter, parseExploreQuery } from "@/lib/exploreFilters";
 
 // useSearchParams 를 쓰는 화면은 Suspense 로 감싸야 빌드가 통과합니다.
+// "?" 쿼리를 읽는 useSearchParams 는 서버가 첫 화면을 만들 때 값을 몰라서, Suspense 로 감싸 "읽을 수 있을 때까지 대기 화면"을 보이게 합니다.
 export default function ExplorePage() {
   return (
     <Suspense fallback={<Loading />}>
@@ -27,6 +30,7 @@ export default function ExplorePage() {
   );
 }
 
+// 실제 탐색 화면입니다. 필터의 "진짜 값"은 주소의 쿼리에 있고, 화면은 그 값을 읽어 그립니다(그래서 뒤로 가기·새로고침·링크 공유가 됩니다).
 function Explore() {
   const router = useRouter();
   const pathname = usePathname();
@@ -34,11 +38,13 @@ function Explore() {
   const meta = useAsync(getMeta);
 
   // 주소가 바뀔 때만 필터를 새로 만듭니다(그래야 useSpotSearch 가 쓸데없이 다시 불러오지 않습니다).
+  // useMemo 는 주소(searchParams)가 바뀔 때만 다시 계산합니다. 매번 새 값이 되면 useSpotSearch 가 같은 조건으로 서버를 다시 부릅니다.
   const state = useMemo(() => parseExploreQuery(searchParams), [searchParams]);
   const { q, theme, area, category, indoorText, isMap, filters } = state;
   const { list: current, hasMore, loadMore, moreBusy, reload } = useSpotSearch(filters);
 
   // 필터를 바꾸면 주소를 바꿉니다. (view 는 그대로 유지)
+  // 필터를 바꿀 때 상태를 직접 바꾸지 않고 주소를 바꿉니다. 주소가 바뀌면 위에서 다시 읽혀 화면이 갱신됩니다. replace 는 뒤로 가기 기록을 쌓지 않는다는 뜻입니다.
   const update = (changes: Record<string, string>) =>
     router.replace(exploreHref(pathname, state, changes), { scroll: false });
 

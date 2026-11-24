@@ -1,3 +1,5 @@
+// 설정 화면(내 AI 키)의 화면 테스트입니다. FakeVault(가짜 보관소)와 KeyApi(키 확인 결과를 정하는 가짜 서버)로, 키 저장 · 가려 보이기 · 확인 · 지우기를 확인합니다.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/app.dart';
@@ -7,6 +9,7 @@ import 'package:jeju_hanbakwi/auth/auth_service.dart';
 import 'ai_key_store_test.dart' show FakeVault, good;
 import 'support.dart';
 
+// checkAiKey 만 다시 만들어서 서버가 "쓸 수 있는 키" 또는 "쓸 수 없는 키"라고 답하는 상황을 흉내 냅니다.
 /// 키 확인 결과를 정해 줄 수 있는 가짜 서버.
 class KeyApi extends PlanApi {
   bool keyOk = true;
@@ -19,6 +22,7 @@ class KeyApi extends PlanApi {
   }
 }
 
+// 도우미: 앱을 띄워 AI 플래너 탭의 설정(톱니바퀴)까지 들어가고, 가짜 보관소를 끼운 AiKeyStore 를 돌려줍니다.
 Future<AiKeyStore> pumpSettings(WidgetTester tester, KeyApi api, FakeVault vault) async {
   tester.view.physicalSize = const Size(400, 900);
   tester.view.devicePixelRatio = 1;
@@ -36,6 +40,7 @@ Future<AiKeyStore> pumpSettings(WidgetTester tester, KeyApi api, FakeVault vault
 }
 
 void main() {
+  // 저장하면 키는 가려서만 보이고(전체 글자는 화면에 없음), 확인 · 지우기가 되는지 확인합니다.
   testWidgets('설정: 키를 저장하면 가려서 보여 주고, 확인 · 지우기가 된다', (tester) async {
     final api = KeyApi();
     final vault = FakeVault();
@@ -62,6 +67,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  // 틀린 키는 저장되지 않고 이유가 보이며, 서버가 쓸 수 없다고 답하면 그렇게 알려 주는지 확인합니다.
   testWidgets('설정: 모양이 틀린 키는 저장하지 않고 까닭을 보여 준다', (tester) async {
     final vault = FakeVault();
     await pumpSettings(tester, KeyApi(), vault);

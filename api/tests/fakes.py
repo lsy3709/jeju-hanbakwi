@@ -1,5 +1,8 @@
 """테스트용 가짜 DB. repo.SupabaseRepo 와 같은 함수를 메모리 안에서 흉내 냅니다."""
 
+# 가짜 DB 가 있는 이유: 테스트가 진짜 Supabase 를 부르면 느리고, 키가 필요하고, 데이터가 오염됩니다.
+# FakeRepo 는 repo.SupabaseRepo 와 같은 이름의 메서드를 갖추고 파이썬 목록(list)에 저장합니다. 테스트 한 번마다 새로 만들어져 서로 영향이 없습니다.
+# 관광지 데이터는 api/data/sample_spots.json 을 transform 으로 고쳐 쓰므로 진짜 변환 규칙도 함께 검증됩니다.
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -26,6 +29,7 @@ class FakeRepo:
     # ---------- 관광지 ----------
     def list_spots(self, q=None, theme=None, area=None, category=None, indoor=None,
                    after_id=None, size=20, include_hidden=False, hidden=None):
+        # 진짜 repo 와 같은 조건 순서로 목록을 걸러 냅니다. 숨긴 곳 제외·커서 규칙도 똑같이 흉내 냅니다.
         items = self.spots
         if q:
             items = [s for s in items if q in s["title"] or q in s["one_liner"]]
@@ -62,6 +66,7 @@ class FakeRepo:
 
     # ---------- 찜 ----------
     def list_favorites(self, user_id, before_id=None, size=20):
+        # 진짜 repo 처럼 user_id 가 같은 것만 고릅니다. 그래서 "남의 찜은 안 보인다" 테스트가 의미를 가집니다.
         rows = [f for f in reversed(self.favorites) if f["user_id"] == user_id]
         if before_id is not None:
             rows = [f for f in rows if f["id"] < before_id]
@@ -97,6 +102,7 @@ class FakeRepo:
         self.trips = [t for t in self.trips if not (t["user_id"] == user_id and t["id"] == trip_id)]
         return len(self.trips) < before
 
+    # 앞의 밑줄(_)은 "이 파일 안에서만 쓰는 도우미"라는 관례입니다. user_id 를 빼고 돌려줍니다.
     @staticmethod
     def _public(trip):
         return {k: trip[k] for k in ("id", "title", "itinerary", "created_at")}
@@ -147,6 +153,7 @@ class FakeRepo:
         return self._admin_row(profile)
 
 
+# 진짜 weather.get_weather 와 같은 모양의 값을 돌려주는 함수를 만들어 주는 함수입니다. 바깥 날씨 서비스를 부르지 않습니다.
 def make_weather(first_day_rainy: bool):
     """4일치 가짜 날씨를 돌려주는 함수를 만듭니다. 첫날만 비가 오게 할 수 있습니다."""
 

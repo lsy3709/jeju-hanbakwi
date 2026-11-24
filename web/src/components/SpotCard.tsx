@@ -1,4 +1,5 @@
 // 관광지 카드 한 장. 홈·탐색·내 여행에서 같이 씁니다.
+// 받는 값 spot 한 곳을 카드로 그립니다. 누르면 상세 화면(/spots/번호)으로 갑니다. 사진은 SpotImage 가 그립니다.
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Spot } from "@/lib/types";
@@ -12,6 +13,7 @@ export function IndoorBadge({ indoor }: { indoor: boolean }) {
   );
 }
 
+// footer 는 카드 아래에 끼워 넣을 화면 조각입니다(찜 해제 버튼 등). 없으면 그리지 않습니다.
 type Props = {
   spot: Spot;
   className?: string;

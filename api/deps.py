@@ -9,6 +9,9 @@ FastAPI 의 Depends(...) 에 넣는 함수입니다. 주소는 "무엇이 필요
   AI 에게 묻기 → 아래 get_ai_asker · get_key_checker
 """
 
+# 아래 함수들은 "함수를 돌려주는 함수"입니다. 주소(routers/)가 Depends(get_weather_service) 라고 쓰면
+# FastAPI 가 그 함수를 불러 나온 값(진짜 날씨 함수)을 주소 함수의 인자로 넣어 줍니다.
+# 테스트에서는 app.dependency_overrides 로 이 자리를 가짜로 바꿔 끼워, 진짜 날씨·AI 를 부르지 않습니다.
 from services import plan_ai, weather
 
 

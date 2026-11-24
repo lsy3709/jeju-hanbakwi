@@ -1,3 +1,6 @@
+// "내 여행 > 저장한 일정" 탭입니다. 불러오기와 삭제는 TripsController 가 하고, 이 파일은 그 값을 보고 목록을 그리며 삭제 확인 창을 띄웁니다.
+// AI 플래너가 일정을 저장하면 ShellController.tripsRevision 숫자가 올라가고, 이 탭이 그것을 듣고 목록을 다시 불러옵니다.
+
 import 'package:flutter/material.dart';
 
 import '../../app_scope.dart';
@@ -21,10 +24,12 @@ class TripsTab extends StatefulWidget {
 class _TripsTabState extends State<TripsTab> {
   late final TripsController _controller;
   late final ShellController _shell;
+  // 마지막으로 본 tripsRevision 숫자입니다. 숫자가 달라졌을 때만 다시 불러오려고 기억해 둡니다.
   int _seenRevision = 0;
   bool _started = false;
 
   @override
+  // AppScope 를 처음 꺼낼 수 있는 시점에 한 번만 컨트롤러를 만들고 탭 사이 소식 듣기를 시작합니다(끊기는 dispose 에서).
   void didChangeDependencies() {
     super.didChangeDependencies();
     // AppScope 는 initState 에서 못 꺼내므로, 처음 한 번만 여기서 준비합니다.
@@ -57,6 +62,7 @@ class _TripsTabState extends State<TripsTab> {
     if (message != null && mounted) showSnack(context, message);
   }
 
+  // showDialog 는 확인 창을 띄우고, 사용자가 누른 버튼의 값(true/false)을 기다렸다가 돌려줍니다. 취소하거나 창 밖을 눌러 닫으면 null 이라 ok != true 로 거릅니다.
   Future<void> _delete(Trip trip) async {
     final ok = await showDialog<bool>(
       context: context,
@@ -75,6 +81,7 @@ class _TripsTabState extends State<TripsTab> {
   }
 
   @override
+  // 컨트롤러가 바뀔 때마다 아래가 다시 그려집니다. 맨 아래 한 칸은 "더 보기" 버튼 자리라 itemCount 가 일정 수 + 1 입니다.
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: _controller,

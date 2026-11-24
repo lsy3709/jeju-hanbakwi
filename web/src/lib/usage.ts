@@ -1,4 +1,5 @@
 // AI 사용량을 화면에 보여 줄 글자로 바꾸는 순수 함수입니다. (서버 응답 모양은 docs/api.md 의 "AI 사용량")
+// 쓰는 곳: components/UsageView.tsx. 서버가 준 숫자를 카드·표에 넣을 글자로 바꿉니다. 테스트는 usage.test.ts 입니다.
 import type { UsageSummary, UsageUser } from "./types";
 
 /** 세 자리마다 쉼표를 찍습니다. */

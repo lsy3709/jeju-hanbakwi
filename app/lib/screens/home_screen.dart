@@ -1,3 +1,7 @@
+// 첫 탭인 홈 화면입니다. 불러오기와 상태는 HomeController 가 하고, 이 화면은 그 값(로딩 · 오류 · 목록)을 보고 그리기만 합니다.
+// 이 파일의 흐름: 화면 → HomeController(controllers/home_controller.dart) → ApiClient.
+// StatefulWidget 은 State 객체에 바뀌는 값과 정리(dispose)가 필요한 객체(컨트롤러, 입력창)를 둘 때 씁니다.
+
 import 'package:flutter/material.dart';
 
 import '../app_scope.dart';
@@ -18,12 +22,14 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+// TextEditingController 는 입력창의 글을 읽고 바꾸는 도구라서 dispose 에서 꼭 닫아 줘야 합니다.
 class _HomeScreenState extends State<HomeScreen> {
   final _search = TextEditingController();
   late final HomeController _controller;
   bool _started = false;
 
   @override
+  // initState 때는 아직 AppScope 를 꺼낼 수 없어서 여기서 준비합니다. 이 함수는 여러 번 불릴 수 있어 _started 로 처음 한 번만 하게 막습니다. ..load() 는 만든 컨트롤러에 바로 load() 를 부르는 문법입니다.
   void didChangeDependencies() {
     super.didChangeDependencies();
     // AppScope 는 initState 에서 못 꺼내므로, 처음 한 번만 여기서 불러옵니다.
@@ -40,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  // ListenableBuilder 가 컨트롤러를 듣고 있다가 값이 바뀌면 이 안쪽만 다시 그립니다. 안쪽은 loading → 로딩 화면, error → 오류 화면, 아니면 목록 순으로 고릅니다(조건 ? A : B 를 이어 쓴 것).
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
     return SafeArea(
@@ -50,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
             : _controller.error != null
             ? ErrorView(message: _controller.error!, onRetry: _controller.load)
             : RefreshIndicator(
+                // RefreshIndicator 는 목록을 아래로 당기면 onRefresh 를 부르고, 그 Future 가 끝날 때까지 로딩 표시를 보여 줍니다.
                 onRefresh: _controller.load,
                 child: CenteredBody(
                   child: ListView(
@@ -86,6 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // _controller.meta?.themes ?? const <String>[] : meta 가 없으면(null) 빈 목록으로 대신합니다. 칩을 누르면 탐색 탭으로 이동하며 그 테마로 검색합니다.
   Widget _themeChips(AppScope scope) {
     final themes = _controller.meta?.themes ?? const <String>[];
     return SizedBox(
@@ -102,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // 가로로 넘기는 카드 목록입니다. itemBuilder 는 i 번째 칸이 필요할 때마다 호출되어 화면에 보이는 것만 만듭니다.
   Widget _spotList() {
     if (_controller.spots.isEmpty) {
       return const Padding(
@@ -129,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // 누르면 AI 플래너 탭으로 이동합니다.
   Widget _aiCard(AppScope scope) {
     return Card(
       color: AppColors.primary.withValues(alpha: 0.08),

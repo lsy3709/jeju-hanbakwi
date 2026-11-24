@@ -1,5 +1,6 @@
 "use client";
 
+// "use client" 는 이 파일이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하거나 useState 로 값을 기억하려면 필요합니다.
 // 이 파일이 하는 일: "내 여행 > 저장한 일정" 탭 화면(목록 · 펼쳐 보기 · 삭제 버튼). 데이터와 삭제 동작은 위(useTrips)에서 받습니다.
 // 어느 일정을 펼쳤는지(openId)는 화면에서만 쓰는 값이라 여기서 들고 있습니다.
 import { useState } from "react";
@@ -11,6 +12,7 @@ import { btnOutline } from "@/components/ui";
 import { formatSavedAt } from "@/lib/format";
 import type { Trip } from "@/lib/types";
 
+// 중괄호 안의 이름들(props)은 부르는 쪽이 넘겨 주는 값입니다. 목록·오류·동작은 모두 useTrips 훅이 만들어 넘기고, 이 컴포넌트는 그립니다.
 export function TripList({
   trips,
   loading,
@@ -34,6 +36,7 @@ export function TripList({
 }) {
   const [openId, setOpenId] = useState<number | null>(null); // 펼쳐 둔 일정
 
+  // 불러오는 중 → 첫 불러오기 오류 → 빈 목록 → 일정 목록 순서로 상태를 확인합니다.
   if (loading || !trips) return <Loading />;
   // 받은 것이 하나도 없는데 오류가 있으면 첫 묶음부터 실패한 것 → 큰 오류 상자 + 다시 시도
   if (error && trips.length === 0 && !hasMore) return <ErrorBox message={error} onRetry={onRetry} />;
@@ -64,6 +67,7 @@ export function TripList({
                   </button>
                   <button
                     type="button"
+                    // 실수로 지우지 않게 확인창(window.confirm)에서 "확인"을 눌러야 삭제를 요청합니다.
                     onClick={() => {
                       if (window.confirm(`"${trip.title}" 일정을 삭제할까요?`)) onRemove(trip.id);
                     }}

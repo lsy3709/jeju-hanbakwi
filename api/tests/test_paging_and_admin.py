@@ -1,5 +1,7 @@
 """커서 페이징(찜 · 일정)과 관리자 주소, 이용 정지."""
 
+# 두 묶음: ① 목록을 나눠 받는 커서 규칙(찜·일정), ② 관리자만 쓰는 주소와 이용 정지.
+# 관리자 확인은 서버가 환경변수 ADMIN_EMAILS 로 하므로, conftest 가 admin@example.com 만 관리자로 맞춰 둡니다.
 from services.paging import cut_page
 from tests.conftest import ADMIN, ALICE, BOB
 from tests.test_api import ITINERARY, walk
@@ -69,6 +71,7 @@ def test_list_size_limits(client, login):
 
 # ---------------------------------------------------------------- 이용 정지
 
+# 정지된 계정은 찜·일정 주소에서 403 이 나야 합니다(auth.get_active_user).
 def test_suspended_user_cannot_use_favorites_or_trips(client, login, repo):
     repo.add_profile(ALICE.id, ALICE.email)["suspended"] = True
     login(ALICE)
@@ -101,6 +104,7 @@ def test_admin_routes_need_login(client):
         assert client.request(method, url, json=body).status_code == 401, url
 
 
+# 로그인 안 함 → 401, 로그인했지만 관리자가 아님 → 403. 이 둘이 다른 이유를 확인합니다.
 def test_admin_routes_refuse_ordinary_user(client, login, repo):
     repo.add_profile(BOB.id, BOB.email)
     login(ALICE)

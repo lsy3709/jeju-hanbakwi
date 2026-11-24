@@ -1,5 +1,6 @@
 """일정 짜기의 경계 사례. 코드 분석(2026-11-20)에서 찾은 것들입니다."""
 
+# 평소 흐름에서 놓치기 쉬운 경계(한국 날짜, 두 글자 장소 이름의 조사, 시장 테마, AI 가 시간 순서를 뒤섞어 보냄)를 하나씩 확인합니다.
 from datetime import date, datetime, timezone
 
 import pytest

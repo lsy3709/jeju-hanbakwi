@@ -1,5 +1,6 @@
 "use client";
 
+// "use client" 는 이 파일이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하거나 useState 로 값을 기억하려면 필요합니다.
 // 이 파일이 하는 일: 관리자 "사용자" 탭의 표(이메일 · 가입일 · 찜 수 · 일정 수 · 상태 · 정지 버튼). 데이터와 동작은 위(useAdminUsers)에서 받습니다.
 // 폰 폭: 넓은 표를 가로로 밀게 하면 폰 브라우저가 화면 전체를 넓혀 아래 탭까지 밀려납니다(실측).
 // 그래서 폰에서는 덜 중요한 칸을 숨기고(hidden md:table-cell) 그 내용을 첫 칸 아래 한 줄로 보여 줍니다.
@@ -8,6 +9,8 @@ import { formatSavedAt } from "@/lib/format";
 import type { AdminUser } from "@/lib/types";
 import { StatusBadge } from "./StatusBadge";
 
+// 컴포넌트 = 화면 조각을 그려 돌려주는 함수입니다. 중괄호 안의 이름들(props)은 부르는 쪽이 넘겨 주는 값입니다.
+// 받는 값: users(표에 그릴 줄), myId(로그인한 관리자 자신의 id), busyId(요청 중인 줄), onSuspend(정지/해제 단추를 누르면 부를 함수).
 export function AdminUserTable({
   users,
   myId,
@@ -36,6 +39,7 @@ export function AdminUserTable({
         </thead>
         <tbody>
           {users.map((user) => {
+            // 자기 자신의 줄이면 정지 단추를 막으려고 구분합니다.
             const isMe = user.id === myId;
             const email = user.email ?? "(이메일 없음)";
             return (

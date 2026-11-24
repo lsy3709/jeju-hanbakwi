@@ -1,5 +1,7 @@
 "use client";
 
+// "use client" 는 이 화면이 브라우저에서 도는 컴포넌트라는 표시입니다. 데이터를 useAsync 로 불러오고 검색·클릭에 반응하기 때문입니다.
+// 층: 이 화면(app/) → hooks/useAsync → lib/api.ts. 화면 파일은 fetch 를 직접 부르지 않습니다.
 // 홈: 인사 + 검색바 → 날씨 배너 → 테마 칩 → "지금 가기 좋은 곳" → AI 플래너 안내
 import Link from "next/link";
 import { useCallback } from "react";
@@ -16,7 +18,9 @@ import { buildQuery } from "@/lib/format";
 import { getMeta, getSpots, getWeather } from "@/lib/api";
 import { useAsync } from "@/hooks/useAsync";
 
+// default export 는 Next.js 가 "주소 "/" 의 화면"으로 쓰는 약속된 이름입니다. useAsync 는 불러오는 중 / 오류 / 결과 상태를 돌려줍니다.
 export default function HomePage() {
+  // router.push 는 화면을 새로고침하지 않고 다른 주소로 옮기는 함수입니다. 검색어·테마는 주소의 쿼리(?q=, ?theme=)에 담아 탐색 화면으로 넘깁니다.
   const router = useRouter();
   const meta = useAsync(getMeta);
   const weather = useAsync(getWeather);
@@ -68,6 +72,7 @@ export default function HomePage() {
 }
 
 // 비 오는 날은 실내(indoor=true), 아니면 실외(indoor=false) 장소 8개
+// "Recommended" 는 이 파일 안에서만 쓰는 작은 컴포넌트입니다. indoor 값이 바뀔 때만(useCallback) 서버에서 8곳을 다시 받습니다.
 function Recommended({ indoor }: { indoor: boolean }) {
   const load = useCallback(() => getSpots({ indoor, size: 8 }), [indoor]);
   const spots = useAsync(load);

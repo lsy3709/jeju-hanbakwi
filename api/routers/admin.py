@@ -7,6 +7,10 @@
 지우는 주소는 일부러 만들지 않았습니다. 사용자는 정지하고 여행지는 숨깁니다. 둘 다 되돌릴 수 있습니다.
 """
 
+# 층: 이 파일(주소) → services/usage · paging · photos 와 repo.py(DB). 주소 함수는 받아서 넘기기만 합니다.
+# 낱말: @router.get("/users") 처럼 함수 위에 붙인 줄(데코레이터)은 "이 방식·이 주소로 요청이 오면 아래 함수를 부른다"는 뜻입니다.
+# 낱말: Depends(...) 는 필요한 것(DB, 로그인한 사람 …)을 FastAPI 가 대신 만들어 넣어 주게 하는 표시입니다.
+# 낱말: 상태 코드 400 = 요청이 잘못됨, 403 = 권한 없음, 404 = 없음, 422 = 값이 규칙에 안 맞음, 201 = 새로 만들었음.
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -19,6 +23,7 @@ from services import usage
 from services.paging import cut_page
 from services.photos import with_photo_address, with_photo_addresses
 
+# prefix 로 이 파일의 모든 주소 앞에 /admin 이 붙고, dependencies 로 모든 주소가 관리자 문지기를 먼저 통과합니다.
 router = APIRouter(prefix="/admin", tags=["관리자"], dependencies=[Depends(get_admin_user)])
 
 
@@ -31,6 +36,7 @@ def list_users(
     size: int = Query(default=20, ge=1, le=50),
     repo=Depends(get_repo),
 ):
+    # size + 1 개를 받아 "한 개 남으면 뒤에 더 있다"로 판단하고, cut_page 가 size 개로 자르며 다음 커서를 만듭니다.
     rows = repo.list_users(q=q, before_no=cursor, size=size + 1)
     items, next_cursor = cut_page(rows, size, lambda row: row["no"])
     return {"items": items, "next_cursor": next_cursor}
@@ -81,6 +87,7 @@ def list_spots(
 @router.post("/spots", response_model=AdminSpot, status_code=201)
 def add_spot(body: SpotCreate, request: Request, repo=Depends(get_repo)):
     check_choices(body.category, body.area, body.theme_tags)
+    # model_dump() 는 받은 틀(pydantic 객체)을 DB 에 넣을 수 있는 사전(dict)으로 바꿉니다.
     row = body.model_dump()
     # 관리자가 손으로 넣은 곳은 source 를 admin 으로 적어, 받아 온 데이터(sample · tourapi)와 구분합니다.
     row.update({"source": "admin", "source_id": uuid.uuid4().hex})
@@ -95,6 +102,7 @@ def update_spot(spot_id: int, body: SpotPatch, request: Request, repo=Depends(ge
     if any(value is None for value in changes.values()):
         raise HTTPException(status_code=422, detail="빈 값(null)으로는 고칠 수 없습니다.")
     check_choices(changes.get("category"), changes.get("area"), changes.get("theme_tags"))
+    # 값이 null 인 칸을 허용하면 필수 칸(이름 등)이 비어 버리므로 위에서 막았습니다. 숨김 해제는 false 를 보냅니다.
     row = repo.update_spot(spot_id, changes)
     if row is None:
         raise HTTPException(status_code=404, detail="관광지를 찾을 수 없습니다.")

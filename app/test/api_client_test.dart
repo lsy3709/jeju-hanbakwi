@@ -1,3 +1,6 @@
+// ApiClient 의 단위 테스트입니다. 진짜 인터넷 대신 MockClient(가짜 http 클라이언트)를 넣어서, 요청이 올바른 주소 · 방법 · 헤더 · 본문으로 나가는지, 응답과 오류가 제대로 해석되는지 봅니다.
+// MockClient 의 함수는 요청(req)을 받아 우리가 정한 응답을 돌려줍니다.
+
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -8,6 +11,7 @@ import 'package:jeju_hanbakwi/models/itinerary.dart';
 
 import 'support.dart';
 
+// 응답을 UTF-8 바이트로 만들어 줍니다. 서버가 실제로 한글을 이렇게 보내므로 같은 방식으로 흉내 냅니다.
 /// 한글이 깨지지 않도록 UTF-8 로 응답을 만들어 주는 도우미.
 http.Response jsonResponse(Object body, [int status = 200]) => http.Response.bytes(
       utf8.encode(jsonEncode(body)),
@@ -16,6 +20,7 @@ http.Response jsonResponse(Object body, [int status = 200]) => http.Response.byt
     );
 
 void main() {
+  // 내 AI 키를 보내는 규칙: 키가 있을 때만 X-Gemini-Key 헤더를 싣고, 일정 요청 외의 주소에는 절대 싣지 않는지 확인합니다.
   group('내 AI 키', () {
     const key = 'AIzaUserKey_1234567890-abcdefghij';
     final planBody = {'mode': 'ai', 'answer': '좋아요', 'itinerary': <Object>[], 'sources': <Object>[], 'notice': '안내 글'};
@@ -74,6 +79,7 @@ void main() {
     });
   });
 
+  // 목록 요청: 비어 있는 조건은 주소에서 빠지고, 처음 요청에는 cursor 가 없는지 확인합니다.
   test('getSpots: 비어 있는 조건은 빼고 쿼리 문자열을 만든다', () async {
     late Uri seen;
     final api = ApiClient(
@@ -104,6 +110,7 @@ void main() {
     expect(seen.queryParameters, {'size': '20'});
   });
 
+  // 찜 · 일정 묶음 응답을 읽고 cursor · size 를 보내는지, 정지된 계정(403)의 서버 문구가 그대로 오는지 확인합니다.
   test('getFavorites·getTrips: 묶음 응답을 읽고 cursor·size 를 보낸다', () async {
     final seen = <Uri>[];
     final api = ApiClient(
@@ -146,6 +153,7 @@ void main() {
     }
   });
 
+  // 토큰을 요청 헤더(Authorization: Bearer)에 싣는지 확인합니다. 서버는 이 헤더로 누구의 요청인지 압니다.
   test('로그인 상태면 Authorization: Bearer 헤더를 붙인다', () async {
     String? header;
     final api = ApiClient(
@@ -174,6 +182,7 @@ void main() {
     expect(headers!.containsKey('Authorization'), false);
   });
 
+  // 오류 처리: 서버의 오류 문구와 상태 번호가 ApiException 에 담기고, 서버에 닿지 못해도 앱이 죽지 않고 안내 문구로 바뀌는지 확인합니다.
   test('오류 응답의 {detail} 을 ApiException 으로 던진다', () async {
     final api = ApiClient(
       baseUrl: 'http://fake',
@@ -212,6 +221,7 @@ void main() {
     );
   });
 
+  // 일정 짜기 요청의 본문 모양과 응답 해석, 찜 · 일정 저장 · 삭제의 주소와 방법(POST / DELETE)을 확인합니다.
   test('POST /agent/plan: 요청 본문과 응답 파싱', () async {
     late Map<String, dynamic> body;
     final api = ApiClient(

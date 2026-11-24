@@ -1,3 +1,5 @@
+// 서버 주소 고르기(resolveApiUrl)의 테스트입니다. 크롬은 localhost, 에뮬레이터는 10.0.2.2(에뮬레이터 안에서 "내 PC"를 가리키는 주소)를 쓰는 규칙을 확인합니다.
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/config.dart';
 

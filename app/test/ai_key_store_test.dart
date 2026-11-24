@@ -1,8 +1,12 @@
+// 내 AI 키 보관소(AiKeyStore)의 단위 테스트입니다. 진짜 기기 보안 저장소 대신 FakeVault(가짜)를 끼워서, 저장 · 불러오기 · 지우기 · 저장소 고장 때의 동작을 확인합니다.
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/auth/ai_key_store.dart';
 
+// 테스트용 가짜 키입니다. 실제 키가 아니고, 키 모양(영문 · 숫자 등 20자 이상)만 맞춘 글자입니다.
 const good = 'AIzaUserKey_1234567890-abcdefghij';
 
+// implements KeyVault: 진짜와 같은 함수들을 갖추되, fail 을 켜면 일부러 오류를 던져 "저장소를 쓸 수 없는 기기"를 흉내 냅니다.
 /// 기기 보안 저장소의 가짜. fail 이면 읽기·쓰기가 모두 오류를 냅니다(저장소를 쓸 수 없는 기기).
 class FakeVault implements KeyVault {
   FakeVault([this.value]);
@@ -20,6 +24,7 @@ class FakeVault implements KeyVault {
 }
 
 void main() {
+  // 키 모양 검사와 가리기(mask) 확인: 짧은 값 · 공백 · 한글이 든 값은 거절하는지 봅니다.
   test('isKeyShape: 영문 · 숫자 · _ · - · . 20~200자만 통과', () {
     expect(AiKeyStore.isKeyShape(good), isTrue);
     expect(AiKeyStore.isKeyShape('AQ.fake-key-for-tests_0000000000.abcdef'), isTrue); // 마침표가 든 새 형식의 키
@@ -34,6 +39,7 @@ void main() {
     expect(AiKeyStore.mask('abcd1234'), '…');
   });
 
+  // 저장 · 불러오기 · 지우기: 값이 보관소에 들어가고, 듣는 쪽(addListener)에 알림이 가는지 확인합니다.
   test('save: 앞뒤 공백을 떼고 저장하고, 듣는 쪽에 알린다', () async {
     final vault = FakeVault();
     final store = AiKeyStore(vault);
@@ -76,6 +82,7 @@ void main() {
     expect(store.hasKey, isFalse);
   });
 
+  // 저장소가 고장 나도 예외가 밖으로 새지 않고 "키 없음"으로 처리하는지 확인합니다.
   test('저장소를 쓸 수 없는 기기에서도 앱이 죽지 않는다', () async {
     final vault = FakeVault()..fail = true;
     final store = AiKeyStore(vault);

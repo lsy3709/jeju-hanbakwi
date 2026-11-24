@@ -1,5 +1,6 @@
 "use client";
 
+// "use client" 는 이 파일이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하거나 useState 로 값을 기억하려면 필요합니다.
 // 이 파일이 하는 일: AI 사용량을 보여 줍니다(기간 고르기 · 합계 카드 · 오늘 · 날짜별 표 · 사용자별 표).
 // 설정 화면(내 것)과 관리자 화면(전체)이 함께 씁니다. 데이터는 hooks/useAiUsage.ts 가 불러옵니다.
 import { RefreshCw } from "lucide-react";
@@ -8,6 +9,7 @@ import { btnSmall, card, chip } from "@/components/ui";
 import { USAGE_PERIODS, useAiUsage } from "@/hooks/useAiUsage";
 import { formatCount, usageCards, userLabel } from "@/lib/usage";
 
+// scope 가 "me" 면 내 사용량, "admin" 이면 전체 사용량입니다. token 은 서버에 보낼 로그인 토큰입니다.
 export function UsageView({ scope, token }: { scope: "me" | "admin"; token: string }) {
   const { days, setDays, report, loading, error, reload } = useAiUsage(scope, token);
 

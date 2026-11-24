@@ -1,5 +1,7 @@
 // 관리자 "여행지 추가·수정" 폼의 계산(입력칸 값 ↔ 서버로 보낼 본문)을 모은 순수 함수입니다.
 // 폼 화면(components/admin/SpotForm.tsx)은 입력만 받고, 무엇을 보낼지는 여기서 정합니다.
+// 쓰는 곳: components/admin/SpotForm.tsx(화면)와 hooks/useAdminSpots.ts. 테스트는 spotForm.test.ts 입니다.
+// 낱말 풀이: POST = 새로 만들기 요청, PATCH = 일부만 고치기 요청입니다.
 import type { AdminSpot, SpotCreate, SpotPatch } from "./types";
 
 /** 테마는 서버가 5개까지만 받습니다. */

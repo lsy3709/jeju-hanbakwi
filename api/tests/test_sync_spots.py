@@ -1,5 +1,6 @@
 """데이터 가져오기 도구에서 DB 에 넣을 줄을 고르는 부분."""
 
+# GOOD 은 좌표까지 갖춘 정상 원본 한 건입니다. 아래 테스트들은 여기서 좌표나 유형만 바꿔 to_rows 의 거르는 규칙을 확인합니다.
 from tools.sync_spots import to_rows
 
 GOOD = {

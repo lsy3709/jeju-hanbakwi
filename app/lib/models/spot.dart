@@ -1,3 +1,6 @@
+// 관광지 한 곳(Spot)과 그 목록 응답(SpotPage), 선택지(Meta)를 담는 모양입니다. 서버의 응답 모양(docs/api.md)과 이름을 맞췄습니다.
+// 서버 JSON 은 snake_case(image_url) 이고 Dart 는 camelCase(imageUrl) 라서, fromJson 이 그 이름을 이어 줍니다.
+
 /// 관광지 한 곳. 서버 `Spot` 모양(docs/api.md)과 1:1 로 맞춥니다.
 class Spot {
   final int id;
@@ -18,6 +21,7 @@ class Spot {
   final List<String> themeTags;
   final bool indoor;
 
+  // required 는 "반드시 넘겨야 하는 이름 붙은 값", this.imageCredit 처럼 required 가 없는 것은 안 넘겨도 되는(null 이 되는) 값입니다.
   const Spot({
     required this.id,
     required this.title,
@@ -50,12 +54,14 @@ class Spot {
       imageSourceUrl: json['image_source_url'] as String?,
       overview: (json['overview'] ?? '') as String,
       oneLiner: (json['one_liner'] ?? '') as String,
+      // (값 ?? const []) 는 값이 없으면 빈 목록을 씁니다. cast<String>() 은 목록의 항목을 모두 글자로 취급합니다.
       themeTags: ((json['theme_tags'] ?? const []) as List).cast<String>(),
       indoor: (json['indoor'] ?? false) as bool,
     );
   }
 }
 
+// SpotPage 는 서버가 한 묶음씩 보내는 목록입니다. 다음 묶음은 nextCursor 로 요청합니다.
 /// `GET /spots` 의 응답: 목록 + 다음 커서 + 전체 개수.
 /// `total` 은 첫 묶음에서만 숫자이고 이어지는 묶음에서는 null 입니다(그래서 nullable).
 class SpotPage {

@@ -1,3 +1,6 @@
+// AI 플래너의 결과를 보여 주는 위젯입니다: (안내 글) → ("간단 추천" 표시) → 설명 → 일자별 타임라인 → 저장 버튼 또는 자동 저장 안내.
+// planner_screen.dart 가 PlannerController.result 를 넘겨 주며, 버튼을 누르면 무엇을 할지는 onSave · onSpotTap 으로 부모가 정합니다.
+
 import 'package:flutter/material.dart';
 
 import '../models/itinerary.dart';
@@ -18,6 +21,7 @@ class PlanResultView extends StatelessWidget {
   final VoidCallback onSave;
 
   /// 안내 글(notice) 옆의 "설정 열기". null 이면 단추를 그리지 않습니다.
+  // ? 가 붙은 함수는 없을 수도 있습니다(null 이면 "설정 열기" 버튼을 그리지 않음).
   final VoidCallback? onOpenSettings;
 
   @override
@@ -26,6 +30,7 @@ class PlanResultView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 내 AI 키로 일정을 받지 못해 다른 방식으로 대신했을 때 서버가 보내는 안내.
+        // 위젯 목록 안의 if 는 조건이 참일 때만 그 위젯을 넣습니다. result.notice! 의 ! 는 위에서 null 이 아님을 확인했다는 표시입니다.
         if (result.notice != null)
           Container(
             width: double.infinity,
@@ -62,6 +67,7 @@ class PlanResultView extends StatelessWidget {
         ItineraryView(days: result.itinerary, onSpotTap: onSpotTap),
         const SizedBox(height: 4),
         // 로그인한 채로 짠 일정은 서버가 바로 저장해 줍니다. 그때는 저장 단추 대신 안내만 보여 줍니다.
+        // 로그인한 채 짠 일정은 서버가 이미 저장했으니 저장 버튼 대신 안내를 보여 주고, 아니면 저장 버튼(else)을 보여 줍니다.
         if (result.savedTrip != null)
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,

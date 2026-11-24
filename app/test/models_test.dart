@@ -1,3 +1,6 @@
+// models/ 의 클래스가 서버 JSON 을 Dart 값으로 제대로 바꾸는지(fromJson) 확인하는 테스트입니다. 서버가 값을 빼먹거나 null 로 보내도 앱이 죽지 않는지가 핵심입니다.
+// 샘플 JSON 은 support.dart 의 spotJson · weatherJson 이 만들어 줍니다.
+
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +13,7 @@ import 'package:jeju_hanbakwi/models/weather.dart';
 import 'support.dart';
 
 void main() {
+  // 관광지 JSON 읽기: 모든 칸 읽기, 없거나 null 인 칸(사진 · 위치)은 null, 정수로 온 위치는 소수로 바꾸기를 확인합니다.
   group('Spot.fromJson', () {
     test('모든 필드를 읽는다', () {
       final spot = Spot.fromJson(spotJson(imageUrl: 'https://example.com/a.jpg'));
@@ -61,6 +65,7 @@ void main() {
     });
   });
 
+  // 목록 묶음(SpotPage · CursorPage) 읽기: 첫 묶음은 total 이 숫자이고 마지막 묶음은 total · next_cursor 가 null 인 경우를 확인합니다.
   test('SpotPage.fromJson: 첫 묶음은 total 이 숫자', () {
     final page = SpotPage.fromJson({
       'items': [spotJson(id: 1), spotJson(id: 2, title: '한라산')],
@@ -85,6 +90,7 @@ void main() {
     expect(page.nextCursor, 31);
   });
 
+  // 날씨 JSON 읽기: 기온 · 강수 확률이 null 이어도 죽지 않는지 확인합니다.
   test('Weather.fromJson', () {
     final w = Weather.fromJson(weatherJson());
     expect(w.rainyToday, true);
@@ -109,6 +115,7 @@ void main() {
     expect(parsed.label, '비');
   });
 
+  // 일정(PlanResult · Trip) 읽기와 되돌리기(toJson), 저장 시각을 기기 시간대 날짜로 보여 주는지 확인합니다.
   group('일정', () {
     final json = {
       'mode': 'rule',

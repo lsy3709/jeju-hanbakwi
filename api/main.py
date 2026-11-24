@@ -10,6 +10,8 @@
   deps.py    주소들이 함께 쓰는 "주입할 것"
 """
 
+# 낱말: CORS = 브라우저가 "다른 주소의 서버를 불러도 되는가"를 서버에 묻는 규칙. 서버가 허락 목록을 내줘야 화면이 부를 수 있습니다.
+# 낱말: 라우터 = 주소 묶음. 파일 하나(routers/*.py)가 라우터 하나입니다.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -19,6 +21,7 @@ from deps import get_weather_service  # noqa: F401  (테스트에서 main.get_we
 from routers import admin, agent, me, spots, system, weather
 from services.photos import PHOTO_DIR
 
+# uvicorn main:app 의 `app` 이 바로 이것입니다. 서버 전체를 대표하는 객체입니다.
 app = FastAPI(title="제주 한 바퀴 API", version="1.2.0")
 
 # 다른 주소의 화면(웹·앱)이 이 서버를 부를 수 있게 허락합니다.

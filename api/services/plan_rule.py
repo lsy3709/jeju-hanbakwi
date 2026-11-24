@@ -3,6 +3,9 @@
 하루에 한 지역씩 돌고, 비 오는 날은 실내 위주로, 글에서 말한 테마와 장소를 먼저 넣습니다.
 """
 
+# 층: planner.py 가 마지막 보루로 RulePlanner 를 부릅니다. 이 파일은 repo(관광지 검색)와 날씨 함수만 쓰고 AI 는 부르지 않습니다.
+# 그래서 AI 가 꺼져 있거나 실패해도 항상 답을 만들 수 있습니다.
+# 낱말: 정규식(re) = 글에서 특정 모양(예: 한글 낱말)을 찾는 패턴 문법. 조사(을·를·에서 …)를 떼는 데 씁니다.
 import re
 
 from constants import THEMES
@@ -48,6 +51,7 @@ def take_mentioned_for_day(mentioned: list[dict], is_last_day: bool) -> list[dic
     - 첫 장소와 같은 지역에 있는 곳을 함께 묶습니다(동선).
     - 마지막 날에는 지역이 달라도 남은 곳을 넣습니다. 말한 곳을 빠뜨리지 않는 것이 먼저이기 때문입니다.
     """
+    # pop(0) 은 목록 맨 앞을 꺼내 목록에서 지웁니다. 그래서 이미 간 곳이 다음 날 또 나오지 않습니다.
     if not mentioned:
         return []
     today = [mentioned.pop(0)]
@@ -60,6 +64,8 @@ def take_mentioned_for_day(mentioned: list[dict], is_last_day: bool) -> list[dic
 
 def pick_spots(repo, themes, area, indoor, used: set, need: int, exclude_food=True) -> list[tuple[dict, str]]:
     """조건을 조금씩 풀어 가며 need 개를 고릅니다. → [(관광지, 고른 이유)]"""
+    # 흐름: 테마별 검색 → 부족하면 그 지역 → 부족하면 전체 실내/실외 → 그래도 부족하면 아무 곳. 뒤로 갈수록 조건이 느슨합니다.
+    # used 는 이미 일정에 넣은 곳의 번호 모음이라, 같은 곳이 두 번 들어가지 않습니다.
     picked: list[tuple[dict, str]] = []
     if need <= 0:
         return picked
@@ -118,6 +124,7 @@ class RulePlanner:
         itinerary = []
         dates = trip_dates(request)
 
+        # 하루씩 돌며 일정을 만듭니다. 비 오는 날은 indoor=True 로 검색해 실내 위주로 고르고, 아니면 None(가리지 않음)입니다.
         for index, day in enumerate(dates):
             weather = forecast.get(str(day))
             indoor = True if (weather and is_rainy(weather)) else None
@@ -138,6 +145,7 @@ class RulePlanner:
             food = next((spot for spot in food_items if spot["id"] not in used), None)
 
             items = []
+            # zip 은 두 목록을 짝지어 돕니다. 시간대(오전·오후·저녁)와 고른 관광지를 차례로 하나씩 붙입니다.
             for slot, (spot, reason) in zip(["오전", "오후", "저녁"], sights):
                 items.append({"time": slot, "spot_id": spot["id"], "title": spot["title"], "reason": reason})
                 sources[spot["id"]] = spot

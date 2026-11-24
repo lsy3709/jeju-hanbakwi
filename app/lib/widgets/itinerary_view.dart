@@ -1,3 +1,6 @@
+// 일정(여러 날)을 날마다 카드로, 칸마다 줄로 보여 주는 위젯입니다. AI 플래너 결과(plan_result_view)와 저장한 일정(trips_tab) 두 곳에서 같이 씁니다.
+// 장소를 누르면 무엇을 할지는 이 위젯이 정하지 않고, 부모가 넘긴 onSpotTap 에 spotId 만 알려 줍니다.
+
 import 'package:flutter/material.dart';
 
 import '../format.dart';
@@ -15,6 +18,7 @@ class ItineraryView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // for 안의 ...[ ] 는 날마다 카드와 간격 위젯 둘을 목록 안에 펼쳐 넣는 문법입니다.
         for (final day in days) ...[
           Card(
             child: Padding(
@@ -71,6 +75,7 @@ class ItineraryView extends StatelessWidget {
   }
 }
 
+// 날씨 같은 짧은 글을 알약에 담는 작은 위젯입니다. _ 로 시작해 이 파일 안에서만 씁니다.
 class _Pill extends StatelessWidget {
   const _Pill({required this.text});
   final String text;

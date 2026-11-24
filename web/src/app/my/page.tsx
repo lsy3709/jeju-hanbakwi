@@ -1,5 +1,7 @@
 "use client";
 
+// "use client" 는 이 화면이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하고 useState·useEffect 같은 훅을 쓰려면 필요합니다.
+// 층: 이 화면(app/) → hooks/ → lib/api.ts. 화면 파일은 fetch 를 직접 부르지 않습니다. page.tsx 는 폴더 이름에 해당하는 주소의 화면입니다.
 // 이 파일이 하는 일: 내 여행 화면 조립. 로그인 전엔 안내 + 로그인 버튼, 로그인 후엔 "찜한 곳" / "저장한 일정" 탭.
 // 데이터는 hooks/useFavorites.ts · useTrips.ts, 목록 화면은 components/FavoriteList.tsx · TripList.tsx 에 있습니다.
 import { useState } from "react";
@@ -13,6 +15,7 @@ import { btnOutline, chip } from "@/components/ui";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useTrips } from "@/hooks/useTrips";
 
+// 로그인 상태에 따라 세 갈래로 그립니다: 확인 중(대기) → 로그인 전(안내) → 로그인 후(내용). 로그인 정보는 useAuth() 에서 꺼냅니다.
 export default function MyPage() {
   const { loading, token, email, me, meLoading, signOut } = useAuth();
 
@@ -36,6 +39,7 @@ export default function MyPage() {
   return <MyContent token={token} email={email} suspended={me?.suspended ?? false} onSignOut={signOut} />;
 }
 
+// 로그인한 사람의 화면입니다. 어느 탭이 열렸는지(tab)는 이 화면에서만 쓰는 값이라 여기서 기억합니다.
 function MyContent({
   token,
   email,
@@ -77,6 +81,7 @@ function SuspendedNotice() {
   );
 }
 
+// 탭 단추 두 개와 그 아래 내용입니다. 단추를 누르면 부모가 준 setTab 이 불립니다.
 function MyTabs({
   token,
   tab,

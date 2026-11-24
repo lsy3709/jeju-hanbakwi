@@ -1,3 +1,6 @@
+// "내 여행 > 찜한 곳" 탭입니다. 찜 목록은 앱 전체가 함께 쓰는 FavoritesStore 가 들고 있어서, 이 파일은 그 값을 그리기만 합니다.
+// 부모(my_trips_screen.dart)가 로그인했을 때만 이 탭을 보여 주므로 여기서는 로그인 여부를 따로 확인하지 않습니다.
+
 import 'package:flutter/material.dart';
 
 import '../../api/api_client.dart';
@@ -16,10 +19,12 @@ class FavoritesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // StatelessWidget 이지만 ListenableBuilder 로 favorites 의 변화를 들어서, 상세 화면에서 하트를 누르면 이 탭도 바로 바뀝니다.
     final favorites = AppScope.of(context).favorites;
     return ListenableBuilder(
       listenable: favorites,
       builder: (context, _) {
+        // 로딩 → 오류 → 비어 있음 → 목록 순서로 먼저 맞는 것을 보여 줍니다. 이미 목록이 있으면 새로 불러오는 중에도 목록을 그대로 둡니다.
         if (favorites.loading && favorites.items.isEmpty) return const LoadingView();
         if (favorites.error != null) return ErrorView(message: favorites.error!, onRetry: favorites.refresh);
         if (favorites.items.isEmpty) {
@@ -45,6 +50,7 @@ class FavoritesTab extends StatelessWidget {
                     corner: IconButton.filledTonal(
                       tooltip: '찜 해제',
                       icon: const Icon(Icons.favorite, color: AppColors.primary),
+                      // toggle 은 서버에 요청하는 일이라 기다리고(await), 실패하면 서버 문구를 안내로 띄웁니다. 기다린 뒤에는 화면이 닫혔을 수 있어 context.mounted 를 확인합니다.
                       onPressed: () async {
                         try {
                           await favorites.toggle(spot);

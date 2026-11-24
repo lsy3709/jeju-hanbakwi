@@ -1,9 +1,12 @@
 // 일자별 일정 타임라인. AI 플래너 결과와 "내 여행"의 저장한 일정에서 같이 씁니다.
+// 받는 값 itinerary 는 날짜별 일정 목록입니다(lib/types.ts 의 Itinerary). 여기서는 그리기만 하고 서버를 부르지 않습니다.
+// .map 은 목록의 각 줄을 화면 조각으로 바꾸는 함수이고, key 는 React 가 줄을 구분하는 이름표입니다.
 import Link from "next/link";
 import { CloudSun } from "lucide-react";
 import { dayTitle } from "@/lib/format";
 import type { Itinerary } from "@/lib/types";
 
+// 일정 목록을 받아 하루씩 카드로 그립니다.
 export function ItineraryView({ itinerary }: { itinerary: Itinerary }) {
   return (
     <div className="space-y-4">

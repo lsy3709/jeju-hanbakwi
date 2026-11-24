@@ -1,9 +1,12 @@
+// 날씨 응답을 담는 모양입니다: Weather(전체) → AreaWeather(지역) → WeatherDay(하루). 홈 화면의 날씨 띠가 보여 줍니다.
+
 /// 하루치 날씨.
 class WeatherDay {
   final String date;
   final String label; // 예: "비"
   final String icon; // sun | cloud | rain | snow | fog
   // 서버는 값을 못 구하면 null 로 줍니다. non-null 로 읽으면 TypeError 로 홈이 무한 로딩이 됩니다.
+  // double? 의 ? 는 null 허용입니다. 서버가 정수를 줄 때도 있어서 읽을 때 num 으로 받아 소수로 바꿉니다(fromJson).
   final double? tempMin;
   final double? tempMax;
   final int? rainProb;
@@ -23,6 +26,7 @@ class WeatherDay {
         icon: json['icon'] as String,
         tempMin: (json['temp_min'] as num?)?.toDouble(),
         tempMax: (json['temp_max'] as num?)?.toDouble(),
+        // num? → ?. 로 null 이면 건너뛰고, 있으면 .round() 로 정수로 바꿉니다.
         rainProb: (json['rain_prob'] as num?)?.round(),
       );
 }

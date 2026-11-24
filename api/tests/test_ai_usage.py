@@ -1,5 +1,8 @@
 """AI 사용량: 일정을 짤 때마다 한 줄 적고, 본인과 관리자가 모아 봅니다."""
 
+# 테스트 읽는 법: `test_` 로 시작하는 함수 하나가 확인 하나입니다. assert 뒤의 식이 거짓이면 그 테스트는 실패합니다.
+# `client`·`repo`·`login` 은 conftest.py 가 만들어 주는 준비물이고, FakeAi 는 진짜 AI 대신 정해 둔 답을 돌려줍니다.
+# 낱말: 토큰 = AI 가 글을 세는 단위(요금 기준). 여기서는 "쓴 만큼 정확히 더해 적히는지"를 봅니다.
 from datetime import datetime, timezone
 
 import pytest
@@ -26,6 +29,7 @@ def row(**kw):
 
 # ---------------------------------------------------------------- 모으는 계산 (services/usage.py)
 
+# 아래 네 개: DB 없이 usage.py 의 합산 함수만 확인하는 계산 테스트입니다.
 def test_summarize_counts_requests_and_tokens():
     rows = [
         row(),
@@ -76,6 +80,7 @@ class FakeAi:
         return GOOD_ANSWER, {"ai_calls": 3, "tokens_in": 1200, "tokens_out": 300, "tokens_total": 1500}
 
 
+# 이 fixture 는 Depends 자리의 진짜 AI 를 FakeAi 로 바꿔 끼우고, 테스트가 끝나면 pop 으로 원래대로 되돌립니다.
 @pytest.fixture
 def ai(client):
     main.app.dependency_overrides[get_ai_asker] = lambda: FakeAi()
@@ -155,6 +160,7 @@ def test_logged_in_plan_is_recorded_with_user(client, repo, ai):
     assert repo.ai_usage[0]["user_id"] == ALICE.id
 
 
+# 사용량을 적다 실패해도 사용자는 일정을 받아야 합니다(routers/agent.py 의 record_usage 가 오류를 삼키는 이유).
 def test_recording_failure_does_not_break_the_plan(client, repo, monkeypatch):
     def broken(*args, **kwargs):
         raise RuntimeError("ai_usage 표가 없음")
@@ -180,6 +186,7 @@ def seed(repo):
     repo.add_profile(BOB.id, BOB.email)
 
 
+# 보기 주소들: 본인 것만 보이는지, 관리자 주소는 관리자만 여는지 확인합니다.
 def test_my_usage_shows_only_mine(client, repo, login):
     seed(repo)
     assert client.get("/me/ai-usage").status_code == 401

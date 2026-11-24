@@ -1,5 +1,7 @@
 "use client";
 
+// "use client" 는 이 파일이 브라우저에서 도는 컴포넌트라는 표시입니다(버튼 클릭에 반응하기 때문).
+// 쓰는 곳: 설정·내 여행·플래너·상세의 로그인 안내. 로그인 기능 자체는 AuthProvider 의 useAuth() 에서 가져옵니다.
 // 이 파일이 하는 일: 구글 로그인 버튼(LoginPanel)과, 로그인이 필요한 버튼을 먼저 눌렀을 때 띄우는 안내창(LoginDialog).
 // Supabase 설정이 비어 있으면 버튼 대신 안내 문구를 보여 줍니다. 로그인 기능은 AuthProvider 에서 가져다 씁니다.
 import { Info, LogIn, X } from "lucide-react";
@@ -8,6 +10,7 @@ import { btnPrimary, btnOutline } from "./ui";
 
 /** next: 로그인 뒤 돌아올 경로. 생략하면 "/my". */
 export function LoginPanel({ next }: { next?: string }) {
+  // "configured" 는 Supabase 설정이 있는지입니다. 없으면 로그인 버튼 대신 안내만 보입니다.
   const { configured, signInWithGoogle } = useAuth();
 
   if (!configured) {

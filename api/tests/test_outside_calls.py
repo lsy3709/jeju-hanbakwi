@@ -4,6 +4,8 @@
 요청마다 새로 만들면 그때마다 0.2초쯤 더 걸립니다.
 """
 
+# 방법: 진짜 연결(auth._http, weather._http) 자리에 FakeHttp 를 끼워, 바깥 서버에 가지 않고 "어떤 응답이 오면 우리 코드가 어떻게 반응하는지"를 봅니다.
+# monkeypatch.setattr 는 테스트 동안만 값을 바꿨다가 끝나면 되돌려 줍니다.
 import httpx
 import pytest
 
@@ -12,6 +14,7 @@ from config import settings
 from services import weather
 
 
+# 바깥 서버의 답을 흉내 냅니다. status 가 400 이상이면 raise_for_status() 가 오류를 내는 점까지 진짜와 같게 만들었습니다.
 class FakeResponse:
     def __init__(self, status=200, data=None):
         self.status_code = status
@@ -89,6 +92,7 @@ def use_weather(monkeypatch, fake):
     monkeypatch.setattr(weather, "_cache", {"at": 0.0, "value": None})  # 캐시를 비우고 시작
 
 
+# 두 지역을 한 번씩만 부르고, 두 번째 요청부터는 캐시(기억해 둔 답)를 쓰는지 확인합니다.
 def test_weather_asks_once_per_area_then_uses_cache(monkeypatch):
     fake = FakeHttp(FakeResponse(200, OPEN_METEO))
     use_weather(monkeypatch, fake)

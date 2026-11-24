@@ -1,6 +1,8 @@
 // 이 파일이 하는 일: 서버(FastAPI)와 통하는 유일한 문입니다.
 // 화면은 fetch 를 직접 부르지 않고 여기 함수만 씁니다. 새 서버 주소를 쓰려면 여기에 함수를 하나 더하세요.
 // 주소·응답 모양은 docs/api.md 를 따릅니다.
+// 화면 → 훅(hooks/) → 이 파일 → 서버 순으로 부릅니다. 이 파일은 errorDetail.ts(오류 글 만들기)와 format.ts(주소 뒤 쿼리 만들기)를 씁니다.
+// 낱말 풀이: 쿼리 = 주소 뒤 "?theme=바다" 처럼 붙는 조건, 토큰 = 로그인했다는 증명 문자열, 헤더 = 요청에 덧붙이는 부가 정보입니다.
 import { detailText } from "./errorDetail";
 import { buildQuery, spotsQuery } from "./format";
 import type {
@@ -27,6 +29,8 @@ import type {
   Weather,
 } from "./types";
 
+// 서버 주소는 환경변수 NEXT_PUBLIC_API_URL 에서 읽습니다. 개발·배포마다 서버 주소가 달라서 코드에 박지 않고 밖에서 넣습니다.
+// (NEXT_PUBLIC_ 으로 시작해야 브라우저 코드에서 읽을 수 있어서, 비밀 값은 넣지 않습니다.) 끝의 / 는 주소가 겹치지 않게 떼고, 값이 없으면 내 컴퓨터의 서버(8000번)를 씁니다.
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
 /** 서버가 오류를 돌려줬을 때(또는 서버에 닿지 못했을 때) 던지는 오류. */
@@ -46,10 +50,12 @@ export function errorMessage(error: unknown): string {
 }
 
 // 모든 요청이 지나가는 한 곳. token 이 있으면 Authorization 헤더를, aiKey 가 있으면 X-Gemini-Key 헤더를 붙입니다.
+// "async" 함수는 서버 응답처럼 기다려야 하는 일을 합니다. 부르는 쪽은 await 로 결과가 올 때까지 기다립니다. T 는 돌려줄 자료의 모양입니다.
 async function request<T>(
   path: string,
   options: { method?: string; body?: unknown; token?: string | null; aiKey?: string | null } = {},
 ): Promise<T> {
+  // 토큰은 요청 헤더(Authorization)에 실어 보냅니다. 서버가 "이 요청의 주인이 누구인지" 확인하는 표준 자리가 헤더라서, 주소나 본문에는 넣지 않습니다.
   const headers: Record<string, string> = {};
   if (options.body !== undefined) headers["Content-Type"] = "application/json";
   if (options.token) headers.Authorization = `Bearer ${options.token}`;
@@ -78,11 +84,14 @@ async function request<T>(
     throw new ApiError(response.status, detail);
   }
 
+  // 204 는 "성공했지만 돌려줄 내용이 없음"(예: 삭제)이라 JSON 을 읽지 않고 끝냅니다.
   if (response.status === 204) return undefined as T;
   return (await response.json()) as T;
 }
 
 // ---------- 로그인 없이 쓰는 주소 ----------
+// 아래 함수들은 모두 request 를 한 번 부르는 얇은 포장입니다. 화면은 주소나 헤더를 몰라도 함수 이름만 부르면 됩니다.
+// 로그인한 사람만 부를 수 있는 주소들은 token 을 받아 request 에 넘깁니다. 토큰이 없거나 틀리면 서버가 오류를 돌려줍니다.
 export const getMeta = () => request<Meta>("/meta");
 export const getSpots = (params: SpotsParams = {}) => request<SpotList>(`/spots${spotsQuery(params)}`);
 export const getSpot = (id: number | string) => request<Spot>(`/spots/${id}`);

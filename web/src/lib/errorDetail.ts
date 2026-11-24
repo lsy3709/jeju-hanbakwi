@@ -4,6 +4,7 @@
 //   2) 입력값 검증 오류(422): { "detail": [ { "loc": ["body", "title"], "msg": "..." }, ... ] }
 // 2)를 그냥 버리면 관리자가 어느 칸이 틀렸는지 알 수 없어서, 칸 이름을 한국어로 바꿔 모아 보여 줍니다.
 
+// 이 파일은 api.ts 의 request 가 오류 응답을 읽을 때 부릅니다. 테스트는 errorDetail.test.ts 입니다.
 /** 서버가 쓰는 칸 이름 → 폼에 보이는 이름 */
 const FIELD_LABELS: Record<string, string> = {
   title: "이름",
@@ -22,6 +23,7 @@ const FIELD_LABELS: Record<string, string> = {
 
 type ValidationItem = { loc?: unknown; msg?: unknown };
 
+// 검증 오류 한 건을 "칸 이름: 설명" 글자 한 줄로 바꿉니다. 바꿀 수 없으면 null 입니다.
 function itemText(item: ValidationItem): string | null {
   if (typeof item?.msg !== "string") return null;
   // loc 은 ["body", "title"] 처럼 오고, 마지막이 칸 이름입니다. (["body", "theme_tags", 0] 처럼 숫자가 붙기도 해서 글자만 고릅니다)
@@ -33,6 +35,7 @@ function itemText(item: ValidationItem): string | null {
 
 /** 오류 본문에서 보여 줄 글자를 꺼냅니다. 모양을 알 수 없으면 null(→ 부르는 쪽이 기본 문구를 씀). */
 export function detailText(data: unknown): string | null {
+  // "?." 는 앞의 값이 비어 있어도(null) 오류 없이 undefined 를 돌려주는 안전한 접근입니다.
   const detail = (data as { detail?: unknown } | null)?.detail;
   if (typeof detail === "string") return detail;
   if (!Array.isArray(detail)) return null;

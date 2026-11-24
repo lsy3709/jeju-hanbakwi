@@ -1,3 +1,7 @@
+// 설정 화면입니다. "내 AI 키" 입력과 "내 AI 사용량" 두 묶음이 있고, AI 플래너 화면의 톱니바퀴 버튼으로 엽니다.
+// 키 보관은 AiKeyStore(auth/ai_key_store.dart), 키가 쓸 수 있는지 확인은 ApiClient.checkAiKey 가 맡고, 이 화면은 그리기와 호출 연결만 합니다.
+// 비밀 값이라 입력칸은 글자를 가리고, 저장한 뒤에는 입력칸을 비웁니다.
+
 import 'package:flutter/material.dart';
 
 import '../api/api_client.dart';
@@ -10,6 +14,7 @@ import '../widgets/usage_panel.dart';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
+  // static 은 화면 객체를 만들지 않고 SettingsScreen.open(context) 로 바로 부르는 함수입니다. Navigator.push 가 새 화면을 위에 쌓아 열어 줍니다.
   static Future<void> open(BuildContext context) =>
       Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const SettingsScreen()));
 
@@ -19,6 +24,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final _input = TextEditingController();
+  // setState 로 이 값들을 바꾸면 build 가 다시 불려 화면에 반영됩니다. _error 는 저장 실패 까닭, _status 는 안내 글입니다.
   String? _error; // 저장하지 못한 까닭
   String? _status; // 저장 · 확인 결과 안내
   bool _statusGood = true;
@@ -30,6 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.dispose();
   }
 
+  // await 끝난 뒤 화면이 닫혔을 수 있어서 mounted 를 확인하고, 값을 바꿀 때는 setState 로 감싸 화면을 다시 그리게 합니다.
   Future<void> _save() async {
     final store = AppScope.of(context).aiKey;
     final error = await store.save(_input.text);
@@ -44,6 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  // 서버에 "이 키가 쓸 수 있나" 묻는 동안 _checking 을 true 로 두어 버튼이 눌리지 않게 합니다. 실패해도 서버가 준 문구를 안내로 씁니다.
   Future<void> _check() async {
     final scope = AppScope.of(context);
     final key = scope.aiKey.key;
@@ -77,6 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   @override
+  // AiKeyStore(store)가 바뀌면(저장·삭제) ListenableBuilder 안쪽이 다시 그려집니다. 키가 있으면 가린 키와 버튼, 없으면 입력칸을 보여 줍니다.
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
     final store = scope.aiKey;
@@ -97,6 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style: TextStyle(color: AppColors.muted, height: 1.6),
               ),
               const SizedBox(height: 16),
+              // ...[ ] 는 목록 안에 여러 위젯을 펼쳐 넣는 문법입니다. if / else 로 두 묶음 중 하나만 들어갑니다.
               if (store.hasKey) ...[
                 Text('저장된 키: ${store.masked}'),
                 const SizedBox(height: 12),
@@ -119,6 +129,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ] else ...[
                 TextField(
                   controller: _input,
+                  // obscureText: 입력한 글자를 ●●● 로 가립니다. 키는 비밀번호처럼 다루기 때문입니다.
                   obscureText: true, // 화면에 글자가 보이지 않게
                   enableSuggestions: false,
                   autocorrect: false,

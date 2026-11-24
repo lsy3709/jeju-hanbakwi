@@ -1,4 +1,6 @@
 // 탐색 화면의 "주소 쿼리 ↔ 필터" 변환을 모은 순수 함수입니다. (React 와 무관해서 테스트하기 쉬워요)
+// 쓰는 곳: app/explore/page.tsx. 탐색 화면의 필터는 주소의 쿼리(?theme=바다)에 담깁니다. 그러면 새로고침·뒤로 가기·링크 공유를 해도 같은 화면이 나옵니다.
+// 이 파일은 주소 쿼리 → 화면 상태, 화면 상태 → 새 주소로 바꾸는 계산만 합니다. 테스트는 exploreFilters.test.ts 입니다.
 import { buildQuery, spotsQuery } from "./format";
 import type { SpotsParams } from "./types";
 
@@ -18,6 +20,7 @@ type QueryReader = { get(name: string): string | null };
 
 /** 주소 쿼리(?q=&theme=&area=&category=&indoor=&view=map) → 화면 상태. 빈 값은 필터에서 뺍니다. */
 export function parseExploreQuery(params: QueryReader): ExploreState {
+  // "??" 는 앞의 값이 null 이면 오른쪽 값을 쓰는 문법입니다(쿼리에 항목이 없으면 빈 글자).
   const q = params.get("q") ?? "";
   const theme = params.get("theme") ?? "";
   const area = params.get("area") ?? "";
@@ -31,6 +34,7 @@ export function parseExploreQuery(params: QueryReader): ExploreState {
     indoorText,
     isMap: params.get("view") === "map",
     filters: {
+      // 빈 글자는 undefined 로 바꿔 필터에서 뺍니다(서버에는 값이 있는 조건만 보냅니다).
       q: q || undefined,
       theme: theme || undefined,
       area: area || undefined,

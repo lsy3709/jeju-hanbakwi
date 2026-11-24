@@ -1,3 +1,6 @@
+// AI 사용량 기능의 테스트입니다. 숫자 쉼표 표기(format.dart), 응답 읽기(models/usage.dart), 서버 호출(ApiClient.getMyAiUsage), 화면(UsagePanel · 설정)을 차례로 확인합니다.
+// 화면 테스트는 MockClient 로 가짜 서버 응답을 만들어 ApiClient 에 넣습니다.
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -13,6 +16,7 @@ import 'package:jeju_hanbakwi/widgets/usage_panel.dart';
 
 import 'support.dart';
 
+// 테스트용 사용량 JSON 을 만드는 도우미입니다. 필요한 값만 바꿔서 여러 경우를 만듭니다.
 Map<String, dynamic> summaryJson({int requests = 12, int tokens = 46500}) => {
   'requests': requests,
   'ai_requests': 10,
@@ -38,6 +42,7 @@ Map<String, dynamic> reportJson({int requests = 12}) => {
 };
 
 void main() {
+  // 숫자 표기와 응답 읽기: 세 자리마다 쉼표가 찍히는지, 합계 · 오늘 · 날짜별을 읽는지 확인합니다.
   test('formatCount: 세 자리마다 쉼표', () {
     expect(formatCount(0), '0');
     expect(formatCount(46500), '46,500');
@@ -56,6 +61,7 @@ void main() {
     expect(report.truncated, isFalse);
   });
 
+  // 서버 호출: 기간을 쿼리로 보내고 로그인 토큰을 붙이는지 확인합니다.
   test('getMyAiUsage: 기간을 쿼리로 보내고 토큰을 붙인다', () async {
     late http.BaseRequest seen;
     final api = ApiClient(
@@ -94,6 +100,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  // 화면 확인: 사용량 패널이 합계 · 오늘 · 날짜별을 보여 주고, 기간을 바꾸면 다시 불러오며, 기록이 없거나 실패한 경우를 안내하는지 확인합니다.
   testWidgets('UsagePanel: 합계 · 오늘 · 날짜별을 보여 주고, 기간을 바꾸면 다시 불러온다', (
     tester,
   ) async {
@@ -132,6 +139,7 @@ void main() {
     expect(find.text('46,500'), findsOneWidget);
   });
 
+  // 로그인하지 않았을 때는 사용량 대신 로그인 안내가 보이는지 확인합니다.
   testWidgets('설정: 로그인하지 않았으면 사용량 대신 로그인 안내', (tester) async {
     tester.view.physicalSize = const Size(400, 1400);
     tester.view.devicePixelRatio = 1;

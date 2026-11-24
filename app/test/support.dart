@@ -1,3 +1,6 @@
+// 여러 테스트가 같이 쓰는 도구 모음입니다. 진짜 서버 대신 쓰는 가짜 서버(FakeApi 등)와 샘플 JSON 을 만들어 줍니다.
+// 가짜 서버는 ApiClient 를 상속(extends)해서 필요한 메서드만 다시 만들어(@override) 정해진 값을 돌려줍니다. 그래서 인터넷 없이도 화면과 컨트롤러를 시험할 수 있습니다.
+
 import 'dart:async';
 
 import 'package:jeju_hanbakwi/api/api_client.dart';
@@ -35,6 +38,7 @@ Map<String, dynamic> weatherJson({bool rainy = true}) => {
   ],
 };
 
+// 어떤 조건으로 불렸는지 spotCalls 에 기록해 두면, 테스트가 "컨트롤러가 이 조건으로 요청했는가"를 확인할 수 있습니다.
 /// 서버 없이 화면을 시험하기 위한 가짜 ApiClient. 어떤 조건으로 불렸는지 기록합니다.
 class FakeApi extends ApiClient {
   FakeApi({this.spots = const [], this.total, this.rainy = true, this.failSpots = false})
@@ -77,6 +81,7 @@ class FakeApi extends ApiClient {
   }
 }
 
+// Completer 는 "나중에 내가 직접 끝낸다"고 약속하는 Future 입니다. 응답이 늦게 오는 상황을 일부러 만들어, 옛 응답을 버리는지 시험합니다.
 /// 응답 시점을 테스트가 정하는 API. gated 를 켜면 getSpots 가 Completer 가 풀릴 때까지 기다립니다.
 class GatedApi extends FakeApi {
   GatedApi({super.spots, super.total});
@@ -117,6 +122,7 @@ const planDay = ItineraryDay(
   items: [ItineraryItem(time: '오전', spotId: 1, title: '성산일출봉', reason: '일출')],
 );
 
+// 일정 짜기와 저장만 흉내 내는 가짜입니다. failPlan · failSave 를 켜서 실패하는 경우도 시험합니다.
 /// 일정 짜기·저장만 흉내 내는 가짜 서버. 불린 내용을 기록합니다.
 class PlanApi extends FakeApi {
   bool failPlan = false;

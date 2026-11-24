@@ -1,3 +1,5 @@
+// 테스트 파일입니다. 화면 없이 errorDetail.ts 의 detailText 를 불러 결과가 맞는지 확인하며, `npm test`(vitest)가 실행합니다.
+// "describe" 는 비슷한 테스트를 묶고, "it" 은 하나의 확인 항목, "expect(...).toBe(...)" 는 "이 값이 이것과 같아야 한다"는 뜻입니다.
 import { describe, expect, it } from "vitest";
 import { detailText } from "./errorDetail";
 

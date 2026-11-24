@@ -4,6 +4,10 @@
 처음에는 .env.example 을 .env 로 복사해서 값을 채우세요.
 """
 
+# 서버의 다른 파일은 환경변수를 직접 읽지 않고, 여기서 만든 `settings` 하나만 가져다 씁니다.
+# 비밀 키를 이 파일로만 읽게 하면 "키가 어디서 오는지"가 한 곳에 모이고,
+# 코드나 git 에 키가 새어 들어갈 일이 줄어듭니다.
+# 낱말: 환경변수 = 프로그램 밖(.env 파일, 배포 설정)에서 넣어 주는 설정 값.
 import os
 from pathlib import Path
 
@@ -14,9 +18,11 @@ load_dotenv(Path(__file__).parent / ".env")
 
 
 def _env(name: str, default: str = "") -> str:
+    # strip() 은 값 앞뒤의 공백·줄바꿈을 지웁니다. 복사해 붙일 때 딸려 온 공백으로 키가 틀리는 일을 막습니다.
     return os.getenv(name, default).strip()
 
 
+# 설정 값을 모아 둔 상자입니다. 아래 settings 한 개만 만들어 모든 파일이 함께 씁니다.
 class Settings:
     # Supabase (DB + 로그인 확인)
     supabase_url = _env("SUPABASE_URL").rstrip("/")

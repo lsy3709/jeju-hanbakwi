@@ -1,3 +1,5 @@
+// "내 여행"에 저장한 일정 한 건(Trip)을 담는 모양입니다. 서버 응답을 fromJson 으로 바꿔 TripsController 와 화면이 씁니다.
+
 import '../format.dart';
 import 'itinerary.dart';
 

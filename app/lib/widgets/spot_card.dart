@@ -1,3 +1,5 @@
+// 관광지 하나를 사진과 글로 보여 주는 카드 위젯입니다. 홈의 가로 목록, 탐색의 그리드, 찜 목록에서 같이 씁니다. 누르면 onTap 을 부르고, 사진 모서리에 올릴 위젯(corner)은 선택입니다.
+
 import 'package:flutter/material.dart';
 
 import '../models/spot.dart';
@@ -27,6 +29,7 @@ class SpotCard extends StatelessWidget {
           children: [
             SizedBox(
               height: 160,
+              // Stack 은 위젯을 겹쳐 쌓습니다. 사진 위에 corner(찜 해제 버튼)를 오른쪽 위에 얹습니다.
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -44,6 +47,7 @@ class SpotCard extends StatelessWidget {
                     Text(
                       spot.title,
                       maxLines: 1,
+                      // 글이 줄 수(maxLines)를 넘으면 끝을 …으로 줄입니다. 카드 높이가 정해져 있어서 글이 넘치지 않게 하려는 것입니다.
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
                     ),

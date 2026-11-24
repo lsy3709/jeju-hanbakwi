@@ -15,6 +15,9 @@ api 폴더에서 실행합니다. (서버가 먼저 켜져 있어야 합니다)
 토큰의 주인이 관리자(서버의 ADMIN_EMAILS)면 관리자 주소도 점검합니다. 숨긴 여행지는 바로 되돌립니다.
 """
 
+# 이 파일은 pytest 테스트가 아닙니다. 진짜로 켜 둔 서버에 요청을 보내고, 기대한 응답(상태 코드·모양)이 오는지 ✅/❌ 로 찍어 줍니다.
+# 단위 테스트(tests/)가 가짜 DB 로 "코드의 논리"를 본다면, 이 도구는 배포 직후 "연결이 진짜로 되는지"를 봅니다.
+# 단계: [1] 공개 주소 → [2] DB 관광지 → [3] 날씨 → [4] AI 일정 → [5~6] 로그인·찜·일정 → [7] 관리자.
 import argparse
 import sys
 import time
@@ -24,6 +27,7 @@ import httpx
 results: list[tuple[bool, str]] = []
 
 
+# 확인 한 가지의 결과를 화면에 찍고 results 에 모아 둡니다. 맨 끝에서 실패한 것만 다시 보여 주기 위해서입니다.
 def check(name: str, ok: bool, detail: str = "", ms: float | None = None) -> bool:
     took = f" ({ms:.0f}ms)" if ms is not None else ""
     print(f"  {'✅' if ok else '❌'} {name}{took}{' — ' + detail if detail else ''}")
@@ -106,6 +110,7 @@ def check_public(client: httpx.Client) -> None:
     found = r.json().get("items", [])
     check(f"검색 '{word}'", any(s["id"] == items[0]["id"] for s in found), f"{len(found)}건", ms)
 
+    # DB 필터 문법에 쓰이는 기호(, . ))를 섞은 검색어를 보내, repo.clean_search_word 가 기호를 지워 주는지 봅니다.
     r, ms = call(client, "GET", "/spots", params={"q": "a,id.gt.0)"})
     check("검색어로 필터를 조작할 수 없다", r.status_code == 200 and r.json().get("total", 1) < total, ms=ms)
 
@@ -226,6 +231,7 @@ def check_admin(client: httpx.Client, auth: dict, is_admin: bool, spot: dict) ->
     r, ms = call(client, "PATCH", f"/admin/users/{me_id}", json={"suspended": True}, headers=auth)
     check("자기 자신은 정지할 수 없다 (400)", r.status_code == 400, ms=ms)
 
+    # try/finally: 확인 도중 오류가 나도 finally 안의 "되돌리기"는 반드시 실행되어 운영 데이터가 숨겨진 채 남지 않습니다.
     # 숨겼다가 되돌립니다. 숨긴 동안 일반 주소에서는 404 여야 합니다.
     r, ms = call(client, "PATCH", f"/admin/spots/{spot['id']}", json={"hidden": True}, headers=auth)
     hidden_ok = r.status_code == 200 and r.json()["hidden"] is True

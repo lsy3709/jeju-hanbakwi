@@ -8,6 +8,7 @@ String? formatDate(String? date) {
   if (date == null) return null;
   final match = RegExp(r'^(\d{4})-(\d{2})-(\d{2})').firstMatch(date);
   if (match == null) return null;
+  // match.group(1)! 의 ! 는 "정규식이 맞았으니 null 이 아님"이라는 약속입니다.
   final y = int.parse(match.group(1)!);
   final m = int.parse(match.group(2)!);
   final d = int.parse(match.group(3)!);

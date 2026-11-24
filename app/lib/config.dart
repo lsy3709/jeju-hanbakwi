@@ -1,3 +1,7 @@
+// 실행할 때 바깥에서 넣어 주는 설정 값(서버 주소, 로그인 설정)을 읽는 파일입니다.
+// 값은 코드에 적지 않고 flutter run --dart-define-from-file=env.json 처럼 실행할 때 넣습니다. 비밀 값이 코드와 git 에 남지 않고, 환경마다(내 PC · 배포) 다른 값을 쓸 수 있기 때문입니다.
+// String.fromEnvironment 가 그 값을 읽으며 const 라서 앱을 빌드할 때 정해집니다.
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 /// 실행할 때 `--dart-define-from-file=env.json` 으로 넣는 설정 값을 한곳에서 읽습니다.
@@ -15,9 +19,11 @@ class Config {
   static bool get hasSupabase => supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
 }
 
+// 안드로이드 에뮬레이터는 자기 자신을 localhost 로 부르므로, 내 PC 에서 돌아가는 서버는 이 특별한 주소(10.0.2.2)로 닿습니다.
 /// 에뮬레이터 안에서 "내 PC" 를 가리키는 특별한 주소. 에뮬레이터 밖(크롬 등)에서는 닿지 않습니다.
 const String emulatorHost = '10.0.2.2';
 
+// 끝의 / 를 지운 뒤 아래 규칙대로 주소를 고릅니다. 화면과 상관없는 순수 함수라서 test/config_test.dart 에서 바로 검사합니다.
 /// `env.json` 의 `API_URL` 과 실행 환경으로 실제로 부를 서버 주소를 고릅니다.
 ///
 /// - 비어 있으면: 크롬(웹)은 `http://localhost:8000`, 에뮬레이터는 `http://10.0.2.2:8000`

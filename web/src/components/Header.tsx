@@ -1,5 +1,8 @@
 "use client";
 
+// "use client" 는 이 파일이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하거나 useState 로 값을 기억하려면 필요합니다. usePathname(지금 주소)과 useAuth 를 쓰기 때문에도 필요합니다.
+// 쓰는 곳: app/layout.tsx. 메뉴 목록과 이름은 lib/brand.ts 에서 가져옵니다.
+// 클래스 이름(bg-primary, text-muted …)은 Tailwind 가 쓰는 짧은 스타일 이름입니다. primary·line·sand 같은 색 이름은 app/globals.css 의 @theme 에 정의돼 있습니다.
 // 넓은 화면: 위쪽 메뉴 / 768px 미만: 아래쪽 탭 4개 (관리자면 "관리자"가 하나 더 붙어 5개)
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,8 +18,10 @@ import {
 import { ADMIN_NAV_ITEM, BRAND, NAV_ITEMS } from "@/lib/brand";
 import { useAuth } from "./AuthProvider";
 
+// 메뉴 한 칸의 모양입니다. 일반 메뉴와 관리자 메뉴를 함께 받습니다.
 type NavItem = (typeof NAV_ITEMS)[number] | typeof ADMIN_NAV_ITEM;
 
+// 메뉴 데이터의 글자 이름("home")을 실제 아이콘 그림으로 바꾸는 표입니다.
 const ICONS: Record<NavItem["icon"], LucideIcon> = {
   home: Home,
   compass: Compass,
@@ -32,7 +37,9 @@ function isActive(pathname: string, href: string) {
     : pathname === href || pathname.startsWith(href + "/");
 }
 
+// 위쪽 메뉴(넓은 화면)와 아래쪽 탭(좁은 화면)을 함께 그립니다. 어느 쪽이 보일지는 CSS(md: 로 시작하는 클래스)가 화면 폭에 따라 정합니다.
 export function Header() {
+  // 지금 열린 주소(예: "/explore")입니다. 메뉴 중 현재 화면에 해당하는 칸을 강조하려고 씁니다.
   const pathname = usePathname();
   const { me } = useAuth();
   // /me 가 관리자라고 알려 줄 때만 "관리자" 메뉴를 더합니다(로그인 전·확인 전에는 보이지 않음).

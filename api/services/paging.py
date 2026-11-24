@@ -8,6 +8,8 @@
 """
 
 
+# 쓰는 곳: routers/spots.py · me.py · admin.py 의 모든 목록 주소. repo 에 size + 1 개를 달라고 한 뒤 이 함수로 자릅니다.
+# cursor_of 는 "함수를 받는 값"입니다. 호출할 때 `lambda spot: spot["id"]` 처럼 번호 꺼내는 법을 넘겨 줍니다.
 def cut_page(rows: list, size: int, cursor_of):
     """rows(최대 size + 1개)를 → (이번 묶음, next_cursor) 로 나눕니다.
 

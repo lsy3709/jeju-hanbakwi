@@ -11,6 +11,9 @@ api 폴더에서 실행합니다.
 내 주제로 바꿀 때: --types 로 받을 유형을 고르고, transform.py 의 규칙을 고칩니다.
 """
 
+# 이 파일은 서버 주소(routers)가 아니라 사람이 터미널에서 손으로 돌리는 도구입니다.
+# 흐름: TourAPI(또는 샘플 파일)에서 원본을 받아 → transform.to_spot_row 로 우리 모양으로 고쳐 → repo.upsert_spots 로 DB 에 넣습니다.
+# 낱말: argparse = 터미널에서 준 옵션(--sample, --dry-run 등)을 읽는 파이썬 기본 도구. 같은 데이터를 여러 번 돌려도 upsert 라 중복되지 않습니다.
 import argparse
 import json
 import sys
@@ -42,6 +45,7 @@ def call_tour_api(operation: str, params: dict) -> list[dict]:
     except (ValueError, KeyError) as error:
         # 키가 틀리면 JSON 이 아니라 오류 문서가 옵니다. 앞부분만 보여 줍니다.
         raise RuntimeError(f"TourAPI 응답을 읽을 수 없습니다: {response.text[:200]}") from error
+    # 건수가 하나면 item 이 목록이 아닌 사전 하나로 오기도 해서, 아래에서 항상 목록으로 맞춥니다.
     items = body.get("items") or {}
     if not items:  # 결과가 없으면 items 가 빈 글자("")로 옵니다
         return []
@@ -51,6 +55,7 @@ def call_tour_api(operation: str, params: dict) -> list[dict]:
 
 def fetch_tour_list(content_type: str, limit: int) -> list[dict]:
     """제주의 한 유형을 limit 건까지 받습니다. (한 번에 100건씩)"""
+    # 쪽 번호를 1씩 올려 가며 limit 건이 찰 때까지, 또는 더 받을 것이 없을 때(items 가 빔)까지 받습니다.
     rows: list[dict] = []
     page = 1
     while len(rows) < limit:
@@ -87,6 +92,7 @@ def to_rows(raw_items: list[dict], source: str) -> tuple[list[dict], int]:
     return rows, skipped
 
 
+# 돌려주는 숫자는 종료 코드입니다. 0 = 성공, 1 = 실패로, 맨 아래 sys.exit(main()) 가 터미널에 전달합니다.
 def main() -> int:
     parser = argparse.ArgumentParser(description="관광 데이터 가져오기")
     parser.add_argument("--sample", action="store_true", help="샘플 데이터를 넣습니다")

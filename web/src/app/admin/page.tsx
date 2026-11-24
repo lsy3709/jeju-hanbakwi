@@ -1,5 +1,7 @@
 "use client";
 
+// "use client" 는 이 화면이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하고 useState·useEffect 같은 훅을 쓰려면 필요합니다.
+// 층: 이 화면(app/) → hooks/ → lib/api.ts. 화면 파일은 fetch 를 직접 부르지 않습니다. page.tsx 는 폴더 이름에 해당하는 주소의 화면입니다.
 // 이 파일이 하는 일: 관리자 화면 조립. 로그인 · 관리자 여부를 확인한 뒤 "사용자" / "여행지" / "AI 사용량" 탭을 보여 줍니다.
 // 화면에서 막는 것은 안내일 뿐이고, 진짜로 막는 일은 서버가 합니다(관리자가 아니면 /admin 주소가 403).
 // 데이터는 hooks/useAdminUsers.ts · useAdminSpots.ts, 표와 폼은 components/admin/ 에 있습니다.
@@ -21,6 +23,7 @@ import { useAsync } from "@/hooks/useAsync";
 import { getMeta } from "@/lib/api";
 import type { AdminSpot } from "@/lib/types";
 
+// 로그인 확인 → /me 확인 → 관리자 여부 순으로 걸러 낸 뒤에만 관리자 화면(AdminContent)을 그립니다.
 export default function AdminPage() {
   const { loading, token, me, meLoading, meError, reloadMe } = useAuth();
 
@@ -40,6 +43,7 @@ export default function AdminPage() {
   return <AdminContent token={token} myId={me.id} />;
 }
 
+// 안내 문구 한 덩어리입니다. children 이 있으면(예: 로그인 버튼) 아래에 함께 보입니다.
 function Notice({ title, text, children }: { title: string; text: string; children?: React.ReactNode }) {
   return (
     <div className="mx-auto max-w-md space-y-4 py-10 text-center">
@@ -51,6 +55,7 @@ function Notice({ title, text, children }: { title: string; text: string; childr
   );
 }
 
+// 탭(사용자·여행지·AI 사용량)을 고르는 화면입니다. 고른 탭만 그려서, 그 탭의 데이터만 서버에서 불러옵니다.
 function AdminContent({ token, myId }: { token: string; myId: string }) {
   const [tab, setTab] = useState<"users" | "spots" | "usage">("users");
 
@@ -84,6 +89,7 @@ function AdminContent({ token, myId }: { token: string; myId: string }) {
 
 // ---------------------------------------------------------------- 사용자 탭
 
+// 이메일 검색어(q)가 바뀌면 훅이 처음부터 다시 불러옵니다.
 function UsersTab({ token, myId }: { token: string; myId: string }) {
   const [q, setQ] = useState("");
   const users = useAdminUsers(token, q);
@@ -116,12 +122,14 @@ function UsersTab({ token, myId }: { token: string; myId: string }) {
 
 // ---------------------------------------------------------------- 여행지 탭
 
+// "보기" 단추에 보일 선택지입니다. value 는 서버 쿼리(hidden)와 같은 뜻입니다.
 const HIDDEN_OPTIONS: { label: string; value: HiddenFilter }[] = [
   { label: "전체", value: "" },
   { label: "보이는 곳", value: "false" },
   { label: "숨긴 곳", value: "true" },
 ];
 
+// 여행지 탭입니다. editing 값으로 폼을 열고 닫습니다: null = 닫힘, "new" = 추가, 여행지 = 그 여행지 수정.
 function SpotsTab({ token }: { token: string }) {
   const [q, setQ] = useState("");
   const [hidden, setHidden] = useState<HiddenFilter>("");

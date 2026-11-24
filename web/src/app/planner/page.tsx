@@ -1,5 +1,7 @@
 "use client";
 
+// "use client" 는 이 화면이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하고 useState·useEffect 같은 훅을 쓰려면 필요합니다.
+// 층: 이 화면(app/) → hooks/ → lib/api.ts. 화면 파일은 fetch 를 직접 부르지 않습니다. page.tsx 는 폴더 이름에 해당하는 주소의 화면입니다.
 // 이 파일이 하는 일: AI 플래너 화면 조립(입력 폼 → 일정 짜기 → 설명 글 + 일자별 타임라인 → 내 여행에 저장).
 // 상태는 hooks/usePlanner.ts, 화면 조각은 components/PlanForm.tsx · PlanResult.tsx 에 있습니다.
 import { Suspense } from "react";
@@ -26,6 +28,7 @@ function PlannerGate() {
   return hydrated ? <Planner /> : <Loading />;
 }
 
+// 실제 플래너 화면입니다. 상태와 동작은 모두 usePlanner 가 돌려주고, 이 화면은 PlanForm·PlanResult 에 나눠 줍니다.
 function Planner() {
   // 상세 화면에서 넘어오면 ?q= 로 입력창이 미리 채워집니다.
   const searchParams = useSearchParams();

@@ -15,6 +15,9 @@
 목록은 모두 커서 방식입니다: "마지막으로 받은 줄의 번호"를 주면 그다음 묶음을 돌려줍니다.
 """
 
+# 이 파일은 서버에서 DB 와 말하는 유일한 곳입니다. routers/ → services/ → repo.py 순으로 아래로만 부릅니다.
+# 낱말: 커서 = "여기까지 봤다"는 표시(마지막 줄의 번호). 쪽 번호 대신 이것으로 다음 묶음을 받습니다.
+# 낱말: RLS = DB 가 "이 사람은 이 줄만 볼 수 있다"를 스스로 지키는 규칙. 서버는 비밀 키로 이를 건너뛰므로 아래 질의가 직접 지킵니다.
 import re
 from functools import lru_cache
 
@@ -23,6 +26,7 @@ from supabase import Client, create_client
 from config import settings
 
 
+# lru_cache 는 "한 번 만든 결과를 기억해 두고 다음부터는 그대로 돌려준다"는 장치입니다.
 @lru_cache
 def get_client() -> Client:
     """Supabase 연결은 한 번만 만들어 계속 씁니다."""
@@ -41,6 +45,7 @@ def clean_search_word(q: str) -> str:
     return re.sub(r"[^0-9A-Za-z가-힣ㄱ-ㅎ·\- ]", "", q).strip()[:30]
 
 
+# DB 창구 하나. 가짜 DB(tests/fakes.py)도 같은 이름의 메서드를 갖춰 이 자리를 대신합니다.
 class SupabaseRepo:
     def __init__(self, client: Client):
         self.db = client
@@ -56,6 +61,7 @@ class SupabaseRepo:
         전체 개수는 첫 묶음(after_id 없음)에서만 셉니다. 이어지는 묶음에서는 None 입니다.
         """
         first = after_id is None
+        # 아래는 조건을 하나씩 덧붙여 DB 에 보낼 질문을 만드는 것입니다. execute() 를 부를 때 비로소 실제로 묻습니다.
         query = self.db.table("spots").select("*", count="exact" if first else None)
         word = clean_search_word(q) if q else ""
         if word:
@@ -76,6 +82,7 @@ class SupabaseRepo:
         if not first:
             query = query.gt("id", after_id)
         result = query.order("id").limit(size).execute()
+        # 첫 묶음에서만 전체 개수를 돌려주고, 이어지는 묶음은 None (세는 데 시간이 들기 때문).
         return result.data, (result.count or 0) if first else None
 
     def get_spot(self, spot_id: int, include_hidden=False):
@@ -93,6 +100,7 @@ class SupabaseRepo:
         result = self.db.table("spots").update(changes).eq("id", spot_id).execute()
         return result.data[0] if result.data else None
 
+    # upsert = update + insert. 데이터 가져오기 도구를 여러 번 돌려도 같은 곳이 중복으로 쌓이지 않게 합니다.
     def upsert_spots(self, rows: list[dict]) -> int:
         """같은 원본(source, source_id)이 이미 있으면 고치고, 없으면 새로 넣습니다."""
         if not rows:
@@ -123,11 +131,13 @@ class SupabaseRepo:
         return bool(result.data)
 
     def add_favorite(self, user_id: str, spot_id: int) -> None:
+        # 이미 찜한 곳을 또 찜해도 오류 없이 한 줄만 남도록 upsert 를 씁니다.
         self.db.table("favorites").upsert(
             {"user_id": user_id, "spot_id": spot_id}, on_conflict="user_id,spot_id"
         ).execute()
 
     def remove_favorite(self, user_id: str, spot_id: int) -> None:
+        # user_id 조건이 없으면 남의 찜까지 지울 수 있으니 반드시 함께 겁니다.
         self.db.table("favorites").delete().eq("user_id", user_id).eq("spot_id", spot_id).execute()
 
     # ---------- 저장한 일정 ----------
@@ -147,10 +157,12 @@ class SupabaseRepo:
             .execute()
         )
         row = result.data[0]
+        # DB 가 돌려준 줄에서 화면에 필요한 칸만 골라 냅니다. (user_id 는 내보내지 않음)
         return {k: row[k] for k in ("id", "title", "itinerary", "created_at")}
 
     def delete_trip(self, user_id: str, trip_id: int) -> bool:
         """지웠으면 True. 내 일정이 아니거나 없으면 False."""
+        # user_id 와 id 를 함께 걸어서, 남의 일정 번호를 알아도 지울 수 없습니다.
         result = self.db.table("trips").delete().eq("user_id", user_id).eq("id", trip_id).execute()
         return bool(result.data)
 
@@ -172,6 +184,7 @@ class SupabaseRepo:
     def set_suspended(self, user_id: str, suspended: bool):
         """고친 뒤의 한 줄을 돌려줍니다. 없는 사용자면 None."""
         changed = self.db.table("profiles").update({"suspended": suspended}).eq("id", user_id).execute()
+        # 고친 줄이 없다 = 그런 사용자가 없다. 호출한 쪽이 404 로 바꿉니다.
         if not changed.data:
             return None
         result = self.db.table("admin_users").select("*").eq("id", user_id).limit(1).execute()
@@ -201,5 +214,6 @@ class SupabaseRepo:
         return {row["id"]: row["email"] for row in rows}
 
 
+# 주소들이 Depends(get_repo) 로 받아 가는 함수입니다. 테스트에서는 이 자리에 가짜 DB 를 끼웁니다.
 def get_repo() -> SupabaseRepo:
     return SupabaseRepo(get_client())

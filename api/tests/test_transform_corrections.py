@@ -4,6 +4,7 @@
 "바다가 내려다보이는 오름"에 바다 태그를 붙입니다. 틀린 것을 발견하면 표에 한 줄 더합니다.
 """
 
+# 진짜 샘플 데이터(api/data/sample_spots.json)를 변환해 보고, 틀리기 쉬운 곳이 바로잡혔는지 이름으로 찾아 확인합니다.
 import json
 from pathlib import Path
 

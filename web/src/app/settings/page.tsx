@@ -4,6 +4,7 @@ import { Settings } from "lucide-react";
 import { AiKeySettings } from "@/components/AiKeySettings";
 import { MyUsageSettings } from "@/components/MyUsageSettings";
 
+// metadata 는 브라우저 탭 제목 등을 정합니다. 이 화면은 서버 컴포넌트("use client" 없음)라서 직접 지정할 수 있습니다.
 export const metadata: Metadata = { title: "설정" };
 
 export default function SettingsPage() {

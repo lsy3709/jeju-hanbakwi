@@ -1,5 +1,7 @@
 """일정 짜기 방식(전략)을 고르고 차례로 시도하는 부분, 그리고 말한 장소를 빠뜨리지 않는 규칙."""
 
+# 확인하는 것: 키가 있으면 AI → 규칙 순서로, 없으면 규칙만 시도하는지(planner.choose_planners), 두 방식의 결과 모양이 같은지,
+# 그리고 사용자가 이름을 말한 관광지를 규칙 방식이 조용히 빠뜨리지 않는지. 진짜 AI·DB 는 쓰지 않습니다.
 from datetime import date
 
 from config import settings

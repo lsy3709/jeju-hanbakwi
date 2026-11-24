@@ -1,3 +1,6 @@
+// 화면 전체를 가짜 서버(FakeApi)로 띄워서 사용자가 누르는 흐름을 확인하는 테스트입니다. 홈 · 탐색 · 내 여행 · AI 플래너 탭을 오가며 보이는 글자로 결과를 검사합니다.
+// tester.tap · tester.pump 로 사람처럼 누르고 기다리며, find.text 로 화면에 그 글자가 있는지 찾습니다. GatedApi 로 응답이 늦게 오는 상황도 만듭니다.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/app.dart';
@@ -7,6 +10,7 @@ import 'package:jeju_hanbakwi/screens/explore_screen.dart';
 
 import 'support.dart';
 
+// 화면 크기를 400x900 으로 정해 하단 탭 모양(좁은 화면)으로 띄웁니다. 진짜 로그인 대신 AuthService.disabled() 를 씁니다.
 /// 좁은 폰 화면(하단 탭 레이아웃)으로 앱을 띄웁니다.
 Future<void> pumpApp(WidgetTester tester, FakeApi api) async {
   tester.view.physicalSize = const Size(400, 900);
@@ -23,6 +27,7 @@ List<Spot> sampleSpots(int n) => [
 Finder exploreText(String text) => find.descendant(of: find.byType(ExploreScreen), matching: find.text(text));
 
 void main() {
+  // 옛 응답 버리기: 칩을 연달아 눌렀을 때 늦게 온 옛 응답이 새 결과를 덮지 않는지, 더 보기 중에 조건을 바꿔도 섞이지 않는지 확인합니다.
   testWidgets('탐색: 칩 A → 칩 B 를 누르고 B 응답이 먼저, A 응답이 나중에 와도 B 결과가 남는다', (tester) async {
     final api = GatedApi(total: 1);
     await pumpApp(tester, api);
@@ -71,6 +76,7 @@ void main() {
     expect(find.text('더 보기'), findsOneWidget);
   });
 
+  // 홈 화면: 날씨 메시지 · 추천 카드 · 실내 코스 버튼, 테마 칩을 누르면 탐색으로 이동해 검색하는지 확인합니다.
   testWidgets('홈: 날씨 메시지와 추천 카드, 비 오는 날 실내 코스 버튼', (tester) async {
     final api = FakeApi(spots: sampleSpots(3), rainy: true);
     await pumpApp(tester, api);
@@ -96,6 +102,7 @@ void main() {
     expect(find.text('총 2곳'), findsOneWidget);
   });
 
+  // 탐색 화면: 더 보기 · 결과 없음 안내 · 서버 오류 + 다시 시도를 확인합니다.
   testWidgets('탐색: 결과가 20개를 넘으면 더 보기가 보이고 누르면 next_cursor 로 이어 불러온다', (tester) async {
     final api = FakeApi(spots: sampleSpots(20), total: 45);
     await pumpApp(tester, api);
@@ -133,6 +140,7 @@ void main() {
     expect(find.text('관광지 1'), findsOneWidget);
   });
 
+  // 내 여행 화면(로그인 설정 없음)과 넓은 화면의 왼쪽 메뉴, AI 플래너 입력 → 결과 흐름을 확인합니다.
   testWidgets('내 여행: Supabase 설정이 없으면 안내 문구(앱이 죽지 않음)', (tester) async {
     final api = FakeApi(spots: sampleSpots(1));
     await pumpApp(tester, api);

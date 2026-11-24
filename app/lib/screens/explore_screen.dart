@@ -1,3 +1,7 @@
+// 두 번째 탭인 탐색 화면입니다. 검색 · 테마 칩 · 필터로 관광지를 찾고, 카드 목록과 지도를 오가며 보여 줍니다.
+// 검색 조건과 목록은 ExploreController 가 들고 있고, 이 화면은 그 값을 그리고 사용자의 조작(입력, 칩 누르기)을 컨트롤러에 전달합니다.
+// 홈에서 넘어온 검색 요청은 ShellController 를 통해 받습니다(_onShellChanged).
+
 import 'package:flutter/material.dart';
 
 import '../app_scope.dart';
@@ -24,6 +28,7 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final _search = TextEditingController();
+  // 목록/지도 전환은 화면 모양일 뿐이라 컨트롤러가 아닌 여기에 둡니다. 바꿀 때는 setState 를 불러야 다시 그려집니다.
   bool _mapMode = false; // 목록 ↔ 지도는 화면 모양일 뿐이라 컨트롤러가 아닌 여기에 둡니다.
 
   late final ExploreController _controller;
@@ -32,6 +37,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   bool _started = false;
 
   @override
+  // AppScope 를 꺼낼 수 있는 첫 시점에 한 번만(_started) 컨트롤러를 만들고 탭 이동 소식을 듣기 시작합니다. 듣기는 dispose 에서 끊습니다.
   void didChangeDependencies() {
     super.didChangeDependencies();
     // AppScope 는 initState 에서 못 꺼내므로, 처음 한 번만 여기서 준비합니다.
@@ -51,6 +57,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   /// 홈에서 "이 조건으로 찾아 줘" 하고 보낸 요청이 오면 조건을 바꿔 다시 검색합니다.
+  // 홈에서 탐색 탭으로 조건을 보내면 이 함수가 불립니다. 같은 요청(identical)이면 두 번 처리하지 않습니다.
   void _onShellChanged() {
     final request = _shell.exploreRequest;
     if (request == null || identical(request, _lastRequest)) return;
@@ -59,6 +66,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     _controller.applyRequest(q: request.q, theme: request.theme, indoor: request.indoor);
   }
 
+  // await 가 끝난 뒤 화면이 이미 닫혔을 수 있어서, 안내 글을 띄우기 전에 mounted(아직 화면에 있는가)를 확인합니다.
   Future<void> _loadMore() async {
     final message = await _controller.loadMore();
     if (message != null && mounted) showSnack(context, message);
@@ -67,6 +75,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   void _openDetail(Spot spot) => SpotDetailScreen.open(context, spotId: spot.id, initial: spot);
 
   @override
+  // 컨트롤러의 값이 바뀔 때마다 ListenableBuilder 안쪽(머리글 + 본문)이 다시 그려집니다.
   Widget build(BuildContext context) {
     return SafeArea(
       child: CenteredBody(
@@ -83,6 +92,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
+  // 검색창 · 테마 칩 · 필터 · 보기 전환을 모은 윗부분입니다. 필터를 바꾸면 컨트롤러가 처음부터 다시 검색합니다.
   Widget _header() {
     final c = _controller;
     return Padding(
@@ -123,6 +133,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 options: c.meta?.categories ?? const [],
                 onChanged: c.setCategory,
               ),
+              // <bool?> 는 선택 값이 true / false / null(전체) 중 하나라는 뜻입니다.
               SegmentedButton<bool?>(
                 showSelectedIcon: false,
                 style: const ButtonStyle(visualDensity: VisualDensity.compact),
@@ -151,6 +162,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
+  // 상태에 따라 하나만 고릅니다: 로딩 → 오류 → 비어 있음 → 지도 → 카드 목록. 위에서부터 차례로 확인해 먼저 해당하는 것을 돌려줍니다.
   Widget _body() {
     final c = _controller;
     if (c.loading) return const LoadingView();
@@ -167,6 +179,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         ),
       );
     }
+    // Sliver 는 스크롤 영역의 조각입니다. 개수 안내, 카드 그리드, "더 보기" 버튼을 한 번에 이어서 스크롤하게 합니다.
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(

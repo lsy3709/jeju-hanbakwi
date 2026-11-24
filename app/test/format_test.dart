@@ -1,3 +1,5 @@
+// 날짜·숫자 표기 함수(format.dart)의 테스트입니다. 같은 입력에 같은 결과가 나오는 순수 함수라서 화면 없이 바로 시험합니다.
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/format.dart';
 

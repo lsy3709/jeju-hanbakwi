@@ -1,3 +1,7 @@
+// 앱의 색 · 모서리 · 글꼴을 한곳에서 정하는 파일입니다(디자인 토큰, docs/design.md). 화면 코드는 색을 직접 쓰지 않고 AppColors.primary 처럼 여기 이름을 씁니다.
+// buildTheme() 이 만든 ThemeData 를 app.dart 의 MaterialApp 이 받아 버튼 · 칩 · 입력칸의 기본 모양으로 씁니다. 그래서 값 몇 개만 고치면 앱 전체 분위기가 바뀝니다.
+// Color(0xFFF26B1D) 는 색을 16진수로 쓴 것입니다(앞의 FF 는 투명도 없음).
+
 import 'package:flutter/material.dart';
 
 /// 디자인 토큰(docs/design.md). 이 값 몇 개만 바꾸면 브랜드 색이 통째로 바뀝니다.
@@ -17,6 +21,7 @@ class AppRadius {
   static const double pill = 999;
 }
 
+// ColorScheme.fromSeed 는 한 가지 색에서 어울리는 색 모음을 만들고, copyWith 로 우리 브랜드 색을 덮어씁니다.
 ThemeData buildTheme() {
   final scheme = ColorScheme.fromSeed(
     seedColor: AppColors.primary,
@@ -34,6 +39,7 @@ ThemeData buildTheme() {
     colorScheme: scheme,
     scaffoldBackgroundColor: AppColors.sand,
     // 글꼴은 앱에 함께 넣은 Pretendard 를 씁니다. (pubspec.yaml 의 fonts)
+    // TextStyle 에 글꼴을 따로 적지 않아도 앱 전체에 이 글꼴이 적용됩니다. 글꼴 파일 등록은 main.dart 에서 합니다.
     fontFamily: 'Pretendard',
     // textTheme 은 따로 주지 않습니다. (기본 글자색은 위 colorScheme 의 onSurface 에서 옵니다)
     // Typography.xxx 를 넣으면 그 안의 Roboto 글꼴이 fontFamily 를 덮어써 한글 너비가 틀어집니다.
@@ -53,6 +59,7 @@ ThemeData buildTheme() {
         side: const BorderSide(color: AppColors.line),
       ),
     ),
+    // WidgetStatePropertyAll / resolveWith: 버튼의 상태(눌림 등)에 따라 값을 고르는 방식입니다. 눌렀을 때만 더 진한 색을 씁니다.
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         shape: const WidgetStatePropertyAll(pill),

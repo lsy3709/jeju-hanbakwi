@@ -1,3 +1,5 @@
+// TripsController 의 단위 테스트입니다. 저장한 일정 목록 불러오기 · 더 보기 · 삭제 · 정지 계정 · 실패 처리를 가짜 서버(TripsApi)로 확인합니다.
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jeju_hanbakwi/api/api_client.dart';
 import 'package:jeju_hanbakwi/controllers/trips_controller.dart';
@@ -8,6 +10,7 @@ import '../support.dart';
 
 Trip trip(int id, String title) => Trip(id: id, title: title, itinerary: const [], createdAt: '');
 
+// 커서 = 지금까지 준 개수인 가짜 서버입니다. 실제 서버처럼 묶음 단위로 돌려줍니다.
 /// 저장한 일정 목록·삭제만 흉내 내는 가짜 서버. 커서 = 이미 준 개수.
 class TripsApi extends FakeApi {
   TripsApi({int count = 2}) : trips = [for (var i = 1; i <= count; i++) trip(i, '$i번째 여행')];
@@ -40,6 +43,7 @@ class _SuspendedApi extends FakeApi {
 }
 
 void main() {
+  // 불러오기: 목록을 받고, 다시 load 하면 커서를 버리고 처음부터 받으며, 실패 · 정지(403) 때 오류 문구가 남는지 확인합니다.
   test('load: 저장한 일정 목록을 불러온다', () async {
     final c = TripsController(api: TripsApi());
     expect(c.loading, true);
@@ -52,6 +56,7 @@ void main() {
     expect(c.hasMore, false);
   });
 
+  // 더 보기: next_cursor 로 이어 붙이고, 실패하면 목록과 커서를 그대로 두며, 삭제 뒤에도 커서가 어긋나지 않는지 확인합니다.
   test('loadMore: next_cursor 를 그대로 보내 이어 붙이고, 끝나면 hasMore 가 false', () async {
     final api = TripsApi(count: 45);
     final c = TripsController(api: api);
@@ -138,6 +143,7 @@ void main() {
     expect(c.trips.length, 2);
   });
 
+  // 삭제: 성공하면 서버에 요청하고 목록에서 빠지며, 실패하면 오류 문구를 돌려주고 목록은 그대로인지 확인합니다.
   test('delete 성공: 서버에 요청하고 목록에서 빠진다', () async {
     final api = TripsApi();
     final c = TripsController(api: api);

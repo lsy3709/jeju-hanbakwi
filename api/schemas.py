@@ -1,11 +1,16 @@
 """주고받는 자료의 모양. docs/api.md 와 같아야 합니다."""
 
+# 이 파일의 클래스들은 "주고받는 자료의 틀"입니다. routers/ 가 받는 요청(`body: PlanRequest`)과
+# 돌려주는 응답(`response_model=...`)에 씁니다.
+# FastAPI(pydantic)가 틀에 맞는지 자동으로 검사합니다. 안 맞는 요청은 주소 함수에 닿기 전에 422 로 돌아갑니다.
+# 타입 표시: `str | None` = 글자이거나 없음(None), `list[str]` = 글자들의 목록, `= 값` = 안 보내면 쓰는 기본값.
 import datetime as dt  # 필드 이름 date 와 겹치지 않게 dt 로 부릅니다
 from typing import Literal
 
 from pydantic import BaseModel, Field
 
 
+# 관광지 한 곳. DB 의 spots 한 줄에서 화면이 쓸 칸만 골라 담은 모양입니다.
 class Spot(BaseModel):
     id: int
     title: str
@@ -40,6 +45,7 @@ class Meta(BaseModel):
 class WeatherDay(BaseModel):
     date: dt.date
     label: str
+    # Literal 은 "이 중 하나만 허용"이라는 뜻입니다. 화면이 아이콘 이름을 믿고 그림을 고를 수 있습니다.
     icon: Literal["sun", "cloud", "rain", "snow", "fog"]
     temp_min: float | None = None
     temp_max: float | None = None
@@ -57,6 +63,8 @@ class Weather(BaseModel):
     areas: list[WeatherArea]
 
 
+# 일정 짜기 요청. Field(...) 의 min_length/max_length/ge/le 는 길이·범위 제한이고, 벗어나면 422 가 됩니다.
+# (ge = 이상, le = 이하) 글자 수와 일수를 제한해 AI 호출 비용이 커지는 것을 막습니다.
 class PlanRequest(BaseModel):
     message: str = Field(min_length=1, max_length=500)
     days: int = Field(default=2, ge=1, le=3)
@@ -85,6 +93,7 @@ class SavedTrip(BaseModel):
     title: str
 
 
+# 일정 짜기 응답. mode 로 AI 가 짰는지 규칙이 짰는지 알려 줍니다(AI 실패 시 규칙으로 넘어가므로 요청과 다를 수 있음).
 class PlanResponse(BaseModel):
     mode: Literal["ai", "rule"]
     answer: str
@@ -108,12 +117,14 @@ class User(BaseModel):
     email: str | None = None
 
 
+# (User) 는 "User 의 칸을 모두 물려받고 아래 칸을 더한다"는 뜻입니다.
 class Me(User):
     """GET /me 응답. 화면이 관리자 메뉴와 이용 정지 안내를 보여 줄지 정하는 데 씁니다."""
     is_admin: bool = False
     suspended: bool = False
 
 
+# 찜·일정을 만들 때 받는 모양에는 user_id 칸이 없습니다. 누구의 것인지는 서버가 토큰으로 정합니다.
 class FavoriteIn(BaseModel):
     spot_id: int
 
@@ -130,6 +141,7 @@ class Trip(BaseModel):
     created_at: str
 
 
+# *Page 모양들은 목록 한 묶음입니다. next_cursor 가 None 이면 더 받을 것이 없다는 뜻입니다.
 class FavoritePage(BaseModel):
     items: list[Spot]
     next_cursor: int | None = None
@@ -171,6 +183,7 @@ class AdminSpotPage(BaseModel):
     total: int | None = None
 
 
+# 관리자가 새 여행지를 넣을 때 받는 모양. 좌표를 제주 근처로, 사진 주소를 https 로 제한해 잘못된 값을 막습니다.
 class SpotCreate(BaseModel):
     title: str = Field(min_length=1, max_length=60)
     category: str
@@ -230,6 +243,7 @@ class UsageReport(BaseModel):
     truncated: bool = False
 
 
+# /status 응답 모양
 class Status(BaseModel):
     """운영 확인용 응답. 키 값은 담지 않고 "있다/없다"만 담습니다."""
 

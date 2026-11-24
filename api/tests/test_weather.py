@@ -1,5 +1,6 @@
 """날씨 응답을 우리 모양으로 바꾸는 부분. (진짜 날씨 서버는 부르지 않습니다)"""
 
+# OPEN_METEO 는 날씨 서비스가 주는 응답을 흉내 낸 값입니다(항목별 배열 모양). 네트워크 없이 변환 함수만 확인합니다.
 from services.weather import build_weather, describe, is_rainy, parse_days
 
 OPEN_METEO = {

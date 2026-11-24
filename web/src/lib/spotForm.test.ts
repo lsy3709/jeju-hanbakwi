@@ -1,7 +1,10 @@
+// 테스트 파일입니다. 화면 없이 spotForm.ts 의 함수 를 불러 결과가 맞는지 확인하며, `npm test`(vitest)가 실행합니다.
+// "describe" 는 비슷한 테스트를 묶고, "it" 은 하나의 확인 항목, "expect(...).toBe(...)" 는 "이 값이 이것과 같아야 한다"는 뜻입니다.
 import { describe, expect, it } from "vitest";
 import { MAX_THEMES, createBody, emptySpotForm, patchBody, spotToForm, toggleTheme } from "./spotForm";
 import type { AdminSpot } from "./types";
 
+// 수정 폼 테스트에 쓰는 예시 여행지입니다.
 const spot: AdminSpot = {
   id: 7,
   title: "성산일출봉",
@@ -21,6 +24,7 @@ const spot: AdminSpot = {
   source: "sample",
 };
 
+// 테마 칩을 누르면 더해지고 빠지며 5개를 넘지 않는지 확인합니다.
 describe("toggleTheme", () => {
   it("없던 테마는 더하고, 있던 테마는 뺀다", () => {
     expect(toggleTheme(["바다"], "숲")).toEqual(["바다", "숲"]);
@@ -33,6 +37,7 @@ describe("toggleTheme", () => {
   });
 });
 
+// 추가 폼의 값이 서버로 보낼 본문으로 올바르게 바뀌는지 확인합니다.
 describe("createBody (추가 폼 → POST 본문)", () => {
   it("앞뒤 공백을 지우고, 빈 선택 칸(사진·위도·경도)은 보내지 않는다", () => {
     const body = createBody({ ...emptySpotForm(), title: "  새 카페 ", category: "음식점", area: "서부" });
@@ -58,6 +63,7 @@ describe("createBody (추가 폼 → POST 본문)", () => {
   });
 });
 
+// 수정 폼에서 바뀐 칸만 본문에 담기는지 확인합니다.
 describe("patchBody (수정 폼 → PATCH 본문)", () => {
   it("아무것도 바꾸지 않으면 빈 객체", () => {
     expect(patchBody(spot, spotToForm(spot))).toEqual({});

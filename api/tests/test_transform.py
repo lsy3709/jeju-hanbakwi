@@ -1,5 +1,6 @@
 """외부 데이터 한 건이 우리 기준으로 바르게 바뀌는지."""
 
+# RAW 는 TourAPI 가 실제로 주는 모양의 원본 한 건입니다(필드 이름이 우리 것과 다름). 테스트마다 일부 칸만 바꿔 규칙을 확인합니다.
 from transform import make_one_liner, pick_area, to_spot_row
 
 RAW = {

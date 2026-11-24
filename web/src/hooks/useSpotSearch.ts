@@ -1,5 +1,7 @@
 "use client";
 
+// "use client" 는 이 파일이 브라우저에서 도는 코드라는 표시입니다. useState·useEffect 같은 React 훅은 브라우저에서만 쓸 수 있습니다.
+// 훅(use… 로 시작하는 함수) = 화면의 상태와 불러오기를 화면 파일에서 떼어 낸 것입니다. 층: 화면(app/) → 훅 → lib/api.ts.
 // 이 파일이 하는 일: 탐색 화면의 관광지 검색 상태(첫 묶음 · 더 보기 · 다시 시도)를 맡는 훅.
 // 커서로 이어 받는 일은 공통 훅(useCursorList)이 하고, 여기서는 "필터로 /spots 를 부르는 법"만 정합니다.
 import { useCallback } from "react";

@@ -1,5 +1,7 @@
 // docs/api.md 의 "자료 모양"을 그대로 옮긴 타입입니다.
 
+// 서버가 돌려주는 자료의 "모양"만 적은 파일입니다(동작하는 코드는 없습니다). api.ts·훅·화면이 같은 모양을 믿고 쓰도록 한 곳에 모았습니다.
+// 낱말 풀이: type = 자료의 모양 약속, "string | null" = 글자이거나 비어 있음(null), "?" 가 붙은 칸 = 없어도 되는 칸입니다.
 export type Spot = {
   id: number;
   title: string;
@@ -70,6 +72,7 @@ export type Weather = {
   areas: { area: string; days: WeatherDay[] }[];
 };
 
+// 서버로 보내는 일정 요청의 모양입니다. 아래 PlanInput 은 화면 입력칸용이라 칸 이름과 값 모양이 조금 다릅니다.
 export type PlanRequest = {
   message: string;
   days?: number;

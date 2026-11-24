@@ -2,6 +2,7 @@
 // 다음 묶음이 없으면(next_cursor 가 null) 아무것도 그리지 않습니다.
 import { btnOutline } from "./ui";
 
+// 받는 값: hasMore(다음 묶음이 남았는지), busy(받는 중인지), onMore(누르면 부를 함수). 데이터 상태는 훅이 들고 있고 이 버튼은 그리기만 합니다.
 export function MoreButton({ hasMore, busy, onMore }: { hasMore: boolean; busy: boolean; onMore: () => void }) {
   if (!hasMore) return null;
   return (

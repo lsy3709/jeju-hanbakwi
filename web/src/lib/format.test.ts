@@ -1,6 +1,9 @@
+// 테스트 파일입니다. 화면 없이 format.ts 의 함수 를 불러 결과가 맞는지 확인하며, `npm test`(vitest)가 실행합니다.
+// "describe" 는 비슷한 테스트를 묶고, "it" 은 하나의 확인 항목, "expect(...).toBe(...)" 는 "이 값이 이것과 같아야 한다"는 뜻입니다.
 import { describe, expect, it } from "vitest";
 import { buildQuery, dayTitle, formatDate, formatSavedAt, photoCreditText, pickFallbackTone, spotsQuery, todayString, weatherText } from "./format";
 
+// 사진 출처 글자가 언제 나오고 언제 빠지는지 확인합니다.
 describe("photoCreditText", () => {
   it("사진과 출처가 있으면 '사진: …' 글자를 만든다", () => {
     expect(photoCreditText({ image_url: "https://x/a.jpg", image_credit: "Jane Doe · CC BY-SA 4.0" })).toBe(
@@ -16,6 +19,7 @@ describe("photoCreditText", () => {
   });
 });
 
+// 주소 뒤 쿼리 만들기에서 빈 값이 빠지는지 확인합니다.
 describe("buildQuery", () => {
   it("값이 있는 항목만 쿼리로 만든다", () => {
     expect(buildQuery({ q: "폭포", theme: "", area: undefined, page: 2 })).toBe("?q=%ED%8F%AD%ED%8F%AC&page=2");
@@ -28,6 +32,7 @@ describe("buildQuery", () => {
   });
 });
 
+// 사진이 없을 때 테마에 맞는 대체 그림 색이 골라지는지 확인합니다.
 describe("pickFallbackTone", () => {
   it("바다·폭포는 sea", () => expect(pickFallbackTone(["사진", "바다"])).toBe("sea"));
   it("오름·숲은 green", () => expect(pickFallbackTone(["오름"])).toBe("green"));
@@ -35,6 +40,7 @@ describe("pickFallbackTone", () => {
   it("태그가 없어도 sand", () => expect(pickFallbackTone([])).toBe("sand"));
 });
 
+// 날짜·요일·저장 시각 글자를 확인합니다.
 describe("날짜 표시", () => {
   it("요일을 붙인다", () => expect(formatDate("2026-12-01")).toBe("12월 1일 (화)"));
   it("null 이면 null", () => expect(formatDate(null)).toBeNull());
@@ -52,6 +58,7 @@ describe("날짜 표시", () => {
   it("오늘 날짜 문자열", () => expect(todayString(new Date(2026, 0, 5))).toBe("2026-01-05"));
 });
 
+// 날씨 글자에서 값이 없는 조각이 빠지는지 확인합니다.
 describe("weatherText", () => {
   const base = { temp_min: 8.4, temp_max: 14.6, rain_prob: 30 };
   it("값이 모두 있으면 기온과 강수확률을 함께 보여 준다", () => {

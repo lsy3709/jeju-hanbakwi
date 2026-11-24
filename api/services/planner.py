@@ -11,6 +11,9 @@
 어느 쪽이든 "우리 DB 에 있는 관광지만" 일정에 넣습니다.
 """
 
+# 층: routers/agent.py 가 plan_trip 을 부르면 → AiPlanner(plan_ai.py)를 먼저, 안 되면 RulePlanner(plan_rule.py)를 부릅니다.
+# 아래 `# noqa: F401` 줄은 "여기서 안 쓰는 것 같아도 지우지 말라"는 표시입니다. 테스트가 planner.ask_gemini 처럼 이 파일 이름으로 불러 씁니다.
+# 낱말: 대체 경로(fallback) = 앞의 방법이 실패했을 때 대신 쓰는 방법.
 import logging
 
 from config import settings
@@ -51,6 +54,8 @@ def plan_trip(request: PlanRequest, repo, get_weather, ask_ai=ask_gemini, user_k
 
     사용자 키로 한 시도가 실패해 다른 방식으로 대신했으면 결과의 notice 에 안내 글을 담습니다.
     """
+    # planners[-1] 은 항상 규칙 방식이고 planners[:-1] 은 그 앞의 AI 방식들입니다.
+    # AI 방식을 차례로 시도해 처음 성공하면 멈추고(break), 모두 실패하면 아래에서 규칙 방식으로 짭니다.
     planners = choose_planners(repo, get_weather, ask_ai, user_key)
     result, user_key_failed, winner, tried = None, False, planners[-1], []
     for planner in planners[:-1]:
@@ -63,6 +68,7 @@ def plan_trip(request: PlanRequest, repo, get_weather, ask_ai=ask_gemini, user_k
             if getattr(planner, "api_key", None):
                 user_key_failed = True
             log.warning("%s 방식 실패, 다음 방식으로 넘어갑니다: %s", planner.name, hide_key(str(error), user_key))
+    # 규칙 방식은 바깥 서비스를 부르지 않아 여기서는 오류를 잡지 않습니다.
     if result is None:
         result = planners[-1].plan(request)
     result["notice"] = USER_KEY_NOTICE if user_key_failed else None

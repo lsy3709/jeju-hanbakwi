@@ -1,5 +1,7 @@
 // 서버와 통하는 유일한 문: 화면과 컨트롤러는 http 를 직접 부르지 않고 여기 메서드만 씁니다.
 // 새 서버 주소를 쓰려면 docs/api.md 를 먼저 고치고 이 파일에 메서드를 하나 더하세요.
+// 처음 보는 낱말: 토큰(token)은 "로그인했다는 증표"인 긴 문자열이고, 서버는 요청 헤더(Authorization)에 실린 토큰으로 누구의 요청인지 알아봅니다.
+// 컨트롤러/저장소가 이 클래스의 메서드를 부르면, 여기서 주소·헤더·본문을 만들어 http 로 보내고 JSON 응답을 models/ 의 클래스로 바꿔 돌려줍니다.
 
 import 'dart:convert';
 
@@ -13,6 +15,7 @@ import '../models/trip.dart';
 import '../models/usage.dart';
 import '../models/weather.dart';
 
+// 이 파일의 층: 화면 → 컨트롤러 → ApiClient → 서버. 오류도 여기서 ApiException 하나로 통일해 위로 올립니다.
 /// 서버가 돌려준 오류(또는 서버에 닿지 못한 상황)를 한국어 메시지로 담습니다.
 class ApiException implements Exception {
   final String message;
@@ -27,6 +30,7 @@ class ApiException implements Exception {
 }
 
 /// 로그인한 사용자의 액세스 토큰을 돌려주는 함수. 로그아웃 상태면 null.
+// 함수에 이름을 붙인 것입니다. 토큰을 그때그때 물어보는 방식이라, 로그인/로그아웃으로 토큰이 바뀌어도 ApiClient 를 다시 만들 필요가 없습니다.
 typedef TokenProvider = String? Function();
 
 /// 설정 화면에 넣은 내 AI 키를 돌려주는 함수. 넣지 않았으면 null.
@@ -42,12 +46,14 @@ class ApiClient {
   final TokenProvider? tokenProvider;
   final AiKeyProvider? aiKeyProvider;
 
+  // client 를 밖에서 넣을 수 있게 한 이유: 테스트는 진짜 인터넷 대신 가짜 응답을 주는 client 를 넣습니다(test/api_client_test.dart). 넣지 않으면 진짜 것을 씁니다.
   ApiClient({http.Client? client, String? baseUrl, this.tokenProvider, this.aiKeyProvider})
       : _client = client ?? http.Client(),
         baseUrl = baseUrl ?? Config.apiUrl;
 
   // ---- 공개 주소 ----
 
+  // fromJson 은 서버가 준 JSON(Map)을 Dart 클래스로 바꾸는 이름입니다. as Map<String, dynamic> 은 "이 값은 Map 이다"라고 알려 주는 형 변환입니다.
   Future<Meta> getMeta() async => Meta.fromJson(await _get('/meta') as Map<String, dynamic>);
 
   Future<SpotPage> getSpots({
@@ -60,6 +66,7 @@ class ApiClient {
     int size = 20,
   }) async {
     // 비어 있는 조건은 아예 보내지 않습니다.
+    // 맵 안의 if 는 조건이 참일 때만 그 항목을 넣습니다. 그래서 비어 있는 조건은 주소에 붙지 않습니다.
     final query = <String, String>{
       if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
       if (theme != null && theme.isNotEmpty) 'theme': theme,
@@ -89,12 +96,14 @@ class ApiClient {
       if (startDate != null && startDate.isNotEmpty) 'start_date': startDate,
     };
     // 내 AI 키가 있으면 이 요청에만 함께 보냅니다(다른 주소에는 붙이지 않습니다). 서버는 저장하지 않습니다.
+    // ?.call() 은 aiKeyProvider 가 null 이 아닐 때만 호출합니다. 내 AI 키는 이 요청의 헤더에만 싣고 다른 주소에는 붙이지 않습니다.
     final aiKey = aiKeyProvider?.call();
     final headers = (aiKey != null && aiKey.isNotEmpty) ? {'X-Gemini-Key': aiKey} : null;
     return PlanResult.fromJson(await _send('POST', '/agent/plan', body: body, headers: headers) as Map<String, dynamic>);
   }
 
   /// 내 AI 키가 쓸 수 있는 키인지 서버에 묻습니다.
+  // ({bool ok, String message}) 는 값 두 개를 묶어 돌려주는 Dart 의 레코드입니다.
   Future<({bool ok, String message})> checkAiKey(String key) async {
     final json = await _send('POST', '/agent/key-check', headers: {'X-Gemini-Key': key}) as Map<String, dynamic>;
     return (ok: json['ok'] == true, message: (json['message'] ?? '') as String);
@@ -120,6 +129,7 @@ class ApiClient {
     return json['favorite'] == true;
   }
 
+  // 돌려줄 내용이 없는 요청(찜 추가·삭제, 일정 삭제)은 Future<void> 입니다. 성공하면 조용히 끝나고 실패하면 ApiException 이 던져집니다.
   Future<void> addFavorite(int spotId) async {
     await _send('POST', '/me/favorites', body: {'spot_id': spotId});
   }
@@ -150,6 +160,7 @@ class ApiClient {
 
   // ---- 공통 처리 ----
 
+  // _ 로 시작하면 이 파일 안에서만 쓰는 비공개 이름입니다. 모든 요청은 결국 아래 _send 한 곳을 지납니다.
   Future<dynamic> _get(String path, {Map<String, String>? query}) => _send('GET', path, query: query);
 
   Future<dynamic> _send(
@@ -159,6 +170,7 @@ class ApiClient {
     Object? body,
     Map<String, String>? headers,
   }) async {
+    // 주소 = 서버 주소 + 경로 + ?조건들. 조건이 하나도 없으면 ? 를 붙이지 않습니다.
     final uri = Uri.parse('$baseUrl$path').replace(queryParameters: (query == null || query.isEmpty) ? null : query);
     final request = http.Request(method, uri);
     request.headers['Accept'] = 'application/json';
@@ -167,12 +179,14 @@ class ApiClient {
       request.headers['Content-Type'] = 'application/json; charset=utf-8';
       request.body = jsonEncode(body);
     }
+    // Bearer 는 "이 토큰을 가진 사람"이라는 뜻의 약속된 표기입니다. 서버가 이것으로 사용자를 알아봅니다.
     // 로그인 상태면 토큰을 붙입니다. 공개 주소에 붙어도 서버는 무시합니다.
     final token = tokenProvider?.call();
     if (token != null && token.isNotEmpty) {
       request.headers['Authorization'] = 'Bearer $token';
     }
 
+    // final 로 선언만 해 두고 아래 try 안에서 값을 넣습니다. 실패하면 throw 로 빠져나가므로 이후 코드는 항상 값이 있습니다.
     final http.Response response;
     try {
       response = await http.Response.fromStream(await _client.send(request).timeout(const Duration(seconds: 60)));

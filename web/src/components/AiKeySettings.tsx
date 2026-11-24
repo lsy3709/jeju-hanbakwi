@@ -1,5 +1,6 @@
 "use client";
 
+// "use client" 는 이 파일이 브라우저에서 도는 컴포넌트라는 표시입니다. 클릭에 반응하거나 useState 로 값을 기억하려면 필요합니다.
 // 이 파일이 하는 일: 설정 화면의 "내 AI 키" 묶음(안내 · 입력 · 저장 · 확인 · 지우기).
 // 키를 다루는 일은 hooks/useAiKey.ts 가 하고, 여기는 그리기만 합니다. 저장한 키는 화면에 다시 그리지 않고 앞뒤 4자만 보여 줍니다.
 import { useState } from "react";
@@ -7,12 +8,14 @@ import { CheckCircle2, KeyRound, ShieldAlert, Trash2 } from "lucide-react";
 import { btnOutline, btnPrimary, card, inputClass } from "@/components/ui";
 import { useAiKey } from "@/hooks/useAiKey";
 
+// 입력칸에 치는 값(draft)은 이 컴포넌트가 잠깐 들고 있고, 저장·삭제·확인은 useAiKey 훅이 합니다.
 export function AiKeySettings() {
   const { hasKey, masked, save, clear, check, runCheck } = useAiKey();
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [savedNow, setSavedNow] = useState(false);
 
+  // 훅의 save 가 키 모양을 검사해 결과를 돌려줍니다. 성공하면 입력칸을 비우고, 실패하면 이유를 화면에 보입니다.
   function submit() {
     const result = save(draft);
     if (result.ok) {
@@ -25,6 +28,7 @@ export function AiKeySettings() {
     }
   }
 
+  // 키가 이미 있으면 "확인/지우기" 화면을, 없으면 입력 폼을 보이는 두 갈래입니다.
   return (
     <section aria-labelledby="ai-key-title" className={`${card} space-y-4 p-5`}>
       <h2 id="ai-key-title" className="flex items-center gap-2 text-lg font-bold">
@@ -74,6 +78,7 @@ export function AiKeySettings() {
         </div>
       ) : (
         <form
+          // event.preventDefault() 는 폼이 페이지를 새로 고치는 기본 동작을 막고 submit() 만 실행하게 합니다.
           onSubmit={(event) => {
             event.preventDefault();
             submit();

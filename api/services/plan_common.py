@@ -1,5 +1,7 @@
 """일정 짜기에서 두 방식(AI · 규칙)이 함께 쓰는 것들."""
 
+# 쓰는 곳: plan_ai.py · plan_rule.py(두 방식) · usage.py(한국 날짜 계산). 이 파일은 DB 도 AI 도 부르지 않습니다.
+# 낱말: Protocol = "이 이름의 값과 함수를 갖추면 같은 종류로 본다"는 약속 틀입니다. 상속하지 않아도 모양만 맞으면 됩니다.
 from datetime import date, datetime, timedelta, timezone
 from typing import Protocol
 
@@ -33,6 +35,7 @@ def korea_today(now: datetime | None = None) -> date:
     return (now or datetime.now(timezone.utc)).astimezone(KOREA).date()
 
 
+# 여행 날짜 목록. 시작일을 안 정했으면 한국 기준 오늘부터, days 일 동안 하루씩 더해 만듭니다.
 def trip_dates(request: PlanRequest) -> list[date]:
     start = request.start_date or korea_today()
     return [start + timedelta(days=i) for i in range(request.days)]
@@ -44,6 +47,7 @@ def weather_by_date(get_weather) -> dict[str, dict]:
         weather = get_weather()
     except WeatherUnavailable:
         return {}
+    # areas[0] 은 첫 지역(제주시)입니다. 날씨를 못 받아도 일정은 짤 수 있으므로 오류 대신 빈 사전을 돌려줍니다.
     days = weather["areas"][0]["days"] if weather["areas"] else []
     return {str(day["date"]): day for day in days}
 

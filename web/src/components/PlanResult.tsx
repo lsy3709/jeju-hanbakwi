@@ -1,5 +1,7 @@
 // 이 파일이 하는 일: AI 플래너의 결과 영역(설명 글 + 일자별 일정 + "간단 추천" 표시 + 내 여행에 저장 폼 + 로그인 안내창).
 // 서버 호출은 하지 않고, 저장 동작은 위(usePlanner)에서 받습니다.
+// 컴포넌트 = 화면 조각을 그려 돌려주는 함수입니다. 중괄호 안의 이름들(props)은 부르는 쪽이 넘겨 주는 값입니다.
+// 쓰는 곳: app/planner/page.tsx. 일정 짜기 결과를 그립니다.
 import Link from "next/link";
 import { Save } from "lucide-react";
 import { ItineraryView } from "@/components/ItineraryView";
@@ -19,6 +21,7 @@ export type PlanSave = {
   closeLogin: () => void;
 };
 
+// plan 은 서버가 돌려준 일정, save 는 저장 관련 값과 동작 묶음입니다. 로그인했으면 서버가 이미 저장해 둬서(saved_trip) 저장 폼 대신 안내가 보입니다.
 export function PlanResult({
   plan,
   save,

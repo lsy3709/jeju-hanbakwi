@@ -1,5 +1,8 @@
 """주소별 동작. docs/api.md 의 약속을 지키는지 확인합니다."""
 
+# 이 파일은 서버 전체를 "겉에서" 확인합니다. client 가 진짜 서버처럼 요청을 보내고, DB 는 가짜(FakeRepo)입니다.
+# 확인하는 것: 상태 코드(200 성공 · 201 만듦 · 204 내용 없음 · 401 로그인 필요 · 404 없음 · 422 값이 틀림 · 503 잠시 불가)와 응답 모양.
+# login(ALICE) 는 "ALICE 로 로그인한 것으로 친다"는 뜻입니다(conftest.py). ALICE 와 BOB 은 서로 남입니다.
 from tests.conftest import ALICE, BOB
 
 
@@ -23,6 +26,7 @@ def test_spots_first_page(client):
     assert set(first) == {"id", "title", "category", "area", "address", "lat", "lng", "image_url", "image_credit", "image_source_url", "overview", "one_liner", "theme_tags", "indoor"}
 
 
+# 도우미(테스트 아님): next_cursor 를 따라 끝까지 받아 번호 목록과 묶음 수를 돌려줍니다.
 def walk(client, url, **params):
     """next_cursor 를 따라 끝까지 받아 모든 묶음을 돌려줍니다."""
     pages, cursor = [], None
@@ -169,6 +173,7 @@ def test_favorite_of_missing_spot_is_404(client, login):
     assert client.post("/me/favorites", json={"spot_id": 9999}).status_code == 404
 
 
+# 핵심 확인: ALICE 가 찜한 것이 BOB 에게는 보이지 않아야 합니다(찜·일정 질의에 항상 user_id 조건을 거는 이유).
 def test_favorites_are_private(client, login):
     login(ALICE)
     client.post("/me/favorites", json={"spot_id": 1})
@@ -257,6 +262,7 @@ def test_photo_file_is_served(client):
     assert client.get("/photos/none.jpg").status_code == 404
 
 
+# 응답을 만들며 DB 에서 받은 원본 줄을 몰래 고치지 않았는지(사진 주소를 붙인 복사본만 쓰는지) 확인합니다.
 def test_repo_data_is_not_changed_by_response(client, repo):
     client.get("/spots/1")
     assert repo.spots[0]["image_url"] == "/photos/S001.jpg"
