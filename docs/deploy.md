@@ -112,7 +112,7 @@ Authentication → URL Configuration 에서:
 | 항목 | 값 |
 |---|---|
 | Site URL | 웹 주소 (처음 값은 `http://localhost:3000`). 바꾸고 **Save changes** |
-| Redirect URLs | **Add URL** 을 눌러 한 줄에 하나씩 넣고 **Save URLs**: `http://localhost:3000/my`, `http://localhost:3000/planner`, `<웹 주소>/my`, `<웹 주소>/planner`, `com.goldmagnet.jejuhanbakwi://login-callback` |
+| Redirect URLs | **Add URL** 을 눌러 한 줄에 하나씩 넣고 **Save URLs**: `http://localhost:3000/my`, `http://localhost:3000/planner`, `<웹 주소>/my`, `<웹 주소>/planner`, `com.goldmagnet.jejuhanbakwi://login-callback`. 앱 웹 빌드 주소는 5단계에서 더합니다 |
 
 Redirect URLs 에 없는 주소로는 돌아오지 못합니다. 로그인 뒤 엉뚱한 화면이 열리면 여기를 먼저 봅니다.
 
@@ -166,7 +166,7 @@ flutter build web --dart-define=API_URL=https://<서버 주소> --dart-define=SU
 npx vercel deploy build/web --prod
 ```
 
-처음 실행하면 로그인과 프로젝트 이름을 묻습니다. 끝나면 나오는 주소를 서버의 `ALLOWED_ORIGINS` 와 Supabase 의 Redirect URLs 에 더합니다.
+처음 실행하면 로그인과 프로젝트 이름을 묻습니다. 끝나면 나오는 주소를 서버의 `ALLOWED_ORIGINS` 와 Supabase 의 Redirect URLs 에 더합니다. Redirect URLs 에는 주소를 **끝에 `/` 없이 그대로**(예: `https://내앱.vercel.app`) 넣습니다. 앱은 웹에서 로그인한 뒤 지금 열린 주소로 돌아오는데(`app/lib/auth/auth_service.dart` 의 `loginRedirectUrl`), 이 주소가 목록에 없으면 Supabase 가 Site URL(웹)로 보내 버립니다. 로컬 크롬에서 로그인까지 보려면 `flutter run -d chrome --web-port 5000 …` 처럼 포트를 고정하고 `http://localhost:5000` 도 더합니다.
 
 ### 안드로이드 설치 파일
 
@@ -209,6 +209,7 @@ python -m tools.check_live --api https://<서버 주소>
 | `/status` 의 `database` 가 `error` | Supabase 주소·비밀 키가 틀렸거나 SQL 을 실행하지 않음 | 1단계 다시 |
 | `/status` 의 `spots` 가 0 | 데이터를 넣지 않음 | `python -m tools.sync_spots --sample` |
 | 로그인 뒤 처음 화면으로 돌아감 | Redirect URLs 에 그 주소가 없음 | 4-1 의 표 |
+| 앱 웹 빌드에서 로그인하면 웹(Next.js) 화면으로 감 | Redirect URLs 에 앱 웹 빌드 주소가 없음(또는 끝에 `/` 를 붙여 넣음) | 5단계의 주소를 그대로 더함 |
 | 로그인 뒤 홈으로 돌아가고 주소에 `error_code=bad_oauth_state` ("OAuth state has expired") | 구글의 계정 선택 화면을 몇 분 동안 띄워 둠 | 설정은 맞음. "구글로 로그인"을 다시 누르고 바로 계정을 고름 |
 | 구글이 "액세스 차단됨"으로 막음 | 게시 상태가 "테스트 중"인데 그 계정이 테스트 사용자에 없음 | 4-2 의 3번 — **대상** → 테스트 사용자에 계정 추가 |
 | "구글로 로그인"을 눌러도 구글 화면이 안 뜨고 오류 글이 나옴 | Supabase 의 Google 공급자가 꺼져 있거나 값을 저장하지 않음 | 4-3 — 켜고 **Save** |
