@@ -85,7 +85,7 @@ docker compose -f dev/docker-compose.yml up -d
   ```
 
 - 처음 한 번, 서버 가상 환경을 켠 터미널에서 샘플 68건을 넣습니다: `python -m tools.sync_spots --sample`
-- 끄기: `docker compose -f dev/docker-compose.yml down` (데이터 유지). 끝에 `-v` 를 붙이면 데이터까지 지웁니다.
+- 끄기: `docker compose -f dev/docker-compose.yml down` (데이터 유지). 끝에 `-v` 를 붙이면 데이터까지 지웁니다. 예전 구성으로 만들어 둔 로컬 DB 가 있었다면, 이 구성으로 처음 켤 때 한 번은 비어 있으니 데이터를 다시 넣습니다.
 
 ### 2. 서버
 
