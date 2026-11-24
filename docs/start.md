@@ -116,14 +116,15 @@ npm run dev
 emulator -avd Pixel_4 -no-snapshot -gpu swiftshader_indirect
 ```
 
-`app/env.json` 의 `API_URL` 이 `http://10.0.2.2:8000` 인지 확인하고 실행합니다.
+`app/env.json` 의 `API_URL` 이 `http://10.0.2.2:8000`(처음 그대로)인지 확인하고 실행합니다.
 
 ```bash
 cd app
 flutter run --dart-define-from-file=env.json
 ```
 
-- 에뮬레이터 없이 화면만 볼 때: `flutter run -d chrome --dart-define-from-file=env.json`. 이때는 `env.json` 의 `API_URL` 을 `http://localhost:8000` 으로 바꿔야 합니다(`10.0.2.2` 는 에뮬레이터 전용 주소).
+- 에뮬레이터 없이 화면만 볼 때: `flutter run -d chrome --dart-define-from-file=env.json`. `env.json` 은 그대로 두면 됩니다 — 크롬에서는 `10.0.2.2` 를 알아서 `localhost` 로 바꿔 부릅니다(`app/lib/config.dart`).
+- Android Studio 로 에뮬레이터를 만드는 순서와 막힐 때는 [앱 실행하기](app-run.md)에 있습니다.
 - 실제 폰을 USB 로 연결했다면 `API_URL` 에 PC 의 내부 IP(`http://192.168.x.x:8000`)를 넣고, 서버를 `uvicorn main:app --host 0.0.0.0` 으로 켭니다. 폰과 PC 가 같은 와이파이여야 합니다. (이 방법은 실제 폰으로 확인해 보지 못했습니다.)
 
 ### 5. 다 켜졌는지 한 번에 확인
@@ -183,7 +184,7 @@ C 방식으로 쓰는 날은 1번을 건너뜁니다. 끌 때는 각 터미널�
 
 | 증상 | 볼 곳 |
 |---|---|
-| 웹 · 앱이 "불러오지 못했어요" | 서버가 켜져 있는지(`/status`). 앱이면 `API_URL` 이 `10.0.2.2` 인지 |
+| 웹 · 앱이 "불러오지 못했어요" · "서버에 연결할 수 없어요" | 서버가 켜져 있는지(`/status`). 앱이면 `API_URL` 이 `10.0.2.2` 인지(실제 폰은 PC IP — [앱 실행하기](app-run.md#7-막힐-때)) |
 | `/status` 의 `database` 가 `ok` 가 아님 | Docker 세 개가 Up 인지, `api/.env` 의 `SUPABASE_URL` |
 | `spots` 가 0 | `python -m tools.sync_spots --sample` 을 아직 안 함 |
 | 코드를 고쳤는데 서버 · 웹이 그대로 | 드물게 저장을 못 알아챕니다. `Ctrl+C` 로 끄고 다시 켭니다 |

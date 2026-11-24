@@ -25,6 +25,7 @@
 | 문서 | 내용 |
 |---|---|
 | [시작하는 방법](docs/start.md) | 배포된 웹 · 앱 써 보기, 로컬에서 전부 켜기, 매일 다시 켜는 순서 |
+| [앱 실행하기](docs/app-run.md) | 크롬 · 에뮬레이터(Android Studio 로 만들기) · 실제 폰으로 앱 켜기, 막힐 때 |
 | [구조와 설계](docs/architecture.md) | 층 나누기, 쓰인 설계 패턴, 자료가 흐르는 길, 테스트 전략 |
 | [API 명세](docs/api.md) | 서버 주소와 응답 모양 (웹·앱이 함께 쓰는 약속) |
 | [화면·디자인 기준](docs/design.md) | 디자인 토큰, 화면 구성 |
@@ -93,17 +94,26 @@ npm run dev
 
 ### 4. 앱 (app)
 
+**서버(2번)를 먼저 켜 둡니다.** 앱은 서버가 없으면 "서버에 연결할 수 없어요"만 보여 줍니다.
+
 ```bash
 cd app
 flutter pub get
 copy env.example.json env.json
+
+# 크롬으로 (가장 빠름)
+flutter run -d chrome --dart-define-from-file=env.json
+
+# 에뮬레이터로 (에뮬레이터를 먼저 켜 둠)
+flutter emulators                      # 만들어 둔 에뮬레이터 이름 보기
+flutter emulators --launch <이름>      # 켜기
+flutter devices                        # emulator-5554 같은 줄이 보이면 켜진 것
 flutter run --dart-define-from-file=env.json
 ```
 
+- `env.json` 은 그대로 두면 됩니다. `API_URL` 이 `http://10.0.2.2:8000` 이면 에뮬레이터는 그 주소(에뮬레이터 안에서 본 내 PC)를, 크롬은 알아서 `http://localhost:8000` 을 부릅니다.
 - 코드는 VS Code 에서 작성하고, 에뮬레이터는 Android Studio 의 Device Manager 로 한 번만 만들어 둡니다.
-- 에뮬레이터 켜기: VS Code 오른쪽 아래 기기 선택, 또는 `flutter emulators --launch <이름>`
-- 에뮬레이터에서 내 PC 의 서버 주소는 `http://10.0.2.2:8000` 입니다. (`localhost` 가 아닙니다)
-- 화면만 빨리 볼 때: `flutter run -d chrome --dart-define-from-file=env.json`
+- **Android Studio 설치 · 에뮬레이터 만들기 · VS Code 와 명령어로 켜기 · 실제 폰 연결 · 막힐 때**는 [앱 실행하기](docs/app-run.md)에 화면 순서대로 적어 두었습니다.
 
 ## VS Code 에서 작업하기
 
@@ -128,7 +138,7 @@ flutter run --dart-define-from-file=env.json
 emulator -avd Pixel_4 -no-snapshot -gpu swiftshader_indirect
 ```
 
-`emulator` 명령은 Android SDK 의 `emulator` 폴더에 있습니다. 그래도 안 되면 자기 안드로이드 폰을 USB 로 연결하거나 크롬으로 실행합니다.
+`emulator` 명령은 Android SDK 의 `emulator` 폴더에 있습니다(경로를 붙여 실행하는 방법은 [앱 실행하기](docs/app-run.md#방법-c-에뮬레이터를-직접-켜기-잘-안-켜질-때)). 그래도 안 되면 자기 안드로이드 폰을 USB 로 연결하거나 크롬으로 실행합니다.
 
 ## 실측 점검 — 서버와 DB 가 정말 연결됐는지
 

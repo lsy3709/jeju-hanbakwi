@@ -331,6 +331,8 @@ Supabase 무료 프로젝트(서울)와 Vercel 프로젝트 둘(서버 · 웹)�
 | 비밀 파일이 git 에서 제외되는지, 공개 전 비밀 값 검사 | ✅ |
 | 로컬 DB(Docker) 기동, 테이블 생성, PC 를 껐다 켠 뒤 다시 기동 | ✅ |
 | 에뮬레이터 기동 | ✅ 단, 저장된 상태로 켜면 꺼짐 → README "에뮬레이터가 바로 꺼질 때" |
+| 같은 `env.json`(`API_URL` = `10.0.2.2`)으로 크롬 · 에뮬레이터 모두 연결 (2026-11-24) | ✅ 고치기 전: 크롬이 `10.0.2.2:8000` 으로 `ERR_CONNECTION_TIMED_OUT` → "서버에 연결할 수 없어요" 재현. 고친 뒤(`config.dart` 의 `resolveApiUrl`, 테스트 6건): 크롬 홈 · 에뮬레이터(Pixel_Tablet) 홈에 날씨 · 사진 카드. analyze 0 · 테스트 115건 |
+| 앱 실행 안내서 `docs/app-run.md` (Android Studio 로 에뮬레이터 만들기 · 명령어 · 실제 폰) | ✅ 명령 부분(`flutter emulators` · `emulator -avd ... -no-snapshot` · `flutter run`)은 이 PC 에서 실행 확인 / ⏳ Android Studio 화면 메뉴는 2025.1 기준으로 적음(새 PC 에서 처음부터 따라 해 보기 필요) · 실제 폰 미확인 |
 
 ## 사람이 해야 하는 일
 
