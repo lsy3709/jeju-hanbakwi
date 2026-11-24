@@ -44,9 +44,22 @@ def find_spot(client: httpx.Client, title: str) -> dict | None:
     return next((s for s in items if s["title"] == title), None)
 
 
+def fetch_all(client: httpx.Client, url: str) -> list[dict]:
+    """목록을 끝까지 받습니다. 서버는 한 묶음씩 주므로 next_cursor 를 따라갑니다."""
+    items, cursor = [], None
+    for _ in range(200):  # 혹시 커서가 제자리를 돌아도 멈추게
+        params = {"size": 50, **({"cursor": cursor} if cursor is not None else {})}
+        body = client.get(url, params=params).json()
+        items += body["items"]
+        cursor = body.get("next_cursor")
+        if cursor is None:
+            break
+    return items
+
+
 def clear(client: httpx.Client) -> None:
-    favorites = client.get("/me/favorites").json()
-    trips = client.get("/me/trips").json()
+    favorites = fetch_all(client, "/me/favorites")
+    trips = fetch_all(client, "/me/trips")
     for spot in favorites:
         client.delete(f"/me/favorites/{spot['id']}")
     for trip in trips:
@@ -62,7 +75,7 @@ def seed(client: httpx.Client) -> None:
             added += 1
     print(f"찜 {added}개를 넣었습니다.")
 
-    existing = {trip["title"] for trip in client.get("/me/trips").json()}
+    existing = {trip["title"] for trip in fetch_all(client, "/me/trips")}
     start = date.today() + timedelta(days=7)
     for title, days in TRIPS:
         if title in existing:  # 두 번 실행해도 같은 일정이 또 생기지 않게
