@@ -11,14 +11,18 @@ export type ExploreState = {
   area: string;
   category: string;
   indoorText: string; // "true" | "false" | ""
-  isMap: boolean;
+  view: ExploreView;
+  isMap: boolean; // view === "map" (평면 지도)
   filters: SpotsParams;
 };
+
+/** 결과를 보여 주는 방식. "" 은 목록, "map" 은 평면 지도, "3d" 는 땅의 높낮이가 보이는 3D 지도. */
+export type ExploreView = "" | "map" | "3d";
 
 /** URLSearchParams(또는 useSearchParams 의 값)처럼 get 만 있으면 됩니다. */
 type QueryReader = { get(name: string): string | null };
 
-/** 주소 쿼리(?q=&theme=&area=&category=&indoor=&view=map) → 화면 상태. 빈 값은 필터에서 뺍니다. */
+/** 주소 쿼리(?q=&theme=&area=&category=&indoor=&view=map|3d) → 화면 상태. 빈 값은 필터에서 뺍니다. */
 export function parseExploreQuery(params: QueryReader): ExploreState {
   // "??" 는 앞의 값이 null 이면 오른쪽 값을 쓰는 문법입니다(쿼리에 항목이 없으면 빈 글자).
   const q = params.get("q") ?? "";
@@ -26,13 +30,16 @@ export function parseExploreQuery(params: QueryReader): ExploreState {
   const area = params.get("area") ?? "";
   const category = params.get("category") ?? "";
   const indoorText = params.get("indoor") ?? "";
+  const viewText = params.get("view");
+  const view: ExploreView = viewText === "map" || viewText === "3d" ? viewText : "";
   return {
     q,
     theme,
     area,
     category,
     indoorText,
-    isMap: params.get("view") === "map",
+    view,
+    isMap: view === "map",
     filters: {
       // 빈 글자는 undefined 로 바꿔 필터에서 뺍니다(서버에는 값이 있는 조건만 보냅니다).
       q: q || undefined,
@@ -46,7 +53,7 @@ export function parseExploreQuery(params: QueryReader): ExploreState {
 
 /**
  * 현재 상태에서 changes 만 바꾼 다음 주소를 만듭니다. (예: { theme: "바다" })
- * 값을 "" 로 바꾸면 그 항목은 주소에서 빠집니다. view(지도 보기)는 바꾸지 않는 한 그대로 유지합니다.
+ * 값을 "" 로 바꾸면 그 항목은 주소에서 빠집니다. view(지도 · 3D 지도 보기)는 바꾸지 않는 한 그대로 유지합니다.
  */
 export function exploreHref(pathname: string, state: ExploreState, changes: Record<string, string>): string {
   const next = {
@@ -55,7 +62,7 @@ export function exploreHref(pathname: string, state: ExploreState, changes: Reco
     area: state.area,
     category: state.category,
     indoor: state.indoorText,
-    view: state.isMap ? "map" : "",
+    view: state.view,
     ...changes,
   };
   return `${pathname}${buildQuery(next)}`;
