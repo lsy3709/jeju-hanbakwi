@@ -135,4 +135,4 @@ python -m tools.sync_spots --types 12,14   # 관광지·문화시설만 받아 D
 
 ## 쓰는 외부 서비스 (모두 무료 등급)
 
-한국관광공사 TourAPI(공공데이터포털) · Open-Meteo · OpenStreetMap · Supabase · Vercel
+한국관광공사 TourAPI(공공데이터포털) · Open-Meteo · OpenStreetMap · AWS Terrain Tiles(3D 지도의 높이 자료) · Supabase · Vercel
