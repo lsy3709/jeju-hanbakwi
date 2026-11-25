@@ -35,6 +35,12 @@ describe("parseExploreQuery (주소 쿼리 → 필터)", () => {
     expect(parse("view=map").isMap).toBe(true);
     expect(parse("view=list").isMap).toBe(false);
   });
+  it("view=3d 이면 3D 지도 보기", () => {
+    expect(parse("view=3d").view).toBe("3d");
+    expect(parse("view=3d").isMap).toBe(false);
+    expect(parse("view=map").view).toBe("map");
+    expect(parse("view=아무거나").view).toBe("");
+  });
   it("view 는 필터가 아니므로 hasActiveFilter 에 영향이 없다", () => {
     expect(hasActiveFilter(parse("view=map").filters)).toBe(false);
   });
