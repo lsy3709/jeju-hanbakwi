@@ -81,3 +81,15 @@ python -m tools.check_live --api https://<내 서버>.vercel.app
 ```powershell
 flutter build apk --debug --dart-define-from-file=env.json --dart-define=API_URL=https://<내 서버>.vercel.app --dart-define=WEB_URL=https://<내 웹>.vercel.app
 ```
+
+## 기능 구현 영상
+
+같은 날, 배포된 웹을 실제 브라우저로 조작하며 녹화하고 무료 음성 합성(edge-tts)으로 해설과 자막을 붙인 2분 29초 영상을 만들었습니다. 홈 → 탐색 → 편의 시설 → 지도 → 3D 지도 → 판타지 지도 → 낮과 밤 → 상세 → AI 플래너 → 일정 결과 순서입니다. 영상 파일은 크기 때문에 저장소에 넣지 않았고, 만드는 스크립트만 넣었습니다.
+
+```powershell
+pip install playwright edge-tts pillow
+python tools/make_video.py https://<내 웹>.vercel.app
+```
+
+저장소 맨 위 폴더에서 실행합니다. ffmpeg 가 있어야 하고, 결과는 `tmp_video/jeju_intro.mp4` 에 생깁니다. 해설 문구와 장면 순서는 스크립트 위쪽의 `SCENES` 에서 고칩니다. 앱(에뮬레이터) 화면은 넣지 않았습니다.
+
