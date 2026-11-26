@@ -62,7 +62,14 @@ function modelLayer(map: MapLibreMap): CustomLayerInterface {
   };
 }
 
-export default function SpotMap3D({ spots: all, className = "" }: { spots: MaybeLocated[]; className?: string }) {
+type Props = {
+  spots: MaybeLocated[];
+  className?: string;
+  /** 핀의 말풍선에 상세 화면 링크를 넣을지. 앱에 끼워 넣는 화면(/embed/map3d)에서는 이름만 보여 줍니다. */
+  linkToDetail?: boolean;
+};
+
+export default function SpotMap3D({ spots: all, className = "", linkToDetail = true }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const spots = useMemo(() => withLocation(all), [all]);
 
@@ -76,6 +83,7 @@ export default function SpotMap3D({ spots: all, className = "" }: { spots: Maybe
       pitch: 60, // 지도를 눕혀 비스듬히 내려다봅니다
       bearing: -15,
       maxPitch: 80,
+      attributionControl: { compact: true }, // 출처 표기를 작은 단추(ⓘ)로 접어 지도를 가리지 않게 합니다
       cooperativeGestures: true, // 휴대폰에서 화면을 내리다 지도가 대신 움직이는 일을 막습니다(두 손가락으로 움직임)
       locale: {
         "CooperativeGesturesHandler.WindowsHelpText": "Ctrl 을 누른 채 스크롤하면 지도가 확대돼요",
@@ -91,13 +99,13 @@ export default function SpotMap3D({ spots: all, className = "" }: { spots: Maybe
       const pin = document.createElement("div");
       pin.innerHTML = '<div class="jeju-pin" style="width:22px;height:22px"></div>';
       pin.title = spot.title;
-      const link = document.createElement("a");
-      link.href = `/spots/${spot.id}`;
-      link.textContent = `${spot.title} · 자세히`;
-      link.className = "font-semibold text-secondary underline";
+      const label = document.createElement(linkToDetail ? "a" : "span");
+      label.textContent = linkToDetail ? `${spot.title} · 자세히` : spot.title;
+      label.className = linkToDetail ? "font-semibold text-secondary underline" : "font-semibold";
+      if (label instanceof HTMLAnchorElement) label.href = `/spots/${spot.id}`;
       new Marker({ element: pin, anchor: "bottom" })
         .setLngLat([spot.lng, spot.lat])
-        .setPopup(new Popup({ offset: 24 }).setDOMContent(link))
+        .setPopup(new Popup({ offset: 24 }).setDOMContent(label))
         .addTo(map);
     }
     const bounds = boundsOf(spots);
@@ -105,7 +113,7 @@ export default function SpotMap3D({ spots: all, className = "" }: { spots: Maybe
     if (spots.length === 1) map.jumpTo({ center: [spots[0].lng, spots[0].lat], zoom: 12.5 });
 
     return () => map.remove(); // 화면을 떠나면 지도를 치웁니다(그래픽 메모리 반납)
-  }, [spots]);
+  }, [spots, linkToDetail]);
 
   return <div ref={box} className={`z-0 overflow-hidden ${className}`} aria-label="3D 지도" />;
 }

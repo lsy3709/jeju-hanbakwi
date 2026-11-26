@@ -1,6 +1,7 @@
 // 이 파일이 하는 일: 서버(FastAPI)와 통하는 유일한 문입니다.
 // 화면은 fetch 를 직접 부르지 않고 여기 함수만 씁니다. 새 서버 주소를 쓰려면 여기에 함수를 하나 더하세요.
 // 주소·응답 모양은 docs/api.md 를 따릅니다.
+import { resolveApiUrl } from "./apiUrl";
 import { spotsQuery } from "./format";
 import type {
   Itinerary,
@@ -15,7 +16,11 @@ import type {
   Weather,
 } from "./types";
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+// 서버에서 미리 그릴 때는 window 가 없어서 null 을 넘깁니다. 고르는 규칙은 lib/apiUrl.ts 에 있습니다.
+export const API_URL = resolveApiUrl(
+  process.env.NEXT_PUBLIC_API_URL,
+  typeof window === "undefined" ? null : window.location.hostname,
+);
 
 /** 서버가 오류를 돌려줬을 때(또는 서버에 닿지 못했을 때) 던지는 오류. */
 export class ApiError extends Error {

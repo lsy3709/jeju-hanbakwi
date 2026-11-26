@@ -30,7 +30,7 @@ export function metersPerPixel(zoom: number, lat: number): number {
 }
 
 /** 모델이 화면에서 늘 pixels 높이쯤으로 보이게 하려면 실제 높이를 몇 미터로 해야 하는지. */
-export function modelHeightMeters(zoom: number, lat: number, pixels = 90): number {
+export function modelHeightMeters(zoom: number, lat: number, pixels = 70): number {
   return metersPerPixel(zoom, lat) * pixels;
 }
 
