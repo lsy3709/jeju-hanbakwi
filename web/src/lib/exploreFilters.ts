@@ -16,13 +16,13 @@ export type ExploreState = {
   filters: SpotsParams;
 };
 
-/** 결과를 보여 주는 방식. "" 은 목록, "map" 은 평면 지도, "3d" 는 땅의 높낮이가 보이는 3D 지도. */
-export type ExploreView = "" | "map" | "3d";
+/** 결과를 보여 주는 방식. "" 은 목록, "map" 은 평면 지도, "3d" 는 땅의 높낮이가 보이는 3D 지도, "fantasy" 는 블렌더로 만든 판타지 지도. */
+export type ExploreView = "" | "map" | "3d" | "fantasy";
 
 /** URLSearchParams(또는 useSearchParams 의 값)처럼 get 만 있으면 됩니다. */
 type QueryReader = { get(name: string): string | null };
 
-/** 주소 쿼리(?q=&theme=&area=&category=&indoor=&view=map|3d) → 화면 상태. 빈 값은 필터에서 뺍니다. */
+/** 주소 쿼리(?q=&theme=&area=&category=&indoor=&view=map|3d|fantasy) → 화면 상태. 빈 값은 필터에서 뺍니다. */
 export function parseExploreQuery(params: QueryReader): ExploreState {
   // "??" 는 앞의 값이 null 이면 오른쪽 값을 쓰는 문법입니다(쿼리에 항목이 없으면 빈 글자).
   const q = params.get("q") ?? "";
@@ -31,7 +31,7 @@ export function parseExploreQuery(params: QueryReader): ExploreState {
   const category = params.get("category") ?? "";
   const indoorText = params.get("indoor") ?? "";
   const viewText = params.get("view");
-  const view: ExploreView = viewText === "map" || viewText === "3d" ? viewText : "";
+  const view: ExploreView = viewText === "map" || viewText === "3d" || viewText === "fantasy" ? viewText : "";
   return {
     q,
     theme,

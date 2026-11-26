@@ -20,8 +20,8 @@ import '../widgets/spot_map_3d.dart';
 import '../widgets/state_views.dart';
 import 'spot_detail_screen.dart';
 
-/// 보는 방식: 목록 · 지도(앱이 그림) · 3D 지도(웹 화면을 띄움)
-enum _View { list, map, map3d }
+/// 보는 방식: 목록 · 지도(앱이 그림) · 3D 지도 · 판타지 지도(둘은 웹 화면을 띄움)
+enum _View { list, map, map3d, fantasy }
 
 /// 탐색 화면: 검색바 · 테마 칩 · 필터 → 카드 그리드 ↔ 지도 ↔ 3D 지도, 20개씩 "더 보기".
 /// 검색 조건과 목록은 [ExploreController] 가 들고 있고, 이 화면은 그것을 그리기만 합니다.
@@ -158,6 +158,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   ButtonSegment(value: _View.list, icon: Icon(Icons.grid_view), label: Text('목록')),
                   ButtonSegment(value: _View.map, icon: Icon(Icons.map_outlined), label: Text('지도')),
                   ButtonSegment(value: _View.map3d, icon: Icon(Icons.terrain), label: Text('3D')),
+                  ButtonSegment(value: _View.fantasy, icon: Icon(Icons.auto_stories_outlined), label: Text('판타지')),
                 ],
                 selected: {_view},
                 onSelectionChanged: (s) => setState(() => _view = s.first),
@@ -172,9 +173,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
   // 상태에 따라 하나만 고릅니다: 로딩 → 오류 → 비어 있음 → 지도 → 카드 목록. 위에서부터 차례로 확인해 먼저 해당하는 것을 돌려줍니다.
   Widget _body() {
     final c = _controller;
-    if (_view == _View.map3d) {
-      // 3D 지도는 웹에서 만든 화면을 띄웁니다. 고른 필터를 주소에 실어 보내면 웹이 같은 조건으로 다시 찾습니다.
-      final url = map3dUrl(Config.webUrl, q: c.query, theme: c.theme, area: c.area, category: c.category, indoor: c.indoor);
+    if (_view == _View.map3d || _view == _View.fantasy) {
+      // 3D 지도와 판타지 지도는 웹에서 만든 화면을 띄웁니다. 고른 필터를 주소에 실어 보내면 웹이 같은 조건으로 다시 찾습니다.
+      final url = map3dUrl(Config.webUrl, q: c.query, theme: c.theme, area: c.area, category: c.category, indoor: c.indoor, fantasy: _view == _View.fantasy);
       return Padding(
         padding: const EdgeInsets.all(16),
         child: ClipRRect(borderRadius: BorderRadius.circular(AppRadius.card), child: SpotMap3d(url: url)),

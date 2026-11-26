@@ -9,6 +9,7 @@ String map3dUrl(
   String? area,
   String? category,
   bool? indoor,
+  bool fantasy = false,
 }) {
   final query = <String, String>{
     if (q.trim().isNotEmpty) 'q': q.trim(),
@@ -16,6 +17,8 @@ String map3dUrl(
     if (area != null && area.isNotEmpty) 'area': area,
     if (category != null && category.isNotEmpty) 'category': category,
     if (indoor != null) 'indoor': '$indoor',
+    // 블렌더로 만든 판타지 지도를 보여 달라는 표시(웹의 /embed/map3d 가 읽습니다)
+    if (fantasy) 'style': 'fantasy',
   };
   final base = Uri.parse('$webUrl/embed/map3d');
   // 쿼리가 없을 때 주소 끝에 `?` 만 남지 않게 나눠 만듭니다.
