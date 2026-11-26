@@ -8,6 +8,21 @@
 - 사진이 있는 곳 55 / 전체 68. 알맞은 공개 사진을 찾지 못한 곳은 대체 그림으로 나옵니다.
 - 내 주제로 바꿀 때는 직접 찍은 사진이나 TourAPI 사진(한국관광공사, 공공누리 조건 확인)을 쓰세요.
 
+## 편의 시설의 분류별 대표 사진
+
+편의 시설(숙소 · 게스트하우스 · 병원 · 약국 · 편의점 · 교통)은 곳마다 사진을 구할 수 없어, 분류마다 한 장을 함께 씁니다. 파일은 `api/static/photos/places/` 에 있습니다(가로 960px 이하, 원본을 고치지 않고 크기만 줄인 것). 그 곳의 실제 모습이 아니라 분류를 대표하는 예시 사진입니다. 자세한 것은 [places.md](places.md).
+
+| 파일 | 분류 | 사진의 내용 | 저작자 | 라이선스 | 원본 |
+|---|---|---|---|---|---|
+| `places/lodging.jpg` | 숙소 | 제주의 호텔 건물 | Abasaa | 퍼블릭 도메인 | [보기](https://commons.wikimedia.org/wiki/File:Ramada_Plaza_Jeju_Hotel.JPG) |
+| `places/guesthouse.jpg` | 게스트하우스 | 한옥 게스트하우스 | Korea.net / Korean Culture and Information Service (Jeon Han) | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:KOCIS_Korea_Hanok_GuestHouse_01_(7596121988).jpg) |
+| `places/hospital.jpg` | 병원 | 제주의 병원 건물 | thddbwnd | CC BY 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Jeju_National_University_Hospital_2.JPG) |
+| `places/pharmacy.jpg` | 약국 | 약국의 진열창 | Andrewssi2 | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:YakPharmacy.jpg) |
+| `places/store.jpg` | 편의점 | 편의점 입구 | LandAndTree | CC0 | [보기](https://commons.wikimedia.org/wiki/File:GS25_Okcheon_Museong_Branch_20240730.jpg) |
+| `places/transit.jpg` | 교통 | 제주 시내의 버스 정류장과 버스 | 제주특별자치도청 대중교통과 | 공공누리 제1유형(출처 표시) | [보기](https://commons.wikimedia.org/wiki/File:Island_Bus_Stop_and_Double-door_Bus_in_Jeju_City_Korea.jpg) |
+
+## 관광지 사진
+
 | 파일 | 관광지 | 저작자 | 라이선스 | 원본 |
 |---|---|---|---|---|
 | `S001.jpg` | 성산일출봉 | Korea.net / Korean Culture and Information Service | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Seongsan_Ilchulbong_from_the_air.jpg) |

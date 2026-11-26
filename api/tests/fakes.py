@@ -7,6 +7,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from constants import PLACE_CATEGORIES
 from transform import to_spot_row
 
 SAMPLE = Path(__file__).parent.parent / "data" / "sample_spots.json"
@@ -39,6 +40,8 @@ class FakeRepo:
             items = [s for s in items if s["area"] == area]
         if category:
             items = [s for s in items if s["category"] == category]
+        elif not include_hidden:
+            items = [s for s in items if s["category"] not in PLACE_CATEGORIES]
         if indoor is not None:
             items = [s for s in items if s["indoor"] == indoor]
         if not include_hidden:
@@ -48,6 +51,16 @@ class FakeRepo:
         if after_id is None:
             return items[:size], len(items)
         return [s for s in items if s["id"] > after_id][:size], None
+
+    def upsert_spots(self, rows):
+        """같은 원본(source, source_id)이 있으면 고치고, 없으면 새 번호로 넣습니다."""
+        for row in rows:
+            old = next((s for s in self.spots if (s["source"], s["source_id"]) == (row["source"], row["source_id"])), None)
+            if old:
+                old.update(row)
+            else:
+                self.spots.append({"id": max((s["id"] for s in self.spots), default=0) + 1, "hidden": False, **row})
+        return len(rows)
 
     def get_spot(self, spot_id, include_hidden=False):
         return next((s for s in self.spots if s["id"] == spot_id and (include_hidden or not s["hidden"])), None)

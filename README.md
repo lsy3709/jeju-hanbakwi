@@ -35,6 +35,7 @@
 | [일차별 브랜치](docs/steps.md) | `step-1` ~ `step-7` 쓰는 방법 |
 | [체크리스트](docs/CHECKLIST.md) | 무엇을 확인했고 무엇이 남았는지 |
 | [코드 분석 기록](docs/code-analysis-2026-11-20.md) | 고친 것, 보류·기각한 것과 이유 |
+| [편의 시설 데이터](docs/places.md) | 숙소 · 게스트하우스 · 병원 · 약국 · 편의점 · 교통 120곳 — 넣는 방법, 지켜지는 규칙, 출처와 한계 |
 | [사진 출처](docs/photo-credits.md) | 샘플 사진의 저작자와 라이선스 |
 
 ## 일차별 브랜치
@@ -202,4 +203,4 @@ python -m tools.seed_demo --token ... --clear         # 내 찜과 일정 모두
 
 ## 쓰는 외부 서비스 (모두 무료 등급)
 
-한국관광공사 TourAPI(공공데이터포털) · Open-Meteo · OpenStreetMap · AWS Terrain Tiles(3D 지도의 높이 자료) · Google Gemini · Supabase · Vercel
+한국관광공사 TourAPI(공공데이터포털) · Open-Meteo · OpenStreetMap(지도, 편의 시설의 위치 자료) · AWS Terrain Tiles(3D 지도의 높이 자료) · Google Gemini · Supabase · Vercel

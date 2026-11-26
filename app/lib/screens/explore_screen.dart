@@ -136,7 +136,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               FilterMenu(
                 label: '분류',
                 value: c.category,
-                options: c.meta?.categories ?? const [],
+                options: c.meta?.allCategories ?? const [],
                 onChanged: c.setCategory,
               ),
               // <bool?> 는 선택 값이 true / false / null(전체) 중 하나라는 뜻입니다.

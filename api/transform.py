@@ -59,6 +59,71 @@ CORRECTIONS: dict[str, dict] = {
 }
 
 
+# 편의 시설의 분류별 대표 사진. 곳마다 사진을 구하기 어려워 분류마다 한 장을 함께 씁니다.
+# 파일은 api/static/photos/places/ 에 있고(우리 서버가 내줌), 출처는 docs/photo-credits.md 에도 적혀 있습니다.
+_COMMONS = "https://commons.wikimedia.org/wiki/File:"
+PLACE_PHOTOS: dict[str, dict] = {
+    "숙소": {"file": "places/lodging.jpg", "credit": "Abasaa · 퍼블릭 도메인 · Wikimedia Commons",
+             "source_url": _COMMONS + "Ramada_Plaza_Jeju_Hotel.JPG"},
+    "게스트하우스": {"file": "places/guesthouse.jpg",
+                   "credit": "Korea.net / Korean Culture and Information Service · CC BY-SA 2.0 · Wikimedia Commons",
+                   "source_url": _COMMONS + "KOCIS_Korea_Hanok_GuestHouse_01_(7596121988).jpg"},
+    "병원": {"file": "places/hospital.jpg", "credit": "thddbwnd · CC BY 3.0 · Wikimedia Commons",
+             "source_url": _COMMONS + "Jeju_National_University_Hospital_2.JPG"},
+    "약국": {"file": "places/pharmacy.jpg", "credit": "Andrewssi2 · CC BY-SA 3.0 · Wikimedia Commons",
+             "source_url": _COMMONS + "YakPharmacy.jpg"},
+    "편의점": {"file": "places/store.jpg", "credit": "LandAndTree · CC0 · Wikimedia Commons",
+               "source_url": _COMMONS + "GS25_Okcheon_Museong_Branch_20240730.jpg"},
+    "교통": {"file": "places/transit.jpg", "credit": "제주특별자치도청 대중교통과 · 공공누리 제1유형 · Wikimedia Commons",
+             "source_url": _COMMONS + "Island_Bus_Stop_and_Double-door_Bus_in_Jeju_City_Korea.jpg"},
+}
+# 분류별 한 줄 소개의 끝말과 실내 여부
+_PLACE_WORDS = {"숙소": ("숙소", True), "게스트하우스": ("게스트하우스", True), "병원": ("병원", True),
+                "약국": ("약국", True), "편의점": ("편의점", True), "교통": ("교통 시설", False)}
+
+
+def area_by_position(lat: float, lng: float) -> str:
+    """좌표로 지역을 정합니다. 공개 지도 자료에는 주소가 없는 곳이 많아, 주소 대신 위치로 나눕니다.
+
+    서쪽 끝(한림 · 대정)과 동쪽 끝(구좌 · 성산)을 먼저 가르고, 가운데는 한라산을 기준으로 남북을 나눕니다.
+    """
+    if lng < 126.40:
+        return "서부"
+    if lng > 126.75:
+        return "동부"
+    return "제주시" if lat >= 33.38 else "서귀포시"
+
+
+def to_place_row(raw: dict) -> dict | None:
+    """편의 시설 한 건(tools/make_sample_places.py 가 만든 모양) → spots 한 줄. 쓸 수 없으면 None."""
+    category = raw.get("category")
+    title = _text(raw, "title")
+    lat, lng = raw.get("lat"), raw.get("lng")
+    if category not in PLACE_PHOTOS or not title or lat is None or lng is None:
+        return None
+    word, indoor = _PLACE_WORDS[category]
+    area = raw.get("area") or area_by_position(lat, lng)
+    photo = PLACE_PHOTOS[category]
+    phone = _text(raw, "phone")
+    return {
+        "source": "osm",  # OpenStreetMap
+        "source_id": _text(raw, "id"),
+        "title": title,
+        "category": category,
+        "area": area,
+        "address": _text(raw, "address"),
+        "lat": float(lat),
+        "lng": float(lng),
+        "image_url": "/photos/" + photo["file"],
+        "image_credit": photo["credit"],
+        "image_source_url": photo["source_url"],
+        "overview": f"{area}에 있는 {word}입니다." + (f" 전화 {phone}" if phone else "") + " 사진은 분류를 대표하는 예시 사진입니다.",
+        "one_liner": f"{area}의 {word}",
+        "theme_tags": [],
+        "indoor": indoor,
+    }
+
+
 def apply_corrections(row: dict, corrections: dict[str, dict] = CORRECTIONS) -> dict:
     """표에 이름이 있으면 그 줄을 고친 새 사전을 돌려줍니다. 없으면 그대로."""
     change = corrections.get(row["title"])

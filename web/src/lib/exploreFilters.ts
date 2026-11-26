@@ -2,7 +2,7 @@
 // 쓰는 곳: app/explore/page.tsx. 탐색 화면의 필터는 주소의 쿼리(?theme=바다)에 담깁니다. 그러면 새로고침·뒤로 가기·링크 공유를 해도 같은 화면이 나옵니다.
 // 이 파일은 주소 쿼리 → 화면 상태, 화면 상태 → 새 주소로 바꾸는 계산만 합니다. 테스트는 exploreFilters.test.ts 입니다.
 import { buildQuery, spotsQuery } from "./format";
-import type { SpotsParams } from "./types";
+import type { Meta, SpotsParams } from "./types";
 
 /** 주소 쿼리를 읽어 낸 결과. 입력칸·버튼의 선택 표시에 쓰는 글자(q, theme …)와 서버에 보낼 filters 를 함께 둡니다. */
 export type ExploreState = {
@@ -66,6 +66,11 @@ export function exploreHref(pathname: string, state: ExploreState, changes: Reco
     ...changes,
   };
   return `${pathname}${buildQuery(next)}`;
+}
+
+/** 분류 드롭다운의 선택지: 여행지 분류 뒤에 편의 시설 분류(숙소 · 병원 · 약국 …)를 잇습니다. */
+export function categoryOptions(meta: Meta | null): string[] {
+  return meta ? [...meta.categories, ...(meta.place_categories ?? [])] : [];
 }
 
 /** 걸려 있는 필터가 하나라도 있는지("필터 지우기" 버튼을 보일지 정할 때). */
