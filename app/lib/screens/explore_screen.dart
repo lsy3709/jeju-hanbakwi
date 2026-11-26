@@ -153,12 +153,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
               SegmentedButton<_View>(
                 showSelectedIcon: false,
-                style: const ButtonStyle(visualDensity: VisualDensity.compact),
+                // 네 칸이 휴대폰 폭에 한 줄로 들어가게 안쪽 여백을 줄이고, 글자가 두 줄로 꺾이지 않게 합니다.
+                style: const ButtonStyle(
+                  visualDensity: VisualDensity.compact,
+                  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 8)),
+                ),
                 segments: const [
-                  ButtonSegment(value: _View.list, icon: Icon(Icons.grid_view), label: Text('목록')),
-                  ButtonSegment(value: _View.map, icon: Icon(Icons.map_outlined), label: Text('지도')),
-                  ButtonSegment(value: _View.map3d, icon: Icon(Icons.terrain), label: Text('3D')),
-                  ButtonSegment(value: _View.fantasy, icon: Icon(Icons.auto_stories_outlined), label: Text('판타지')),
+                  ButtonSegment(value: _View.list, icon: Icon(Icons.grid_view, size: 18), label: Text('목록', softWrap: false)),
+                  ButtonSegment(value: _View.map, icon: Icon(Icons.map_outlined, size: 18), label: Text('지도', softWrap: false)),
+                  ButtonSegment(value: _View.map3d, icon: Icon(Icons.terrain, size: 18), label: Text('3D', softWrap: false)),
+                  ButtonSegment(value: _View.fantasy, icon: Icon(Icons.auto_stories_outlined, size: 18), label: Text('판타지', softWrap: false)),
                 ],
                 selected: {_view},
                 onSelectionChanged: (s) => setState(() => _view = s.first),
