@@ -303,6 +303,6 @@ GET /spots?size=20&cursor=60    → { "items": [61번 ~ 68번], "next_cursor": n
 
 - `GET /admin/spots?q=&hidden=&size=20&cursor=` → `{ "items": [ AdminSpot, ... ], "next_cursor": 20, "total": 68 }`. 숨긴 곳도 함께 옵니다. `hidden=true` 면 숨긴 곳만, `hidden=false` 면 보이는 곳만.
 - AdminSpot 은 Spot 에 `hidden`(숨김 여부)과 `source`(`sample` · `tourapi` · `admin`)가 더해진 모양입니다.
-- `POST /admin/spots` → `201` AdminSpot. 필수는 `title`(1~60자), `category`, `area`. 선택은 `address`, `one_liner`, `overview`, `theme_tags`(5개까지), `indoor`, `lat`, `lng`, `image_url`(`https://` 로 시작).
-- `PATCH /admin/spots/{id}` → 고친 뒤의 AdminSpot. 보낸 칸만 고칩니다. 숨기려면 `{ "hidden": true }`, 다시 보이려면 `{ "hidden": false }`. 없는 번호면 `404`, 보낸 칸이 없으면 `400`.
+- `POST /admin/spots` → `201` AdminSpot. 필수는 `title`(1~60자), `category`, `area`. 선택은 `address`, `one_liner`, `overview`, `theme_tags`(5개까지), `indoor`, `lat`, `lng`, `image_url`(`https://` 로 시작하거나 서버 사진 폴더의 `/photos/파일.jpg`), `image_credit`(200자까지, 저작자 · 라이선스), `image_source_url`(`https://`).
+- `PATCH /admin/spots/{id}` → 고친 뒤의 AdminSpot. 보낸 칸만 고칩니다. 숨기려면 `{ "hidden": true }`, 다시 보이려면 `{ "hidden": false }`. 사진도 `image_url` · `image_credit` · `image_source_url` 로 바꿉니다(받는 모양은 추가와 같음, 엉뚱한 주소는 `422`). 없는 번호면 `404`, 보낸 칸이 없으면 `400`.
 - `category` · `area` · `theme_tags` 는 `/meta` 의 선택지 안에서만 받습니다. 밖의 값이면 `422`.
