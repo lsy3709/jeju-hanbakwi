@@ -103,6 +103,10 @@ def update_spot(spot_id: int, body: SpotPatch, request: Request, repo=Depends(ge
         raise HTTPException(status_code=422, detail="빈 값(null)으로는 고칠 수 없습니다.")
     check_choices(changes.get("category"), changes.get("area"), changes.get("theme_tags"))
     # 값이 null 인 칸을 허용하면 필수 칸(이름 등)이 비어 버리므로 위에서 막았습니다. 숨김 해제는 false 를 보냅니다.
+    # 출처를 빈 글자로 보냈으면 "출처 없음"(null)으로 저장합니다. 화면은 null 이면 출처 줄을 그리지 않습니다.
+    for key in ("image_credit", "image_source_url"):
+        if changes.get(key) == "":
+            changes[key] = None
     row = repo.update_spot(spot_id, changes)
     if row is None:
         raise HTTPException(status_code=404, detail="관광지를 찾을 수 없습니다.")

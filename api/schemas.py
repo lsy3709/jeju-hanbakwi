@@ -225,8 +225,9 @@ class SpotPatch(BaseModel):
     hidden: bool | None = None
     # 사진도 바꿀 수 있습니다. 여러 곳이 같은 사진을 쓰고 있을 때 한 곳씩 다른 사진으로 고치는 용도입니다.
     image_url: str | None = Field(default=None, max_length=300, pattern=PHOTO_URL)
+    # 출처 두 칸은 빈 글자("")로 보내면 지워집니다. 사진을 바꿀 때 옛 사진의 출처가 남지 않게 하려는 것입니다.
     image_credit: str | None = Field(default=None, max_length=200)
-    image_source_url: str | None = Field(default=None, max_length=300, pattern=r"^https://")
+    image_source_url: str | None = Field(default=None, max_length=300, pattern=r"^(https://\S+)?$")
 
 
 class UsageSummary(BaseModel):

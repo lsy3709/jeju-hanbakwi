@@ -257,3 +257,14 @@ def test_admin_rejects_bad_photo_address(client, login):
     assert client.patch("/admin/spots/1", json={"image_source_url": "javascript:alert(1)"}).status_code == 422
     assert client.patch("/admin/spots/1", json={"image_credit": "가" * 201}).status_code == 422
     assert client.patch("/admin/spots/1", json={"image_url": None}).status_code == 422   # 빈 값으로 지우기는 막음(기존 규칙)
+
+
+def test_admin_can_clear_photo_credit_when_replacing_the_photo(client, login):
+    """사진을 바꾸면서 출처를 비워 보내면("") 옛 사진의 출처가 지워집니다(남의 이름이 새 사진에 붙지 않게)."""
+    login(ADMIN)
+    client.patch("/admin/spots/1", json={"image_url": "https://x.kr/old.jpg", "image_credit": "옛 사람 · CC0",
+                                         "image_source_url": "https://x.kr/old-page"})
+    changed = client.patch("/admin/spots/1", json={"image_url": "https://x.kr/new.jpg", "image_credit": "", "image_source_url": ""})
+    assert changed.status_code == 200
+    body = changed.json()
+    assert body["image_url"] == "https://x.kr/new.jpg" and body["image_credit"] is None and body["image_source_url"] is None
