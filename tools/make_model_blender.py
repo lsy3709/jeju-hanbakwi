@@ -43,27 +43,31 @@ def cylinder(name, location, radius, depth, top_scale=1.0):
 
 def build():
     parts = [
-        cylinder("받침", (0, 0, 0.03), 0.30, 0.06),
-        sphere("몸통", (0, 0, 0.33), (0.27, 0.24, 0.30)),
-        sphere("머리", (0, 0, 0.70), (0.22, 0.21, 0.19)),
-        cylinder("모자 챙", (0, 0, 0.84), 0.27, 0.035),
-        cylinder("모자", (0, 0, 0.925), 0.19, 0.15, top_scale=0.75),
-        # 얼굴: 돌하르방의 특징인 큰 눈과 뭉툭한 코
-        sphere("왼눈", (-0.085, -0.185, 0.73), (0.05, 0.03, 0.04)),
-        sphere("오른눈", (0.085, -0.185, 0.73), (0.05, 0.03, 0.04)),
-        sphere("코", (0, -0.205, 0.67), (0.04, 0.04, 0.06)),
+        cylinder("받침", (0, 0, 0.025), 0.29, 0.05),
+        # 몸통은 위로 갈수록 살짝 좁아지는 기둥, 어깨는 둥글게
+        cylinder("몸통", (0, 0, 0.29), 0.25, 0.48, top_scale=0.86),
+        sphere("어깨", (0, 0, 0.52), (0.215, 0.20, 0.10)),
+        sphere("머리", (0, 0, 0.67), (0.20, 0.19, 0.17)),
+        # 벙거지 모자: 납작한 챙 위에 둥근 머리 부분
+        cylinder("모자 챙", (0, 0, 0.805), 0.235, 0.03),
+        sphere("모자", (0, 0, 0.83), (0.19, 0.19, 0.17)),
+        # 얼굴: 돌하르방의 특징인 툭 튀어나온 큰 눈, 넓적한 코, 다문 입
+        sphere("왼눈", (-0.085, -0.165, 0.71), (0.058, 0.035, 0.045)),
+        sphere("오른눈", (0.085, -0.165, 0.71), (0.058, 0.035, 0.045)),
+        sphere("코", (0, -0.185, 0.645), (0.055, 0.045, 0.075)),
+        sphere("입", (0, -0.178, 0.575), (0.075, 0.02, 0.014)),
         # 배 위에 얹은 두 손(한 손은 위, 한 손은 아래)
-        sphere("왼손", (-0.10, -0.215, 0.40), (0.11, 0.04, 0.035)),
-        sphere("오른손", (0.10, -0.215, 0.31), (0.11, 0.04, 0.035)),
+        sphere("왼손", (-0.07, -0.225, 0.40), (0.14, 0.035, 0.04)),
+        sphere("오른손", (0.07, -0.235, 0.28), (0.14, 0.035, 0.04)),
     ]
-    parts[-2].rotation_euler = (0, math.radians(-15), 0)
-    parts[-1].rotation_euler = (0, math.radians(15), 0)
+    parts[-2].rotation_euler = (0, math.radians(-12), 0)
+    parts[-1].rotation_euler = (0, math.radians(12), 0)
 
     # 여러 도형을 하나로 합칩니다(화면에서는 모두 고르고 Ctrl+J).
     bpy.ops.object.select_all(action="DESELECT")
     for part in parts:
         part.select_set(True)
-    bpy.context.view_layer.objects.active = parts[1]
+    bpy.context.view_layer.objects.active = parts[1]  # 몸통을 기준으로 합칩니다
     bpy.ops.object.join()
     statue = bpy.context.object
     statue.name = "dolhareubang"
@@ -74,7 +78,7 @@ def build():
     basalt = bpy.data.materials.new("basalt")
     basalt.use_nodes = True
     shader = basalt.node_tree.nodes["Principled BSDF"]
-    shader.inputs["Base Color"].default_value = (0.20, 0.21, 0.23, 1.0)
+    shader.inputs["Base Color"].default_value = (0.11, 0.115, 0.13, 1.0)
     shader.inputs["Roughness"].default_value = 0.95
     shader.inputs["Metallic"].default_value = 0.0
     statue.data.materials.clear()
