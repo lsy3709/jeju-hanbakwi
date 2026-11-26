@@ -159,7 +159,7 @@ Authentication → Sign In / Providers → **Google** 을 눌러 창을 열고:
 Vercel 에는 Flutter 가 없어서, 내 PC 에서 빌드한 결과 폴더를 올립니다.
 
 ```bash
-flutter build web --dart-define=API_URL=https://<서버 주소> --dart-define=SUPABASE_URL=https://<프로젝트>.supabase.co --dart-define=SUPABASE_ANON_KEY=<공개 키>
+flutter build web --dart-define=API_URL=https://<서버 주소> --dart-define=WEB_URL=https://<웹 주소> --dart-define=SUPABASE_URL=https://<프로젝트>.supabase.co --dart-define=SUPABASE_ANON_KEY=<공개 키>
 ```
 
 ```bash

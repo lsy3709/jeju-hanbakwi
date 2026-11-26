@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../app_scope.dart';
 import '../brand.dart';
+import '../config.dart';
 import '../controllers/explore_controller.dart';
+import '../map3d.dart';
 import '../models/spot.dart';
 import '../theme.dart';
 import '../widgets/filter_menu.dart';
@@ -10,10 +12,14 @@ import '../widgets/load_more_footer.dart';
 import '../widgets/login_prompt.dart';
 import '../widgets/spot_card.dart';
 import '../widgets/spot_map.dart';
+import '../widgets/spot_map_3d.dart';
 import '../widgets/state_views.dart';
 import 'spot_detail_screen.dart';
 
-/// 탐색 화면: 검색바 · 테마 칩 · 필터 → 카드 그리드 ↔ 지도, 20개씩 "더 보기".
+/// 보는 방식: 목록 · 지도(앱이 그림) · 3D 지도(웹 화면을 띄움)
+enum _View { list, map, map3d }
+
+/// 탐색 화면: 검색바 · 테마 칩 · 필터 → 카드 그리드 ↔ 지도 ↔ 3D 지도, 20개씩 "더 보기".
 /// 검색 조건과 목록은 [ExploreController] 가 들고 있고, 이 화면은 그것을 그리기만 합니다.
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -24,7 +30,7 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final _search = TextEditingController();
-  bool _mapMode = false; // 목록 ↔ 지도는 화면 모양일 뿐이라 컨트롤러가 아닌 여기에 둡니다.
+  _View _view = _View.list; // 보는 방식은 화면 모양일 뿐이라 컨트롤러가 아닌 여기에 둡니다.
 
   late final ExploreController _controller;
   late final ShellController _shell;
@@ -134,15 +140,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 selected: {c.indoor},
                 onSelectionChanged: (s) => c.setIndoor(s.first),
               ),
-              SegmentedButton<bool>(
+              SegmentedButton<_View>(
                 showSelectedIcon: false,
                 style: const ButtonStyle(visualDensity: VisualDensity.compact),
                 segments: const [
-                  ButtonSegment(value: false, icon: Icon(Icons.grid_view), label: Text('목록')),
-                  ButtonSegment(value: true, icon: Icon(Icons.map_outlined), label: Text('지도')),
+                  ButtonSegment(value: _View.list, icon: Icon(Icons.grid_view), label: Text('목록')),
+                  ButtonSegment(value: _View.map, icon: Icon(Icons.map_outlined), label: Text('지도')),
+                  ButtonSegment(value: _View.map3d, icon: Icon(Icons.terrain), label: Text('3D')),
                 ],
-                selected: {_mapMode},
-                onSelectionChanged: (s) => setState(() => _mapMode = s.first),
+                selected: {_view},
+                onSelectionChanged: (s) => setState(() => _view = s.first),
               ),
             ],
           ),
@@ -153,12 +160,20 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   Widget _body() {
     final c = _controller;
+    if (_view == _View.map3d) {
+      // 3D 지도는 웹에서 만든 화면을 띄웁니다. 고른 필터를 주소에 실어 보내면 웹이 같은 조건으로 다시 찾습니다.
+      final url = map3dUrl(Config.webUrl, q: c.query, theme: c.theme, area: c.area, category: c.category, indoor: c.indoor);
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: ClipRRect(borderRadius: BorderRadius.circular(AppRadius.card), child: SpotMap3d(url: url)),
+      );
+    }
     if (c.loading) return const LoadingView();
     if (c.error != null) return ErrorView(message: c.error!, onRetry: c.reload);
     if (c.items.isEmpty) {
       return const EmptyView(message: '조건에 맞는 곳이 없어요.\n검색어나 필터를 바꿔 보세요.');
     }
-    if (_mapMode) {
+    if (_view == _View.map) {
       return Padding(
         padding: const EdgeInsets.all(16),
         child: ClipRRect(
