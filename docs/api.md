@@ -14,6 +14,11 @@
 - `GET /spots` 는 `category` 를 주지 않으면 편의 시설을 **빼고** 돌려줍니다. `category=약국` 처럼 편의 시설 분류를 주면 그 분류만 돌려줍니다. 응답 모양은 여행지와 같습니다.
 - `/status` 의 `spots` 는 여행지 수입니다(편의 시설은 세지 않음). 자세한 것은 [places.md](places.md).
 
+## 추천 식당 분류와 근처 추천 식당 (2026-11-26 추가)
+
+- `GET /meta` 응답에 `food_categories`(한식 · 해산물 · 고기구이 · 국수 · 카페)가 더해졌습니다. 편의 시설처럼 `GET /spots?category=국수` 로 골랐을 때만 목록에 나옵니다.
+- `GET /spots/{id}/restaurants?size=4` — 그 장소에서 직선 거리가 가까운 추천 식당을 가까운 순으로 돌려줍니다. `size` 는 1 ~ 10(기본 5). 응답은 Spot 모양에 `distance_km`(km, 소수 한 자리)가 붙은 목록입니다. 장소가 없으면 404, 식당 데이터가 없거나 장소에 위치가 없으면 빈 목록입니다. 자세한 것은 [restaurants.md](restaurants.md).
+
 ## 자료 모양
 
 ### Spot (관광지)

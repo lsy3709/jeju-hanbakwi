@@ -1,11 +1,12 @@
 "use client";
 
-// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 글 → 주소 → 지도 → 버튼 2개
+// 상세: 큰 사진 → 분류·지역 → 제목 → 한 줄 소개 → 태그 → 실내/실외 → 소개 글 → 주소 → 지도 → 버튼 2개 → 근처 추천 식당
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback } from "react";
 import { MapPin, Sparkles } from "lucide-react";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { NearbyRestaurants } from "@/components/NearbyRestaurants";
 import { PhotoCredit } from "@/components/PhotoCredit";
 import { SpotImage } from "@/components/SpotImage";
 import { IndoorBadge } from "@/components/SpotCard";
@@ -84,6 +85,8 @@ export default function SpotDetailPage() {
           이 장소로 일정 짜기
         </Link>
       </div>
+
+      <NearbyRestaurants spotId={spot.id} />
     </article>
   );
 }

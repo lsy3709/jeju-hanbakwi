@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildQuery, dayTitle, formatDate, formatSavedAt, photoCreditText, pickFallbackTone, spotsQuery, todayString, weatherText } from "./format";
+import { buildQuery, dayTitle, distanceText, formatDate, formatSavedAt, photoCreditText, pickFallbackTone, spotsQuery, todayString, weatherText } from "./format";
 
 describe("photoCreditText", () => {
   it("사진과 출처가 있으면 '사진: …' 글자를 만든다", () => {
@@ -66,5 +66,19 @@ describe("weatherText", () => {
   });
   it("전부 null 이면 빈 문자열", () => {
     expect(weatherText({ temp_min: null, temp_max: null, rain_prob: null })).toBe("");
+  });
+});
+
+describe("distanceText (거리 표시)", () => {
+  it("100m 안쪽은 바로 근처", () => {
+    expect(distanceText(0)).toBe("바로 근처");
+  });
+  it("1km 안쪽은 미터로", () => {
+    expect(distanceText(0.3)).toBe("약 300m");
+    expect(distanceText(0.9)).toBe("약 900m");
+  });
+  it("1km 부터는 킬로미터로", () => {
+    expect(distanceText(1)).toBe("약 1.0km");
+    expect(distanceText(12.34)).toBe("약 12.3km");
   });
 });

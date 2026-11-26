@@ -71,6 +71,24 @@ function Explore() {
         </div>
       )}
 
+      {/* 추천 식당: 한식 · 해산물 · 고기구이 · 국수 · 카페. 편의 시설처럼 누르면 그 분류만 보여 줍니다. */}
+      {(meta.data?.food_categories?.length ?? 0) > 0 && (
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="추천 식당">
+          <span className="text-sm text-muted">추천 식당</span>
+          {meta.data?.food_categories?.map((name) => (
+            <button
+              key={name}
+              type="button"
+              aria-pressed={category === name}
+              onClick={() => update({ category: category === name ? "" : name })}
+              className={chip(category === name)}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center gap-3">
         <FilterSelect label="지역" value={area} options={meta.data?.areas ?? []} onChange={(v) => update({ area: v })} />
         <FilterSelect label="분류" value={category} options={categoryOptions(meta.data)} onChange={(v) => update({ category: v })} />

@@ -74,6 +74,12 @@ class ApiClient {
 
   Future<Spot> getSpot(int id) async => Spot.fromJson(await _get('/spots/$id') as Map<String, dynamic>);
 
+  /// 이 장소에서 가까운 추천 식당(가까운 순).
+  Future<List<NearbySpot>> getNearbyRestaurants(int id, {int size = 4}) async {
+    final json = await _get('/spots/$id/restaurants', query: {'size': '$size'}) as List;
+    return json.map((e) => NearbySpot.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
   Future<Weather> getWeather() async => Weather.fromJson(await _get('/weather') as Map<String, dynamic>);
 
   Future<PlanResult> plan({

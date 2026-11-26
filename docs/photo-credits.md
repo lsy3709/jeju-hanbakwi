@@ -21,6 +21,18 @@
 | `places/store.jpg` | 편의점 | 편의점 입구 | LandAndTree | CC0 | [보기](https://commons.wikimedia.org/wiki/File:GS25_Okcheon_Museong_Branch_20240730.jpg) |
 | `places/transit.jpg` | 교통 | 제주 시내의 버스 정류장과 버스 | 제주특별자치도청 대중교통과 | 공공누리 제1유형(출처 표시) | [보기](https://commons.wikimedia.org/wiki/File:Island_Bus_Stop_and_Double-door_Bus_in_Jeju_City_Korea.jpg) |
 
+## 추천 식당의 분류별 대표 사진
+
+추천 식당(한식 · 해산물 · 고기구이 · 국수 · 카페)도 분류마다 한 장을 함께 씁니다. 파일은 `api/static/photos/places/food_*.jpg` 입니다(800×600 으로 가운데를 잘라 줄인 것). 그 식당의 실제 모습이 아니라 분류를 대표하는 예시 사진입니다. 자세한 것은 [restaurants.md](restaurants.md).
+
+| 파일 | 분류 | 사진 | 저작자 | 라이선스 | 원본 |
+|---|---|---|---|---|---|
+| `places/food_korean.jpg` | 한식 | 한정식 상차림 | egg (Hong, Yun Seon) | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_cuisine-Hanjeongsik-03.jpg) |
+| `places/food_seafood.jpg` | 해산물 | 회 한 접시 | littlepepper | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Hoe_(raw_fish).jpg) |
+| `places/food_bbq.jpg` | 고기구이 | 석쇠 위의 고기 | eommina | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_BBQ.jpg) |
+| `places/food_noodle.jpg` | 국수 | 제주 고기국수 | 신동혁 | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Gogi-guksu.jpg) |
+| `places/food_cafe.jpg` | 카페 | 커피 한 잔 | Julius Schorzman | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:A_small_cup_of_coffee.JPG) |
+
 ## 관광지 사진
 
 | 파일 | 관광지 | 저작자 | 라이선스 | 원본 |

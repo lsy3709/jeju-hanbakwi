@@ -26,6 +26,7 @@ import type {
   Trip,
   UsageReport,
   Weather,
+  NearbySpot,
 } from "./types";
 
 // 서버에서 미리 그릴 때는 window 가 없어서 null 을 넘깁니다. 고르는 규칙은 lib/apiUrl.ts 에 있습니다.
@@ -91,6 +92,9 @@ async function request<T>(
 export const getMeta = () => request<Meta>("/meta");
 export const getSpots = (params: SpotsParams = {}) => request<SpotList>(`/spots${spotsQuery(params)}`);
 export const getSpot = (id: number | string) => request<Spot>(`/spots/${id}`);
+/** 이 장소에서 가까운 추천 식당(가까운 순). */
+export const getNearbyRestaurants = (id: number | string, size = 4) =>
+  request<NearbySpot[]>(`/spots/${id}/restaurants${buildQuery({ size })}`);
 export const getWeather = () => request<Weather>("/weather");
 /**
  * aiKey: 설정 화면에 넣은 내 AI 키. 있으면 그 키로, 없으면 서버의 기본 방식으로 일정을 짭니다.

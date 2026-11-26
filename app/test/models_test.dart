@@ -21,6 +21,23 @@ void main() {
       expect(meta.placeCategories, ['숙소', '약국']);
       expect(meta.allCategories, ['관광지', '숙소', '약국']);
     });
+    test('추천 식당 분류를 읽고, 분류 메뉴의 맨 뒤에 잇는다', () {
+      final meta = Meta.fromJson({
+        'themes': <String>[],
+        'areas': <String>[],
+        'categories': ['관광지'],
+        'place_categories': ['약국'],
+        'food_categories': ['한식', '카페'],
+      });
+      expect(meta.foodCategories, ['한식', '카페']);
+      expect(meta.allCategories, ['관광지', '약국', '한식', '카페']);
+    });
+    test('가까운 곳은 관광지 모양에 거리가 붙는다', () {
+      final near = NearbySpot.fromJson({...spotJson(id: 7, title: '올래국수'), 'distance_km': 1});
+      expect(near.spot.id, 7);
+      expect(near.spot.title, '올래국수');
+      expect(near.distanceKm, 1.0); // 서버가 정수로 줘도 double 로
+    });
     test('편의 시설 분류가 없는 옛 서버여도 읽힌다', () {
       final meta = Meta.fromJson({'themes': <String>[], 'areas': <String>[], 'categories': ['관광지']});
       expect(meta.placeCategories, isEmpty);

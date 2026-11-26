@@ -89,3 +89,10 @@ export function weatherText(day: Pick<WeatherDay, "temp_min" | "temp_max" | "rai
   if (day.rain_prob !== null) parts.push(`비 ${day.rain_prob}%`);
   return parts.join(" · ");
 }
+
+/** 거리(km)를 읽기 쉬운 글로. 1km 안쪽은 미터로, 그 밖은 킬로미터로 적습니다. */
+export function distanceText(km: number): string {
+  if (km < 0.1) return "바로 근처";
+  if (km < 1) return `약 ${Math.round(km * 10) * 100}m`;
+  return `약 ${km.toFixed(1)}km`;
+}

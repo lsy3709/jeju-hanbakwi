@@ -56,6 +56,17 @@ class Spot {
   }
 }
 
+/// 가까운 곳 한 건(`GET /spots/{id}/restaurants`). 관광지 모양에 직선 거리(km)가 붙어 옵니다.
+class NearbySpot {
+  final Spot spot;
+  final double distanceKm;
+
+  const NearbySpot({required this.spot, required this.distanceKm});
+
+  factory NearbySpot.fromJson(Map<String, dynamic> json) =>
+      NearbySpot(spot: Spot.fromJson(json), distanceKm: (json['distance_km'] as num).toDouble());
+}
+
 /// `GET /spots` 의 응답: 목록 + 다음 커서 + 전체 개수.
 /// `total` 은 첫 묶음에서만 숫자이고 이어지는 묶음에서는 null 입니다(그래서 nullable).
 class SpotPage {
@@ -85,15 +96,25 @@ class Meta {
   /// 편의 시설 분류(숙소 · 병원 · 약국 …). 골랐을 때만 목록에 나옵니다. 옛 서버에는 없을 수 있습니다.
   final List<String> placeCategories;
 
-  const Meta({required this.themes, required this.areas, required this.categories, this.placeCategories = const []});
+  /// 추천 식당 분류(한식 · 해산물 · 고기구이 · 국수 · 카페). 편의 시설처럼 골랐을 때만 목록에 나옵니다.
+  final List<String> foodCategories;
 
-  /// 분류 메뉴의 선택지: 여행지 분류 뒤에 편의 시설 분류를 잇습니다.
-  List<String> get allCategories => [...categories, ...placeCategories];
+  const Meta({
+    required this.themes,
+    required this.areas,
+    required this.categories,
+    this.placeCategories = const [],
+    this.foodCategories = const [],
+  });
+
+  /// 분류 메뉴의 선택지: 여행지 분류 뒤에 편의 시설 분류, 추천 식당 분류를 잇습니다.
+  List<String> get allCategories => [...categories, ...placeCategories, ...foodCategories];
 
   factory Meta.fromJson(Map<String, dynamic> json) => Meta(
         themes: (json['themes'] as List).cast<String>(),
         areas: (json['areas'] as List).cast<String>(),
         categories: (json['categories'] as List).cast<String>(),
         placeCategories: ((json['place_categories'] as List?) ?? const []).cast<String>(),
+        foodCategories: ((json['food_categories'] as List?) ?? const []).cast<String>(),
       );
 }
