@@ -24,7 +24,7 @@ from functools import lru_cache
 from supabase import Client, create_client
 
 from config import settings
-from constants import PLACE_CATEGORIES
+from constants import SIDE_CATEGORIES
 
 
 # lru_cache 는 "한 번 만든 결과를 기억해 두고 다음부터는 그대로 돌려준다"는 장치입니다.
@@ -75,8 +75,8 @@ class SupabaseRepo:
         if category:
             query = query.eq("category", category)
         elif not include_hidden:
-            # 분류를 고르지 않았으면 편의 시설(숙소 · 병원 …)은 뺍니다. 홈 추천과 AI 일정에 약국이 섞이면 안 되니까요.
-            query = query.not_.in_("category", PLACE_CATEGORIES)
+            # 분류를 고르지 않았으면 편의 시설(숙소 · 병원 …)과 추천 식당은 뺍니다. 홈 추천과 AI 일정에 약국이 섞이면 안 되니까요.
+            query = query.not_.in_("category", SIDE_CATEGORIES)
         if indoor is not None:
             query = query.eq("indoor", indoor)
         if not include_hidden:
@@ -88,6 +88,12 @@ class SupabaseRepo:
         result = query.order("id").limit(size).execute()
         # 첫 묶음에서만 전체 개수를 돌려주고, 이어지는 묶음은 None (세는 데 시간이 들기 때문).
         return result.data, (result.count or 0) if first else None
+
+    def list_by_categories(self, categories: list[str], limit: int = 500) -> list[dict]:
+        """주어진 분류에 드는 곳을 모두 돌려줍니다(숨긴 곳 제외). 근처 추천 식당의 후보를 받을 때 씁니다."""
+        result = (self.db.table("spots").select("*").in_("category", categories)
+                  .eq("hidden", False).order("id").limit(limit).execute())
+        return result.data
 
     def get_spot(self, spot_id: int, include_hidden=False):
         query = self.db.table("spots").select("*").eq("id", spot_id)

@@ -28,6 +28,11 @@ class Spot(BaseModel):
     indoor: bool = False
 
 
+class NearbySpot(Spot):
+    """가까운 곳 한 건. 기준이 된 곳에서의 직선 거리가 붙습니다."""
+    distance_km: float
+
+
 class SpotList(BaseModel):
     """관광지 한 묶음. next_cursor 를 다음 요청의 cursor 로 보내면 이어지는 묶음을 받습니다."""
     items: list[Spot]
@@ -41,6 +46,7 @@ class Meta(BaseModel):
     areas: list[str]
     categories: list[str]
     place_categories: list[str] = []  # 편의 시설 분류(숙소 · 병원 · 약국 …). 골랐을 때만 목록에 나옵니다
+    food_categories: list[str] = []   # 추천 식당 분류(한식 · 해산물 …). 골랐을 때만 목록에 나옵니다
 
 
 class WeatherDay(BaseModel):

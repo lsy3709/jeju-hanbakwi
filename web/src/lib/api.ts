@@ -28,6 +28,7 @@ import type {
   Trip,
   UsageReport,
   Weather,
+  NearbySpot,
 } from "./types";
 
 // 서버 주소는 환경변수 NEXT_PUBLIC_API_URL 에서 읽습니다. 개발·배포마다 서버 주소가 달라서 코드에 박지 않고 밖에서 넣습니다.
@@ -100,6 +101,9 @@ async function request<T>(
 export const getMeta = () => request<Meta>("/meta");
 export const getSpots = (params: SpotsParams = {}) => request<SpotList>(`/spots${spotsQuery(params)}`);
 export const getSpot = (id: number | string) => request<Spot>(`/spots/${id}`);
+/** 이 장소에서 가까운 추천 식당(가까운 순). */
+export const getNearbyRestaurants = (id: number | string, size = 4) =>
+  request<NearbySpot[]>(`/spots/${id}/restaurants${buildQuery({ size })}`);
 export const getWeather = () => request<Weather>("/weather");
 /**
  * aiKey: 설정 화면에 넣은 내 AI 키. 있으면 그 키로, 없으면 서버의 기본 방식으로 일정을 짭니다.

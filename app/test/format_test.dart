@@ -22,4 +22,16 @@ void main() {
     expect(formatSavedAt(savedAt), '2026년 12월 2일');
   });
   test('formatSavedAt: 이상한 값이면 빈 문자열', () => expect(formatSavedAt('어제쯤'), ''));
+
+  group('distanceText (거리 표시)', () {
+    test('100m 안쪽은 바로 근처', () => expect(distanceText(0), '바로 근처'));
+    test('1km 안쪽은 미터로', () {
+      expect(distanceText(0.3), '약 300m');
+      expect(distanceText(0.9), '약 900m');
+    });
+    test('1km 부터는 킬로미터로', () {
+      expect(distanceText(1), '약 1.0km');
+      expect(distanceText(12.34), '약 12.3km');
+    });
+  });
 }

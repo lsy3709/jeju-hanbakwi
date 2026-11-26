@@ -182,6 +182,24 @@ void main() {
     expect(headers!.containsKey('Authorization'), false);
   });
 
+  test('getNearbyRestaurants: 주소와 개수를 보내고 거리가 붙은 목록을 읽는다', () async {
+    Uri? called;
+    final api = ApiClient(
+      baseUrl: 'http://fake',
+      client: MockClient((req) async {
+        called = req.url;
+        return jsonResponse([
+          {...spotJson(id: 7, title: '올래국수'), 'distance_km': 0.3},
+        ]);
+      }),
+    );
+    final foods = await api.getNearbyRestaurants(3, size: 2);
+    expect(called!.path, '/spots/3/restaurants');
+    expect(called!.queryParameters['size'], '2');
+    expect(foods.single.spot.title, '올래국수');
+    expect(foods.single.distanceKm, 0.3);
+  });
+
   // 오류 처리: 서버의 오류 문구와 상태 번호가 ApiException 에 담기고, 서버에 닿지 못해도 앱이 죽지 않고 안내 문구로 바뀌는지 확인합니다.
   test('오류 응답의 {detail} 을 ApiException 으로 던진다', () async {
     final api = ApiClient(

@@ -26,6 +26,7 @@ from transform import CATEGORY_BY_TYPE, to_place_row, to_spot_row
 
 SAMPLE_FILE = Path(__file__).parent.parent / "data" / "sample_spots.json"
 PLACES_FILE = Path(__file__).parent.parent / "data" / "sample_places.json"
+RESTAURANTS_FILE = Path(__file__).parent.parent / "data" / "sample_restaurants.json"
 JEJU_AREA_CODE = "39"  # TourAPI 의 지역 번호: 39 = 제주도
 
 
@@ -36,6 +37,11 @@ def load_sample() -> list[dict]:
 def load_places() -> list[dict]:
     """편의 시설 샘플(숙소 · 게스트하우스 · 병원 · 약국 · 편의점 · 교통). tools/make_sample_places.py 가 만든 파일."""
     return json.loads(PLACES_FILE.read_text(encoding="utf-8"))
+
+
+def load_restaurants() -> list[dict]:
+    """추천 식당 샘플(한식 · 해산물 · 고기구이 · 국수 · 카페). tools/make_sample_restaurants.py 가 만든 파일."""
+    return json.loads(RESTAURANTS_FILE.read_text(encoding="utf-8"))
 
 
 def to_place_rows(raw_items: list[dict]) -> list[dict]:
@@ -107,15 +113,16 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="관광 데이터 가져오기")
     parser.add_argument("--sample", action="store_true", help="샘플 데이터를 넣습니다")
     parser.add_argument("--places", action="store_true", help="편의 시설 샘플(숙소 · 병원 · 약국 · 편의점 · 교통)을 넣습니다")
+    parser.add_argument("--restaurants", action="store_true", help="추천 식당 샘플(한식 · 해산물 · 고기구이 · 국수 · 카페)을 넣습니다")
     parser.add_argument("--types", default="12,14,15,28,38,39", help="받을 콘텐츠 유형(쉼표로 구분)")
     parser.add_argument("--limit", type=int, default=100, help="유형마다 받을 최대 건수")
     parser.add_argument("--overview", type=int, default=0, help="소개 글을 받을 건수(0 이면 받지 않음)")
     parser.add_argument("--dry-run", action="store_true", help="DB 에 넣지 않고 결과만 봅니다")
     args = parser.parse_args()
 
-    if args.places:
-        rows = to_place_rows(load_places())
-        print(f"편의 시설 {len(rows)}건 (분류를 골랐을 때만 목록에 나옵니다)")
+    if args.places or args.restaurants:
+        rows = to_place_rows(load_restaurants() if args.restaurants else load_places())
+        print(f"{'추천 식당' if args.restaurants else '편의 시설'} {len(rows)}건 (분류를 골랐을 때만 목록에 나옵니다)")
         for name in sorted({row["category"] for row in rows}):
             print(f"  - {name}: {sum(1 for row in rows if row['category'] == name)}건")
         if args.dry_run:

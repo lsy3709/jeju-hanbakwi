@@ -58,6 +58,11 @@ describe("categoryOptions (분류 드롭다운의 선택지)", () => {
       "약국",
     ]);
   });
+  it("추천 식당 분류를 맨 뒤에 잇는다", () => {
+    expect(
+      categoryOptions({ themes: [], areas: [], categories: ["관광지"], place_categories: ["약국"], food_categories: ["한식", "카페"] }),
+    ).toEqual(["관광지", "약국", "한식", "카페"]);
+  });
   it("편의 시설 분류가 없는 옛 서버여도 동작한다", () => {
     expect(categoryOptions({ themes: [], areas: [], categories: ["관광지"] })).toEqual(["관광지"]);
     expect(categoryOptions(null)).toEqual([]);

@@ -77,9 +77,25 @@ PLACE_PHOTOS: dict[str, dict] = {
     "교통": {"file": "places/transit.jpg", "credit": "제주특별자치도청 대중교통과 · 공공누리 제1유형 · Wikimedia Commons",
              "source_url": _COMMONS + "Island_Bus_Stop_and_Double-door_Bus_in_Jeju_City_Korea.jpg"},
 }
+# 추천 식당 분류별 대표 사진 (api/static/photos/places/food_*.jpg)
+FOOD_PHOTOS: dict[str, dict] = {
+    "한식": {"file": "places/food_korean.jpg", "credit": "egg (Hong, Yun Seon) · CC BY 2.0 · Wikimedia Commons",
+             "source_url": _COMMONS + "Korean_cuisine-Hanjeongsik-03.jpg"},
+    "해산물": {"file": "places/food_seafood.jpg", "credit": "littlepepper · CC0 · Wikimedia Commons",
+               "source_url": _COMMONS + "Hoe_(raw_fish).jpg"},
+    "고기구이": {"file": "places/food_bbq.jpg", "credit": "eommina · CC0 · Wikimedia Commons",
+                 "source_url": _COMMONS + "Korean_BBQ.jpg"},
+    "국수": {"file": "places/food_noodle.jpg", "credit": "신동혁 · CC0 · Wikimedia Commons",
+             "source_url": _COMMONS + "Gogi-guksu.jpg"},
+    "카페": {"file": "places/food_cafe.jpg", "credit": "Julius Schorzman · CC BY-SA 2.0 · Wikimedia Commons",
+             "source_url": _COMMONS + "A_small_cup_of_coffee.JPG"},
+}
 # 분류별 한 줄 소개의 끝말과 실내 여부
 _PLACE_WORDS = {"숙소": ("숙소", True), "게스트하우스": ("게스트하우스", True), "병원": ("병원", True),
-                "약국": ("약국", True), "편의점": ("편의점", True), "교통": ("교통 시설", False)}
+                "약국": ("약국", True), "편의점": ("편의점", True), "교통": ("교통 시설", False),
+                "한식": ("한식당", True), "해산물": ("해산물 식당", True), "고기구이": ("고기구이 식당", True),
+                "국수": ("국수집", True), "카페": ("카페", True)}
+_SIDE_PHOTOS = {**PLACE_PHOTOS, **FOOD_PHOTOS}
 
 
 def area_by_position(lat: float, lng: float) -> str:
@@ -95,15 +111,15 @@ def area_by_position(lat: float, lng: float) -> str:
 
 
 def to_place_row(raw: dict) -> dict | None:
-    """편의 시설 한 건(tools/make_sample_places.py 가 만든 모양) → spots 한 줄. 쓸 수 없으면 None."""
+    """편의 시설 · 추천 식당 한 건(tools/make_sample_places.py · make_sample_restaurants.py 가 만든 모양) → spots 한 줄. 쓸 수 없으면 None."""
     category = raw.get("category")
     title = _text(raw, "title")
     lat, lng = raw.get("lat"), raw.get("lng")
-    if category not in PLACE_PHOTOS or not title or lat is None or lng is None:
+    if category not in _SIDE_PHOTOS or not title or lat is None or lng is None:
         return None
     word, indoor = _PLACE_WORDS[category]
     area = raw.get("area") or area_by_position(lat, lng)
-    photo = PLACE_PHOTOS[category]
+    photo = _SIDE_PHOTOS[category]
     phone = _text(raw, "phone")
     return {
         "source": "osm",  # OpenStreetMap

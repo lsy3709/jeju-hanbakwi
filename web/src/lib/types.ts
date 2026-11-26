@@ -36,7 +36,17 @@ export type ItineraryDay = {
 export type Itinerary = ItineraryDay[];
 
 /** place_categories 는 편의 시설 분류(숙소 · 병원 · 약국 …). 골랐을 때만 목록에 나옵니다. 옛 서버에는 없을 수 있어 선택 값입니다. */
-export type Meta = { themes: string[]; areas: string[]; categories: string[]; place_categories?: string[] };
+export type Meta = {
+  themes: string[];
+  areas: string[];
+  categories: string[];
+  place_categories?: string[];
+  /** 추천 식당 분류(한식 · 해산물 · 고기구이 · 국수 · 카페). 편의 시설처럼 골랐을 때만 목록에 나옵니다. */
+  food_categories?: string[];
+};
+
+/** 가까운 곳 한 건. 기준이 된 곳에서의 직선 거리(km, 소수 한 자리)가 붙습니다. */
+export type NearbySpot = Spot & { distance_km: number };
 
 /**
  * 커서 방식으로 나눠 받는 목록의 한 묶음(docs/api.md "목록을 나눠 받기").

@@ -1,7 +1,7 @@
 // 테스트 파일입니다. 화면 없이 format.ts 의 함수 를 불러 결과가 맞는지 확인하며, `npm test`(vitest)가 실행합니다.
 // "describe" 는 비슷한 테스트를 묶고, "it" 은 하나의 확인 항목, "expect(...).toBe(...)" 는 "이 값이 이것과 같아야 한다"는 뜻입니다.
 import { describe, expect, it } from "vitest";
-import { buildQuery, dayTitle, formatDate, formatSavedAt, photoCreditText, pickFallbackTone, spotsQuery, todayString, weatherText } from "./format";
+import { buildQuery, dayTitle, distanceText, formatDate, formatSavedAt, photoCreditText, pickFallbackTone, spotsQuery, todayString, weatherText } from "./format";
 
 // 사진 출처 글자가 언제 나오고 언제 빠지는지 확인합니다.
 describe("photoCreditText", () => {
@@ -73,5 +73,19 @@ describe("weatherText", () => {
   });
   it("전부 null 이면 빈 문자열", () => {
     expect(weatherText({ temp_min: null, temp_max: null, rain_prob: null })).toBe("");
+  });
+});
+
+describe("distanceText (거리 표시)", () => {
+  it("100m 안쪽은 바로 근처", () => {
+    expect(distanceText(0)).toBe("바로 근처");
+  });
+  it("1km 안쪽은 미터로", () => {
+    expect(distanceText(0.3)).toBe("약 300m");
+    expect(distanceText(0.9)).toBe("약 900m");
+  });
+  it("1km 부터는 킬로미터로", () => {
+    expect(distanceText(1)).toBe("약 1.0km");
+    expect(distanceText(12.34)).toBe("약 12.3km");
   });
 });

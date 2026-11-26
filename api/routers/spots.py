@@ -5,9 +5,10 @@
 # 낱말: {spot_id} 처럼 주소에 중괄호로 쓴 부분은 함수의 같은 이름 인자로 들어옵니다.
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
-from constants import AREAS, CATEGORIES, PLACE_CATEGORIES, THEMES
+from constants import AREAS, CATEGORIES, FOOD_CATEGORIES, PLACE_CATEGORIES, THEMES
 from repo import get_repo
-from schemas import Meta, Spot, SpotList
+from schemas import Meta, NearbySpot, Spot, SpotList
+from services.nearby import nearest
 from services.paging import cut_page
 from services.photos import with_photo_address, with_photo_addresses
 
@@ -17,7 +18,8 @@ router = APIRouter(tags=["관광지"])
 # 화면의 필터 단추를 만들 선택지(테마·지역·분류). 목록은 constants.py 에 있습니다.
 @router.get("/meta", response_model=Meta)
 def meta():
-    return {"themes": THEMES, "areas": AREAS, "categories": CATEGORIES, "place_categories": PLACE_CATEGORIES}
+    return {"themes": THEMES, "areas": AREAS, "categories": CATEGORIES,
+            "place_categories": PLACE_CATEGORIES, "food_categories": FOOD_CATEGORIES}
 
 
 # 목록. q·theme·area 같은 조건은 안 보내면(None) 걸지 않습니다. cursor 는 앞 응답의 next_cursor 입니다.
@@ -49,3 +51,14 @@ def get_spot(spot_id: int, request: Request, repo=Depends(get_repo)):
     if spot is None:
         raise HTTPException(status_code=404, detail="관광지를 찾을 수 없습니다.")
     return with_photo_address(spot, request)
+
+
+@router.get("/spots/{spot_id}/restaurants", response_model=list[NearbySpot])
+def nearby_restaurants(spot_id: int, request: Request, size: int = Query(default=5, ge=1, le=10), repo=Depends(get_repo)):
+    """이 곳에서 가까운 추천 식당. 직선 거리가 가까운 순으로 size 곳을 돌려줍니다."""
+    spot = repo.get_spot(spot_id)
+    if spot is None:
+        raise HTTPException(status_code=404, detail="관광지를 찾을 수 없습니다.")
+    found = nearest(spot, repo.list_by_categories(FOOD_CATEGORIES), size)
+    return with_photo_addresses(found, request)
+
