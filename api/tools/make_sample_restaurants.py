@@ -109,12 +109,14 @@ def main() -> int:
         if category is None:
             continue
         address = " ".join(tags.get(key, "") for key in ("addr:city", "addr:district", "addr:street", "addr:housenumber")).strip()
+        # 길 이름 없이 번지만 적힌 곳("23")은 주소로 쓸 수 없으니 지역 이름으로 대신합니다
+        shown_address = address if tags.get("addr:street") or tags.get("addr:city") else area_by_position(lat, lng)
         candidates.append({
             "id": f"{element['type'][0]}{element['id']}",
             "title": title,
             "category": category,
             "area": area_by_position(lat, lng),
-            "address": address,
+            "address": shown_address,
             "lat": round(lat, 6),
             "lng": round(lng, 6),
             "phone": tags.get("phone", ""),

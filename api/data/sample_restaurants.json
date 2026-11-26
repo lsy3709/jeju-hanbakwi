@@ -44,7 +44,7 @@
   "title": "태산봉해장국",
   "category": "한식",
   "area": "제주시",
-  "address": "67-1",
+  "address": "제주시",
   "lat": 33.511631,
   "lng": 126.530367,
   "phone": ""
@@ -124,7 +124,7 @@
   "title": "물항식당",
   "category": "한식",
   "area": "제주시",
-  "address": "37-4",
+  "address": "제주시",
   "lat": 33.516914,
   "lng": 126.529101,
   "phone": ""
@@ -164,7 +164,7 @@
   "title": "속초식당",
   "category": "한식",
   "area": "제주시",
-  "address": "39-1",
+  "address": "제주시",
   "lat": 33.516753,
   "lng": 126.529172,
   "phone": ""
@@ -204,7 +204,7 @@
   "title": "기회횟집",
   "category": "해산물",
   "area": "제주시",
-  "address": "23",
+  "address": "제주시",
   "lat": 33.516053,
   "lng": 126.524912,
   "phone": ""
@@ -244,7 +244,7 @@
   "title": "제일횟집",
   "category": "해산물",
   "area": "제주시",
-  "address": "39",
+  "address": "제주시",
   "lat": 33.517611,
   "lng": 126.520736,
   "phone": ""
@@ -284,7 +284,7 @@
   "title": "함닥 마당",
   "category": "해산물",
   "area": "제주시",
-  "address": "",
+  "address": "제주시",
   "lat": 33.544037,
   "lng": 126.674272,
   "phone": "+82 64 783 2111"
@@ -324,7 +324,7 @@
   "title": "제주전복칼국수",
   "category": "해산물",
   "area": "제주시",
-  "address": "10-1",
+  "address": "제주시",
   "lat": 33.513916,
   "lng": 126.526044,
   "phone": ""
@@ -404,7 +404,7 @@
   "title": "옵데강갈비",
   "category": "고기구이",
   "area": "제주시",
-  "address": "16",
+  "address": "제주시",
   "lat": 33.51679,
   "lng": 126.518992,
   "phone": ""
@@ -444,7 +444,7 @@
   "title": "참숯구이몬트락",
   "category": "고기구이",
   "area": "제주시",
-  "address": "20",
+  "address": "제주시",
   "lat": 33.516322,
   "lng": 126.526955,
   "phone": ""
@@ -484,7 +484,7 @@
   "title": "미녀는갈비를 좋아해",
   "category": "고기구이",
   "area": "제주시",
-  "address": "3",
+  "address": "제주시",
   "lat": 33.514636,
   "lng": 126.531524,
   "phone": ""
@@ -524,7 +524,7 @@
   "title": "오동도갈비",
   "category": "고기구이",
   "area": "제주시",
-  "address": "18",
+  "address": "제주시",
   "lat": 33.516141,
   "lng": 126.526516,
   "phone": ""
@@ -544,7 +544,7 @@
   "title": "흑돼지한마당",
   "category": "고기구이",
   "area": "동부",
-  "address": "064-787-1988",
+  "address": "동부",
   "lat": 33.324885,
   "lng": 126.843923,
   "phone": ""
@@ -564,7 +564,7 @@
   "title": "섬마당갈비",
   "category": "고기구이",
   "area": "제주시",
-  "address": "40",
+  "address": "제주시",
   "lat": 33.507689,
   "lng": 126.52938,
   "phone": ""
@@ -644,7 +644,7 @@
   "title": "손가네밀면",
   "category": "국수",
   "area": "제주시",
-  "address": "2",
+  "address": "제주시",
   "lat": 33.51634,
   "lng": 126.525215,
   "phone": ""
@@ -684,7 +684,7 @@
   "title": "관덕정쌀국수",
   "category": "국수",
   "area": "제주시",
-  "address": "23",
+  "address": "제주시",
   "lat": 33.514766,
   "lng": 126.520659,
   "phone": ""
@@ -724,7 +724,7 @@
   "title": "명동손칼국수",
   "category": "국수",
   "area": "제주시",
-  "address": "5",
+  "address": "제주시",
   "lat": 33.510676,
   "lng": 126.524396,
   "phone": ""
@@ -764,7 +764,7 @@
   "title": "제주메밀막국수 함흥냉면",
   "category": "국수",
   "area": "제주시",
-  "address": "2",
+  "address": "제주시",
   "lat": 33.513505,
   "lng": 126.526972,
   "phone": ""
@@ -824,7 +824,7 @@
   "title": "아일랜드조르바",
   "category": "카페",
   "area": "동부",
-  "address": "010-4787-2901",
+  "address": "동부",
   "lat": 33.535501,
   "lng": 126.839161,
   "phone": ""
@@ -844,7 +844,7 @@
   "title": "제주시 새우리",
   "category": "카페",
   "area": "제주시",
-  "address": "21",
+  "address": "제주시",
   "lat": 33.514651,
   "lng": 126.520511,
   "phone": ""
@@ -864,7 +864,7 @@
   "title": "미엘드세화",
   "category": "카페",
   "area": "동부",
-  "address": "64-782-6070",
+  "address": "동부",
   "lat": 33.524514,
   "lng": 126.861858,
   "phone": ""
@@ -884,7 +884,7 @@
   "title": "화석과자 센잇",
   "category": "카페",
   "area": "제주시",
-  "address": "13",
+  "address": "제주시",
   "lat": 33.511897,
   "lng": 126.523566,
   "phone": ""
@@ -904,7 +904,7 @@
   "title": "카페동네",
   "category": "카페",
   "area": "동부",
-  "address": "070-8900-6621",
+  "address": "동부",
   "lat": 33.493255,
   "lng": 126.89858,
   "phone": ""
@@ -924,7 +924,7 @@
   "title": "북성로42 Le pain",
   "category": "카페",
   "area": "제주시",
-  "address": "42",
+  "address": "제주시",
   "lat": 33.515796,
   "lng": 126.520331,
   "phone": ""
@@ -944,7 +944,7 @@
   "title": "쪼끌락",
   "category": "카페",
   "area": "동부",
-  "address": "010-3689-3436",
+  "address": "동부",
   "lat": 33.557761,
   "lng": 126.755233,
   "phone": ""
@@ -964,7 +964,7 @@
   "title": "더제이드",
   "category": "카페",
   "area": "제주시",
-  "address": "7-1",
+  "address": "제주시",
   "lat": 33.513905,
   "lng": 126.526733,
   "phone": ""
