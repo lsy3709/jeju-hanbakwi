@@ -8,7 +8,7 @@ export const JEJU_CENTER: [number, number] = [126.55, 33.38];
 export const HALLASAN: [number, number] = [126.5332, 33.3617];
 /** 땅의 높낮이를 실제보다 얼마나 과장해 보여 줄지. 제주는 완만해서 1.5배로 세웁니다. */
 export const EXAGGERATION = 1.5;
-/** 모델 파일 주소(web/public/models). `python tools/make_model.py` 또는 블렌더에서 내보낸 glb. */
+/** 모델 파일 주소(web/public/models). 블렌더에서 만들어 glb 로 내보낸 것입니다(tools/make_model_blender.py, tools/dolhareubang.blend). */
 export const MODEL_URL = "/models/dolhareubang.glb";
 
 const EARTH_CIRCUMFERENCE = 40075016.686; // 적도 둘레(미터)
@@ -30,7 +30,7 @@ export function metersPerPixel(zoom: number, lat: number): number {
 }
 
 /** 모델이 화면에서 늘 pixels 높이쯤으로 보이게 하려면 실제 높이를 몇 미터로 해야 하는지. */
-export function modelHeightMeters(zoom: number, lat: number, pixels = 70): number {
+export function modelHeightMeters(zoom: number, lat: number, pixels = 90): number {
   return metersPerPixel(zoom, lat) * pixels;
 }
 

@@ -39,7 +39,7 @@
 
 ### 탐색
 - 위: 검색바, 테마 칩, 필터(지역 · 분류 · 실내/실외)
-- 본문: 카드 그리드(웹 2~4열, 앱 1~2열) ↔ 지도 ↔ 3D 지도 보기 전환. 지도는 OpenStreetMap, 핀을 누르면 이름과 "자세히" 링크. 3D 지도는 땅의 높낮이를 세워 보여 주고(MapLibre GL JS + AWS Terrain Tiles) 한라산에 돌하르방 모델(Three.js, `web/public/models/dolhareubang.glb`)을 세움
+- 본문: 카드 그리드(웹 2~4열, 앱 1~2열) ↔ 지도 ↔ 3D 지도 보기 전환. 지도는 OpenStreetMap, 핀을 누르면 이름과 "자세히" 링크. 3D 지도는 땅의 높낮이를 세워 보여 주고(MapLibre GL JS + AWS Terrain Tiles) 한라산에 블렌더로 만든 돌하르방 모델(Three.js, `web/public/models/dolhareubang.glb`)을 세움
 - 20개씩 "더 보기"
 - 결과가 없을 때·불러오기 실패했을 때의 안내 문구
 
