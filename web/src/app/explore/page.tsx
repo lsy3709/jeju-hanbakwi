@@ -1,15 +1,16 @@
 "use client";
 
-// 이 파일이 하는 일: 탐색 화면 조립. 필터 상태는 주소의 쿼리(?q=&theme=&area=&category=&indoor=&view=map|3d)와 항상 맞춥니다.
+// 이 파일이 하는 일: 탐색 화면 조립. 필터 상태는 주소의 쿼리(?q=&theme=&area=&category=&indoor=&view=map|3d|fantasy)와 항상 맞춥니다.
 // → 새로고침하거나 주소를 공유해도 같은 화면이 나옵니다. (쿼리 ↔ 필터 변환은 lib/exploreFilters.ts, 검색 상태는 hooks/useSpotSearch.ts)
 import { Suspense, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { List, Map as MapIcon, Mountain } from "lucide-react";
+import { List, Map as MapIcon, Mountain, Scroll } from "lucide-react";
 import { FilterSelect } from "@/components/FilterSelect";
 import { MoreButton } from "@/components/MoreButton";
 import { SearchBar } from "@/components/SearchBar";
 import { SpotCard } from "@/components/SpotCard";
 import { SpotMap3DView } from "@/components/SpotMap3DView";
+import { SpotMapFantasyView } from "@/components/SpotMapFantasyView";
 import { SpotMapView } from "@/components/SpotMapView";
 import { Empty, ErrorBox, Loading } from "@/components/States";
 import { ThemeChips } from "@/components/ThemeChips";
@@ -77,12 +78,13 @@ function Explore() {
             필터 지우기
           </button>
         )}
-        {/* 보는 방식 세 가지: 목록 · 지도 · 3D 지도. 주소의 view 값으로 기억합니다. */}
+        {/* 보는 방식 네 가지: 목록 · 지도 · 3D 지도 · 판타지. 주소의 view 값으로 기억합니다. */}
         <div className="ml-auto flex gap-2" role="group" aria-label="보는 방식">
           {[
             { label: "목록", value: "", icon: List },
             { label: "지도", value: "map", icon: MapIcon },
             { label: "3D 지도", value: "3d", icon: Mountain },
+            { label: "판타지", value: "fantasy", icon: Scroll },
           ].map((option) => (
             <button
               key={option.label}
@@ -112,7 +114,9 @@ function Explore() {
               ? `총 ${current.total}곳 중 ${current.items.length}곳을 보여 드려요`
               : `${current.items.length}곳을 보여 드려요`}
           </p>
-          {view === "3d" ? (
+          {view === "fantasy" ? (
+            <SpotMapFantasyView spots={current.items} className="h-[60vh] w-full rounded-card border border-line" />
+          ) : view === "3d" ? (
             <SpotMap3DView spots={current.items} className="h-[60vh] w-full rounded-card border border-line" />
           ) : view === "map" ? (
             <SpotMapView spots={current.items} className="h-[60vh] w-full rounded-card border border-line" />
