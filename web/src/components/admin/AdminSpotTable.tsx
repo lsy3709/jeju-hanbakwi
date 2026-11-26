@@ -3,6 +3,7 @@
 // 이 파일이 하는 일: 관리자 "여행지" 탭의 표(번호 · 이름 · 분류 · 지역 · 실내외 · 출처 · 상태 · 수정/숨김 버튼). 데이터와 동작은 위(useAdminSpots)에서 받습니다.
 // 폰 폭: 넓은 표를 가로로 밀게 하면 폰 브라우저가 화면 전체를 넓혀 아래 탭까지 밀려납니다(실측).
 // 그래서 폰에서는 덜 중요한 칸을 숨기고(hidden md:table-cell) 그 내용을 첫 칸 아래 한 줄로 보여 줍니다.
+import { SpotImage } from "@/components/SpotImage";
 import { btnSmall } from "@/components/ui";
 import type { AdminSpot } from "@/lib/types";
 import { StatusBadge } from "./StatusBadge";
@@ -27,6 +28,7 @@ export function AdminSpotTable({
         <thead className="border-b border-line text-xs text-muted">
           <tr>
             <th scope="col" className="hidden px-4 py-3 font-semibold md:table-cell">번호</th>
+            <th scope="col" className="py-3 pl-4 font-semibold">사진</th>
             <th scope="col" className="px-4 py-3 font-semibold">이름</th>
             <th scope="col" className="hidden px-4 py-3 font-semibold md:table-cell">분류</th>
             <th scope="col" className="hidden px-4 py-3 font-semibold md:table-cell">지역</th>
@@ -42,6 +44,12 @@ export function AdminSpotTable({
           {spots.map((spot) => (
             <tr key={spot.id} className="border-b border-line last:border-b-0">
               <td className="hidden px-4 py-3 text-muted md:table-cell">{spot.id}</td>
+              {/* 작은 사진: 어느 곳의 사진을 바꿔야 할지 표에서 바로 보입니다. 누르면 수정 폼이 열립니다. */}
+              <td className="py-2 pl-4">
+                <button type="button" onClick={() => onEdit(spot)} aria-label={`${spot.title} 사진 바꾸기`} className="block overflow-hidden rounded-lg border border-line">
+                  <SpotImage imageUrl={spot.image_url} title={spot.title} tags={spot.theme_tags} className="h-10 w-14" />
+                </button>
+              </td>
               <td className="px-4 py-3 font-medium">
                 {spot.title}
                 {/* 폰에서만: 숨긴 칸(번호 · 분류 · 지역 · 실내외 · 출처)을 한 줄로 */}

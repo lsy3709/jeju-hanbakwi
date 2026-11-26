@@ -181,9 +181,14 @@ export type SpotCreate = {
   lat?: number;
   lng?: number;
   image_url?: string;
+  image_credit?: string;
+  image_source_url?: string;
 };
 
-/** PATCH /admin/spots/{id} 본문. 보낸 칸만 고칩니다(사진·위치는 고치지 않음). */
+/** PATCH /admin/spots/{id} 본문. 보낸 칸만 고칩니다(위치는 고치지 않음). 출처 두 칸은 "" 로 보내면 지워집니다. */
 export type SpotPatch = Partial<
-  Pick<SpotCreate, "title" | "category" | "area" | "address" | "one_liner" | "overview" | "theme_tags" | "indoor">
+  Pick<
+    SpotCreate,
+    "title" | "category" | "area" | "address" | "one_liner" | "overview" | "theme_tags" | "indoor" | "image_url" | "image_credit" | "image_source_url"
+  >
 > & { hidden?: boolean };

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAX_THEMES, createBody, emptySpotForm, patchBody, spotToForm, toggleTheme } from "./spotForm";
+import { MAX_THEMES, categoryChoices, createBody, emptySpotForm, patchBody, photoUrlProblem, spotToForm, toggleTheme } from "./spotForm";
 import type { AdminSpot } from "./types";
 
 const spot: AdminSpot = {
@@ -68,5 +68,62 @@ describe("patchBody (수정 폼 → PATCH 본문)", () => {
   });
   it("테마 순서만 같고 내용이 같으면 바뀐 것으로 보지 않는다", () => {
     expect(patchBody(spot, { ...spotToForm(spot), theme_tags: ["바다", "오름"] })).toEqual({});
+  });
+});
+
+describe("사진 바꾸기 (수정 폼)", () => {
+  const withPhoto: AdminSpot = {
+    ...spot,
+    image_url: "https://upload.wikimedia.org/a/old.jpg",
+    image_credit: "옛 사람 · CC BY 4.0 · Wikimedia Commons",
+    image_source_url: "https://commons.wikimedia.org/wiki/File:old.jpg",
+  };
+  it("수정 폼은 지금 사진 · 출처로 채워진다", () => {
+    const form = spotToForm(withPhoto);
+    expect(form.image_url).toBe(withPhoto.image_url);
+    expect(form.image_credit).toBe(withPhoto.image_credit);
+    expect(form.image_source_url).toBe(withPhoto.image_source_url);
+  });
+  it("사진을 건드리지 않으면 사진 칸은 보내지 않는다", () => {
+    expect(patchBody(withPhoto, { ...spotToForm(withPhoto), title: "새 이름" })).toEqual({ title: "새 이름" });
+  });
+  it("사진 주소를 바꾸면 출처 두 칸도 함께 보낸다(옛 사진의 출처가 남지 않게)", () => {
+    const form = { ...spotToForm(withPhoto), image_url: " https://x.kr/new.jpg ", image_credit: "", image_source_url: "" };
+    expect(patchBody(withPhoto, form)).toEqual({ image_url: "https://x.kr/new.jpg", image_credit: "", image_source_url: "" });
+  });
+  it("출처만 고치면 그 칸만 보낸다", () => {
+    const form = { ...spotToForm(withPhoto), image_credit: "새 사람 · CC0" };
+    expect(patchBody(withPhoto, form)).toEqual({ image_credit: "새 사람 · CC0" });
+  });
+  it("사진 주소를 비우면 사진은 그대로 둔다(지우기는 없음)", () => {
+    expect(patchBody(withPhoto, { ...spotToForm(withPhoto), image_url: "  " })).toEqual({});
+  });
+  it("추가할 때도 출처를 함께 보낸다", () => {
+    const body = createBody({ ...emptySpotForm(), title: "a", image_url: "https://x.kr/a.jpg", image_credit: "누구 · CC0", image_source_url: "https://x.kr/page" });
+    expect(body.image_credit).toBe("누구 · CC0");
+    expect(body.image_source_url).toBe("https://x.kr/page");
+  });
+});
+
+describe("photoUrlProblem (사진 주소 검사)", () => {
+  it("https 주소와 서버 사진 폴더의 주소는 통과", () => {
+    expect(photoUrlProblem("https://x.kr/a.jpg")).toBeNull();
+    expect(photoUrlProblem("/photos/S001.jpg")).toBeNull();
+    expect(photoUrlProblem("")).toBeNull(); // 빈 칸은 "바꾸지 않음"
+  });
+  it("http · 공백 · 너무 긴 주소는 이유를 알려 준다", () => {
+    expect(photoUrlProblem("http://x.kr/a.jpg")).toContain("https");
+    expect(photoUrlProblem("https://x.kr/a b.jpg")).toContain("공백");
+    expect(photoUrlProblem("https://x.kr/" + "a".repeat(300))).toContain("300");
+  });
+});
+
+describe("categoryChoices (분류 선택지)", () => {
+  it("편의 시설 · 추천 식당 분류도 고를 수 있고, 겹치지 않는다", () => {
+    const meta = { categories: ["관광지", "음식점"], place_categories: ["약국"], food_categories: ["한식"] };
+    expect(categoryChoices(meta, "관광지")).toEqual(["관광지", "음식점", "약국", "한식"]);
+  });
+  it("목록에 없는 지금 분류도 선택지에 넣는다(안 그러면 저장이 막힘)", () => {
+    expect(categoryChoices({ categories: ["관광지"] }, "옛분류")).toEqual(["관광지", "옛분류"]);
   });
 });
