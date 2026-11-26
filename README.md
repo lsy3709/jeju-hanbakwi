@@ -20,6 +20,19 @@
 | `docs/` | 문서 (아래 "문서" 표) |
 | `dev/` | (강사용) Docker 로 띄우는 로컬 DB |
 
+## 제출물 — 영상 · 포트폴리오 · 배포 주소
+
+최종 프로젝트에서 내는 것과 같은 묶음입니다. 파일은 [portfolio/](portfolio/README.md) 폴더에 있습니다.
+
+| 번호 | 무엇 | 어디 |
+|---|---|---|
+| 1 | 기능 구현 · 소개 영상 (2분 29초, 음성 해설 · 자막) | [portfolio/jeju_intro.mp4](portfolio/jeju_intro.mp4) |
+| 2 | 포트폴리오 (PDF 31쪽) | [portfolio/jeju_portfolio.pdf](portfolio/jeju_portfolio.pdf) |
+| 3 | Vercel 배포 주소와 QR 코드 | 웹 <https://jeju-hanbakwi-web.vercel.app> · 서버 <https://jeju-hanbakwi-api.vercel.app/docs> · [QR 그림](portfolio/qr_web.png) |
+| 4 | 포트폴리오 pptx (38장) | [portfolio/jeju_portfolio.pptx](portfolio/jeju_portfolio.pptx) |
+
+<img src="portfolio/qr_web.png" alt="웹으로 가는 QR 코드" width="180">
+
 ## 문서
 
 | 문서 | 내용 |
