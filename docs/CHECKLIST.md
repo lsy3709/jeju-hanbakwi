@@ -333,6 +333,7 @@ Supabase 무료 프로젝트(서울)와 Vercel 프로젝트 둘(서버 · 웹)�
 | 에뮬레이터 기동 | ✅ 단, 저장된 상태로 켜면 꺼짐 → README "에뮬레이터가 바로 꺼질 때" |
 | 같은 `env.json`(`API_URL` = `10.0.2.2`)으로 크롬 · 에뮬레이터 모두 연결 (2026-11-24) | ✅ 고치기 전: 크롬이 `10.0.2.2:8000` 으로 `ERR_CONNECTION_TIMED_OUT` → "서버에 연결할 수 없어요" 재현. 고친 뒤(`config.dart` 의 `resolveApiUrl`, 테스트 6건): 크롬 홈 · 에뮬레이터(Pixel_Tablet) 홈에 날씨 · 사진 카드. analyze 0 · 테스트 115건 |
 | 앱 지도 출처 표기에 `©` 가 한 번만 보임 (2026-11-24) | ✅ 고치기 전: `flutter_map | © © OpenStreetMap contributors`(`SimpleAttributionWidget` 이 `©` 를 붙이는데 글자에도 `©`). 고친 뒤 크롬 탐색 지도에서 `flutter_map | © OpenStreetMap contributors`. analyze 0 · 테스트 115건. `step-5` ~ `step-7` · `main-commented` 도 같은 줄 수정 |
+| 앱 웹에서 구글 로그인 뒤 지금 주소로 돌아옴 (2026-11-24) | 🔶 고치기 전: 웹에서 `redirectTo` 를 비워 보내 요청에 `redirect_to` 가 없음 → Supabase 는 Site URL(Next.js 웹)로 돌려보냄. 고친 뒤(`auth_service.dart` 의 `loginRedirectUrl`, 테스트 3건): 크롬에서 요청에 `redirect_to=http://localhost:5063` 확인. analyze 0 · 테스트 118건. 실제 Supabase 로 로그인 왕복은 앱 웹 빌드 배포 때 확인(⏳) — `docs/deploy.md` 5단계에 Redirect URLs 등록 안내 추가 |
 | 앱 실행 안내서 `docs/app-run.md` (Android Studio 로 에뮬레이터 만들기 · 명령어 · 실제 폰) | ✅ 명령 부분(`flutter emulators` · `emulator -avd ... -no-snapshot` · `flutter run`)은 이 PC 에서 실행 확인 / ⏳ Android Studio 화면 메뉴는 2025.1 기준으로 적음(새 PC 에서 처음부터 따라 해 보기 필요) · 실제 폰 미확인 |
 
 ## 사람이 해야 하는 일
@@ -358,7 +359,7 @@ Supabase 무료 프로젝트(서울)와 Vercel 프로젝트 둘(서버 · 웹)�
 | 구분 | 한 일 | 검사 | 화면 확인 |
 |---|---|---|---|
 | 웹 | MapLibre GL JS 로 땅의 높낮이(AWS Terrain Tiles)와 그림자를 그리고, Three.js 로 돌하르방 모델(`web/public/models/dolhareubang.glb`)을 한라산에 세움. 계산 · 설정은 `web/src/lib/map3d.ts`, 화면은 `SpotMap3D.tsx` | lint · 타입 · 테스트 93건 · 빌드 | ✅ 로컬(서버 + 로컬 DB 68건): 한라산과 오름의 굴곡, 모델, 핀 20개, 핀을 누르면 "자세히" 링크. 폭 375 에서도 확인 |
-| 모델 | 블렌더 5.3 으로 만듦 — 구 · 원기둥을 합쳐 몸통 · 머리 · 모자 · 눈 · 코 · 손을 만들고 현무암 재질을 입혀 glb 로 내보냄. `blender --background --python tools/make_model_blender.py`, 원본은 `tools/dolhareubang.blend` | 스크립트 실행(키 1.000m, 181KB) | ✅ 지도 위에 보임(작아서 얼굴은 확대해야 보임) |
+| 모델 | 블렌더 5.3 으로 만듦 — 구 · 원기둥 열두 개(기둥 몸통 · 어깨 · 머리 · 벙거지 · 눈 · 코 · 입 · 손)를 합치고 현무암 재질을 입혀 glb 로 내보냄. `blender --background --python tools/make_model_blender.py`, 원본은 `tools/dolhareubang.blend` | 스크립트 실행(키 1.000m, 229KB), 블렌더 렌더로 모양 확인 | ✅ 웹 · 앱(크롬 실행)의 지도 위에 보임. 캡처는 `docs/3d-map.md` |
 | 앱 | 탐색의 보는 방식에 "3D" 추가. 웹의 `/embed/map3d` 를 웹뷰(`webview_flutter`)로 띄우고 고른 필터를 주소로 넘김. 웹 주소는 `env.json` 의 `WEB_URL`(`resolveWebUrl`) | analyze 0 · 테스트 125건 · 디버그 apk 빌드 | ✅ 크롬 실행: 3D 지도와 테마 필터(오름 → 핀 10개) / ✅ 에뮬레이터(Pixel 4, 로컬 서버 · 로컬 웹): 지형 · 모델 · 핀 |
 
 - `maplibre-gl` 은 5 버전을 씁니다. 6 버전은 Next.js(Turbopack) 개발 서버에서 워커 파일을 못 불러와 땅이 평평하게 나왔습니다.
