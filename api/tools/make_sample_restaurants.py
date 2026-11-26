@@ -20,6 +20,8 @@ from tools.sync_spots import load_places, load_sample
 from transform import FOOD_PHOTOS, area_by_position
 
 OUT = Path(__file__).parent.parent / "data" / "sample_restaurants.json"
+# 분류마다 20장씩 골라 둔 음식 사진(위키미디어 공용, 공개 라이선스). 식당마다 한 장씩 차례로 줍니다.
+PHOTOS = Path(__file__).parent.parent / "data" / "food_photos.json"
 PER_CATEGORY = 20  # 분류마다 고를 수 → 다섯 분류 100곳
 QUERY = f"""[out:json][timeout:90];
 (
@@ -129,12 +131,18 @@ def main() -> int:
     unique = [item for item in drop_duplicates(candidates, taken) if item["id"] not in taken_ids]
     print(f"쓸 수 있는 곳 {len(candidates)}건 → 중복을 빼고 {len(unique)}건")
 
+    photos = json.loads(PHOTOS.read_text(encoding="utf-8"))
     foods = []
     for category in FOOD_CATEGORIES:
         pool = [item for item in unique if item["category"] == category]
         chosen = pick_evenly(pool, PER_CATEGORY)
         print(f"- {category}: 후보 {len(pool)}곳 → {len(chosen)}곳 ({FOOD_PHOTOS[category]['file']})")
-        foods.extend({key: value for key, value in food.items() if key != "rank"} for food in chosen)
+        for index, food in enumerate(chosen):
+            # 식당마다 다른 사진을 한 장씩. 그 식당을 찍은 사진이 아니라 같은 종류 음식의 예시 사진입니다.
+            photo = photos[category][index % len(photos[category])]
+            row = {key: value for key, value in food.items() if key != "rank"}
+            row["photo"] = {key: photo[key] for key in ("file", "credit", "source_url")}
+            foods.append(row)
     OUT.write_text(json.dumps(foods, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"만들었어요: {OUT} · {len(foods)}곳")
     return 0

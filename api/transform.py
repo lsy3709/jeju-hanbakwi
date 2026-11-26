@@ -119,7 +119,8 @@ def to_place_row(raw: dict) -> dict | None:
         return None
     word, indoor = _PLACE_WORDS[category]
     area = raw.get("area") or area_by_position(lat, lng)
-    photo = _SIDE_PHOTOS[category]
+    # 식당은 한 곳마다 다른 사진을 줍니다(tools/make_sample_restaurants.py 가 photo 를 붙임). 없으면 분류의 대표 사진.
+    photo = raw.get("photo") or _SIDE_PHOTOS[category]
     phone = _text(raw, "phone")
     return {
         "source": "osm",  # OpenStreetMap
@@ -133,7 +134,7 @@ def to_place_row(raw: dict) -> dict | None:
         "image_url": "/photos/" + photo["file"],
         "image_credit": photo["credit"],
         "image_source_url": photo["source_url"],
-        "overview": f"{area}에 있는 {word}입니다." + (f" 전화 {phone}" if phone else "") + " 사진은 분류를 대표하는 예시 사진입니다.",
+        "overview": f"{area}에 있는 {word}입니다." + (f" 전화 {phone}" if phone else "") + (" 사진은 이 식당이 아니라 같은 종류 음식의 예시 사진입니다." if raw.get("photo") else " 사진은 분류를 대표하는 예시 사진입니다."),
         "one_liner": f"{area}의 {word}",
         "theme_tags": [],
         "indoor": indoor,

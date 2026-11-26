@@ -92,3 +92,110 @@
 | `S065.jpg` | 성산일출축제 | Sukkim1996 | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Sunrise_with_Seongsan_Ilchulbong.jpg) |
 | `S066.jpg` | 서귀포유채꽃축제 | Joycekim77 | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Canola_Flowers_Jeju_Island-_%EC%A0%9C%EC%A3%BC%EB%8F%84_%EC%9C%A0%EC%B1%84%EA%BD%83.jpg) |
 | `S067.jpg` | 제주레일바이크 | ProjectManhattan | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Jeju_Rail_Bike.jpg) |
+
+## 추천 식당 한 곳마다의 사진 (100장, 2026-11-26 추가)
+
+추천 식당 100곳은 사진이 모두 다릅니다. 분류마다 20장씩 위키미디어 공용의 공개 라이선스 음식 사진을 골라 식당마다 한 장씩 주었습니다. **그 식당을 찍은 사진이 아니라, 같은 종류 음식의 예시 사진입니다.** 파일은 `api/static/photos/places/food/` 에 있고(640×480 으로 가운데를 잘라 줄인 것), 목록은 `api/data/food_photos.json` 입니다. 상표 · 가격표가 크게 보이는 사진과 서로 겹치는 사진은 눈으로 보고 뺐습니다.
+
+| 파일 | 분류 | 저작자 | 라이선스 | 원본 |
+|---|---|---|---|---|
+| `places/food/korean_01.jpg` | 한식 | Uwe Brodrecht | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:1667_-_Nordkorea_2015_-_von_K%C3%A4song_nach_Pj%C3%B6ngjang_(22967399002).jpg) |
+| `places/food/korean_02.jpg` | 한식 | Marufish from Alor Setar, Malaysia | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:2003_1114CZ_(2699639951).jpg) |
+| `places/food/korean_03.jpg` | 한식 | sangmins | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Haejangguk_(hangover_soup).jpg) |
+| `places/food/korean_04.jpg` | 한식 | Arumdaum | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Gugil_Ttaro_gukbap.jpg) |
+| `places/food/korean_05.jpg` | 한식 | 최광모 | CC0 | [보기](https://commons.wikimedia.org/wiki/File:20150508%EC%B5%9C%EA%B4%91%EB%AA%A8DSC09689.JPG) |
+| `places/food/korean_06.jpg` | 한식 | Jinho Jung | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Hwangtae-haejang-guk.jpg) |
+| `places/food/korean_07.jpg` | 한식 | Dr 방원장 | CC BY 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Gul-gukbap.jpg) |
+| `places/food/korean_08.jpg` | 한식 | 최광모 | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:20150214-20150219%EC%B5%9C%EA%B4%91%EB%AA%A8C58.JPG) |
+| `places/food/korean_09.jpg` | 한식 | egg (Hong, Yun Seon) | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_soup-Bogeo_haejangguk-01.jpg) |
+| `places/food/korean_10.jpg` | 한식 | Mar del Este | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_soup_Sundae_gukbap_01.jpg) |
+| `places/food/korean_11.jpg` | 한식 | egg (Hong, Yun Seon) | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_soup-Gukbap-01.jpg) |
+| `places/food/korean_12.jpg` | 한식 | Suez (sophia) | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Cuisine_of_North_Korea_01.jpg) |
+| `places/food/korean_13.jpg` | 한식 | by lwy | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_soup-Gulgukbap-01.jpg) |
+| `places/food/korean_14.jpg` | 한식 | Korea.net / Korean Culture and Information Service (Jeon Han | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Gimhaesi_City_41.jpg) |
+| `places/food/korean_15.jpg` | 한식 | Jun Seita from Palo Alto, CA, U.S. | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Asiana_Airlines_NRT_to_ICN_Business_Class_Lunch-_Bibimbap_(8300647291).jpg) |
+| `places/food/korean_16.jpg` | 한식 | pcamp | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_soup-Sundae_gukbap-01.jpg) |
+| `places/food/korean_17.jpg` | 한식 | Korea.net / Korean Culture and Information Service (Jeon Han | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:KORAIL_Gangjin_Gun_05.jpg) |
+| `places/food/korean_18.jpg` | 한식 | Jirka Matousek | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Bibim-bap_2.jpg) |
+| `places/food/korean_19.jpg` | 한식 | No machine-readable author provided. Warszk assumed (based o | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Korea_style_meal.jpg) |
+| `places/food/korean_20.jpg` | 한식 | Mar del Este This photo was taken with Samsung Galaxy S4 | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_cuisine_hanjeongsik_Damyang_South_Korea.jpg) |
+| `places/food/seafood_01.jpg` | 해산물 | 최광모 | CC0 | [보기](https://commons.wikimedia.org/wiki/File:2015%EB%85%84_3%EC%9B%94_20%EC%9D%BC_%EB%B4%89%ED%8F%AC%EB%A8%B8%EA%B5%AC%EB%A6%AC%EC%A7%91_%EB%AC%BC%ED%9A%8C_DSC07477.jpg) |
+| `places/food/seafood_02.jpg` | 해산물 | 김형찬 | CC BY 2.0 kr | [보기](https://commons.wikimedia.org/wiki/File:Jaridom-mulhoe.jpg) |
+| `places/food/seafood_03.jpg` | 해산물 | 사람냄새 | CC BY 2.0 kr | [보기](https://commons.wikimedia.org/wiki/File:Jeonbok-mulhoe_2.jpg) |
+| `places/food/seafood_04.jpg` | 해산물 | by Tong-Seob Kim at Flickr from Incheon, South Korea | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_cuisine-Jeju-Jari_mulhoe-Sliced_raw_damselfish_with_spicy_sauce-01.jpg) |
+| `places/food/seafood_05.jpg` | 해산물 | 대경라이프 | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Mulhoe_1.jpg) |
+| `places/food/seafood_06.jpg` | 해산물 | 대경라이프 | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Mulhoe_2.jpg) |
+| `places/food/seafood_07.jpg` | 해산물 | 사람냄새 | CC BY 2.0 kr | [보기](https://commons.wikimedia.org/wiki/File:Mulhoe.jpg) |
+| `places/food/seafood_08.jpg` | 해산물 | by LWY at flickr | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean.cuisine-Hoe-01.jpg) |
+| `places/food/seafood_09.jpg` | 해산물 | Gaël Chardon | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_cuisine-Hoe-03.jpg) |
+| `places/food/seafood_10.jpg` | 해산물 | Rhett Sutphin | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_cuisine-Hoe-04.jpg) |
+| `places/food/seafood_11.jpg` | 해산물 | by karendotcom127 | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean.cuisine-Saengseon_gui-01.jpg) |
+| `places/food/seafood_12.jpg` | 해산물 | Brücke-Osteuropa | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Haemultang.jpg) |
+| `places/food/seafood_13.jpg` | 해산물 | Jaydub666 | CC BY 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Home_Made_Haemultang.jpg) |
+| `places/food/seafood_14.jpg` | 해산물 | by &lt;==Manji==&gt; at Flickr | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_grilled_abalone-Jeonbok_gui-01.jpg) |
+| `places/food/seafood_15.jpg` | 해산물 | Daniel Moskowitz | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Godeungeo-gui.jpg) |
+| `places/food/seafood_16.jpg` | 해산물 | by david&amp;alina at Flickr | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_cuisine-Godeungeo_gui-01.jpg) |
+| `places/food/seafood_17.jpg` | 해산물 | lazy fri13th | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Ganjang-gejang_1.jpg) |
+| `places/food/seafood_18.jpg` | 해산물 | Jordi Sanchez | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Jogae-gui.jpg) |
+| `places/food/seafood_19.jpg` | 해산물 | bryan... | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Jogae-gui_4.jpg) |
+| `places/food/seafood_20.jpg` | 해산물 | Korea.net / Korean Culture and Information Service | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:KOCIS_maeuntang,_spicy_fish_soup_(5035733642).jpg) |
+| `places/food/bbq_01.jpg` | 고기구이 | 毒島みるく | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Roasted_beef_ribs_on_rice_lunch_box_of_NewDays.jpg) |
+| `places/food/bbq_02.jpg` | 고기구이 | Judgefloro | CC0 | [보기](https://commons.wikimedia.org/wiki/File:6685Baliuag_Bulacan_Landmarks_during_the_2020_coronavirus_pandemic_07.jpg) |
+| `places/food/bbq_03.jpg` | 고기구이 | Minseong Kim | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Beef_Bulgogi(BBQ).jpg) |
+| `places/food/bbq_04.jpg` | 고기구이 | Debbie Tingzon | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Bul-gogi.jpg) |
+| `places/food/bbq_05.jpg` | 고기구이 | pelican from Tokyo, Japan | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Bulgogi_(32834714011).jpg) |
+| `places/food/bbq_06.jpg` | 고기구이 | pelican from Tokyo, Japan | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Bulgogi_(5019171427).jpg) |
+| `places/food/bbq_07.jpg` | 고기구이 | 국립국어원 | CC BY-SA 2.0 kr | [보기](https://commons.wikimedia.org/wiki/File:Bulgogi_2.jpg) |
+| `places/food/bbq_08.jpg` | 고기구이 | anokarina | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Bulgogi_5.jpg) |
+| `places/food/bbq_09.jpg` | 고기구이 | anokarina | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Bulgogi_6.jpg) |
+| `places/food/bbq_10.jpg` | 고기구이 | stu_spivack | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Bulgogi_8.jpg) |
+| `places/food/bbq_11.jpg` | 고기구이 | Graham Hills | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Bulgogi_9.jpg) |
+| `places/food/bbq_12.jpg` | 고기구이 | Cinnamontrees | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Bulgogi_cooked.jpg) |
+| `places/food/bbq_13.jpg` | 고기구이 | Brücke-Osteuropa | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Bulgogi_in_Seoul.jpg) |
+| `places/food/bbq_14.jpg` | 고기구이 | by hellochris | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean.cuisine-Samgyeopsal-01.jpg) |
+| `places/food/bbq_15.jpg` | 고기구이 | jinsoo jang | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui.jpg) |
+| `places/food/bbq_16.jpg` | 고기구이 | ProjectManhattan | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Samgyeopsal_2.jpg) |
+| `places/food/bbq_17.jpg` | 고기구이 | star5112 (a flickr user) | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean.food-Galbi-01.jpg) |
+| `places/food/bbq_18.jpg` | 고기구이 | ayustety (a flickr user) | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean.food-Galbi-03.jpg) |
+| `places/food/bbq_19.jpg` | 고기구이 | mino park | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Moksal-gui_2.jpg) |
+| `places/food/bbq_20.jpg` | 고기구이 | me | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_barbecue-Samgyeopsal-08.jpg) |
+| `places/food/noodle_01.jpg` | 국수 | Seefooddiet | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Gogi-guksu_2024.jpg) |
+| `places/food/noodle_02.jpg` | 국수 | chomjong | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Kong-guksu_1.jpg) |
+| `places/food/noodle_03.jpg` | 국수 | 최광모 | CC0 | [보기](https://commons.wikimedia.org/wiki/File:20150912%EC%B5%9C%EA%B4%91%EB%AA%A8DSC02772.JPG) |
+| `places/food/noodle_04.jpg` | 국수 | 신동혁 | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Gogi-guksu.jpg) |
+| `places/food/noodle_05.jpg` | 국수 | chomjong | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Kong-guksu_2.jpg) |
+| `places/food/noodle_06.jpg` | 국수 | 최광모 | CC0 | [보기](https://commons.wikimedia.org/wiki/File:20151003%EB%A7%89%EA%B5%AD%EC%88%98RX10DSC03107.jpg) |
+| `places/food/noodle_07.jpg` | 국수 | Ksait | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Gogiguksu_gulmak.jpg) |
+| `places/food/noodle_08.jpg` | 국수 | Uri Tours | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:PIFF_2014_Opening_Ceremony_Dinner_for_Festival_Delegates_(15170795648).jpg) |
+| `places/food/noodle_09.jpg` | 국수 | lazy fri13th | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Kong-guksu_3.jpg) |
+| `places/food/noodle_10.jpg` | 국수 | 최광모 | CC0 | [보기](https://commons.wikimedia.org/wiki/File:20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC03105.JPG) |
+| `places/food/noodle_11.jpg` | 국수 | 채지형 | CC BY 4.0 | [보기](https://commons.wikimedia.org/wiki/File:%EC%A0%9C%EC%A3%BC%EB%8F%84_%EA%B3%A0%EA%B8%B0%EA%B5%AD%EC%88%98_12.jpg) |
+| `places/food/noodle_12.jpg` | 국수 | KKPCW | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:%E4%B8%B8%E6%BA%90%E5%86%B7%E9%BA%BA.jpg) |
+| `places/food/noodle_13.jpg` | 국수 | Hyeonyoung Lee 21 | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Kong-guksu_made_from_Paju_Jangdan_Beans.jpg) |
+| `places/food/noodle_14.jpg` | 국수 | lazy fri13th | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Kong-guksu.jpg) |
+| `places/food/noodle_15.jpg` | 국수 | 최광모 | CC0 | [보기](https://commons.wikimedia.org/wiki/File:20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC03108.JPG) |
+| `places/food/noodle_16.jpg` | 국수 | vedanti | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Kongguksu_(soybean_cold_noodle).jpg) |
+| `places/food/noodle_17.jpg` | 국수 | lazy fri13th | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Deul-gireum-mak-guksu_1.jpg) |
+| `places/food/noodle_18.jpg` | 국수 | lazy fri13th | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Deul-gireum-mak-guksu.jpg) |
+| `places/food/noodle_19.jpg` | 국수 | by Junho Jung at Flickr from South Korea | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Korea-Gangneung-Makguksu-Cold_buckwheat_noodle_dish-01.jpg) |
+| `places/food/noodle_20.jpg` | 국수 | pcamp | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Korean_noodles-Makguksu-01.jpg) |
+| `places/food/cafe_01.jpg` | 카페 | Mykim0918 | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:%22a_cup_of_cpffee_at_munsan_coffee_cafe_2021_from145.jpg%22.jpg) |
+| `places/food/cafe_02.jpg` | 카페 | 국립국어원 | CC BY-SA 2.0 kr | [보기](https://commons.wikimedia.org/wiki/File:Bingsu_2.jpg) |
+| `places/food/cafe_03.jpg` | 카페 | Kuba Bożanowski from Warsaw, Poland | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:And_another!_(3146040967).jpg) |
+| `places/food/cafe_04.jpg` | 카페 | Laliv g | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Bingsu_dessert_Tel_Aviv.jpg) |
+| `places/food/cafe_05.jpg` | 카페 | 森正洋デザイン研究所 (Mori Masahiro Design Studio, LLC.) | CC BY 3.0 | [보기](https://commons.wikimedia.org/wiki/File:1958_CoffeeSet_Masahiro-Mori.jpg) |
+| `places/food/cafe_06.jpg` | 카페 | Fastily | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Apple_latte_art_2_2024-02-02.jpg) |
+| `places/food/cafe_07.jpg` | 카페 | Gerard van de Bruinhorst | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:ASC_Leiden_-_Rwanda_2021_-_056_-_A_decorative_white_tree_of_cream_in_a_cup_of_coffee_-_Kigali.jpg) |
+| `places/food/cafe_08.jpg` | 카페 | Peachyeung316 | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:A_Cappuccino_at_Amante.jpg) |
+| `places/food/cafe_09.jpg` | 카페 | Tmannya | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Bingsu.jpg) |
+| `places/food/cafe_10.jpg` | 카페 | Photograph by Mike Peel (www.mikepeel.net). | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:At_Vienna_2025_480.jpg) |
+| `places/food/cafe_11.jpg` | 카페 | Peachyeung316 | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:A_cup_of_coffee_in_Mohk.jpg) |
+| `places/food/cafe_12.jpg` | 카페 | Infrogmation of New Orleans | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Black_Sesame_Bingsu_Terrytown_LA.JPG) |
+| `places/food/cafe_13.jpg` | 카페 | Athena Lam thecupandtheroad | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Athena_Lam_2016_(Unsplash).jpg) |
+| `places/food/cafe_14.jpg` | 카페 | Geun young Kim | CC0 | [보기](https://commons.wikimedia.org/wiki/File:Cheese-bingsu.jpg) |
+| `places/food/cafe_15.jpg` | 카페 | Shixart1985 | CC BY 2.0 | [보기](https://commons.wikimedia.org/wiki/File:A_person_holds_a_cup_of_cappuccino_featuring_intricate_latte_art,_sitting_at_a_caf%C3%A9_table.jpg) |
+| `places/food/cafe_16.jpg` | 카페 | CYAN | CC BY-SA 4.0 | [보기](https://commons.wikimedia.org/wiki/File:Chocolate_bingsu_0a.jpg) |
+| `places/food/cafe_17.jpg` | 카페 | Koperczak (talk) 12:35, 8 March 2009 (UTC) | Public domain | [보기](https://commons.wikimedia.org/wiki/File:19th_century_tea-_and_coffee-cups_anaglyph.jpg) |
+| `places/food/cafe_18.jpg` | 카페 | Guillaume Blum | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:BC_trip_(9533284911).jpg) |
+| `places/food/cafe_19.jpg` | 카페 | bryan... from Taipei, Taiwan | CC BY-SA 2.0 | [보기](https://commons.wikimedia.org/wiki/File:Food_(31881044841).jpg) |
+| `places/food/cafe_20.jpg` | 카페 | Pemba.mpimaji | CC BY-SA 3.0 | [보기](https://commons.wikimedia.org/wiki/File:Bem_Vindo_1.jpg) |

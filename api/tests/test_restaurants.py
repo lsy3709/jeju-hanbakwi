@@ -5,6 +5,7 @@ from services.nearby import distance_km, nearest
 from tests.fakes import FakeRepo
 from tools.make_sample_restaurants import drop_duplicates, food_category
 from tools.sync_spots import load_places, load_restaurants, load_sample, to_place_rows
+from services.photos import PHOTO_DIR
 from transform import FOOD_PHOTOS, to_place_row
 
 RAW = {"id": "n900", "title": "올래국수", "category": "국수", "area": "제주시", "address": "제주시 귀아랑길 24",
@@ -135,3 +136,24 @@ def test_nearby_restaurants_address(client, repo):
 def test_nearby_restaurants_is_empty_before_data_is_loaded(client, repo):
     spot = repo.list_spots(size=1)[0][0]
     assert client.get(f"/spots/{spot['id']}/restaurants").json() == []
+
+
+# ---------- 식당마다 다른 사진 ----------
+def test_to_place_row_uses_the_photo_given_with_the_item():
+    photo = {"file": "places/food/noodle_01.jpg", "credit": "누군가 · CC0 · Wikimedia Commons",
+             "source_url": "https://commons.wikimedia.org/wiki/File:Some.jpg"}
+    row = to_place_row({**RAW, "photo": photo})
+    assert row["image_url"] == "/photos/places/food/noodle_01.jpg"
+    assert row["image_credit"] == photo["credit"] and row["image_source_url"] == photo["source_url"]
+    assert "예시 사진" in row["overview"]                      # 그 식당의 실제 사진이 아님을 밝힘
+
+
+def test_every_sample_restaurant_has_its_own_photo():
+    rows = to_place_rows(load_restaurants())
+    urls = [row["image_url"] for row in rows]
+    assert len(set(urls)) == len(urls) == 100                  # 100곳의 사진이 모두 다름
+    for row in rows:
+        assert (PHOTO_DIR / row["image_url"].removeprefix("/photos/")).exists(), row["image_url"]
+        assert row["image_credit"] and "Wikimedia Commons" in row["image_credit"]
+        assert row["image_source_url"].startswith("https://commons.wikimedia.org/wiki/File:")
+

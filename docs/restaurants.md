@@ -48,7 +48,7 @@ python -m tools.sync_spots --restaurants
 - **분류를 골랐을 때만 목록에 나옵니다.** 분류를 고르지 않은 목록(홈 추천, 탐색의 처음 화면)에는 식당이 섞이지 않습니다. 전체 건수도 여행지 수 그대로입니다.
 - **AI 일정의 후보에 들어가지 않습니다.** 일정에는 여행지만 나옵니다.
 - **상세 화면의 "근처 추천 식당"** 에는 그 장소에서 직선 거리가 가까운 순으로 네 곳이 나옵니다. 식당 데이터를 넣지 않았으면 이 부분만 보이지 않습니다.
-- 사진은 곳마다 구할 수 없어 분류마다 한 장을 함께 씁니다(`api/static/photos/places/food_*.jpg`). 그 식당의 실제 모습이 아닙니다.
+- 사진은 식당마다 다릅니다. 분류마다 공개 라이선스 음식 사진 20장을 골라 한 장씩 주었습니다(`api/static/photos/places/food/`, 목록은 `api/data/food_photos.json`). **그 식당을 찍은 사진이 아니라 같은 종류 음식의 예시 사진입니다.** 저작자와 라이선스는 [photo-credits.md](photo-credits.md)에 100장 모두 적었습니다.
 
 ## 어디를 보면 되나
 
@@ -56,7 +56,7 @@ python -m tools.sync_spots --restaurants
 |---|---|
 | 분류 이름 | `api/constants.py` 의 `FOOD_CATEGORIES` (여행지가 아닌 분류 모두는 `SIDE_CATEGORIES`) |
 | 지도 자료 → 분류 정하기 · 중복 빼기 | `api/tools/make_sample_restaurants.py` 의 `food_category`, `drop_duplicates` |
-| DB 한 줄로 바꾸기 · 대표 사진 | `api/transform.py` 의 `to_place_row`, `FOOD_PHOTOS` |
+| DB 한 줄로 바꾸기 · 사진 | `api/transform.py` 의 `to_place_row`(한 건에 `photo` 가 있으면 그것을, 없으면 분류 대표 사진 `FOOD_PHOTOS`), 식당마다의 사진 목록 `api/data/food_photos.json` |
 | 가까운 순으로 고르기 | `api/services/nearby.py` 의 `distance_km`, `nearest` |
 | 주소 | `GET /spots/{id}/restaurants` (`api/routers/spots.py`), `GET /meta` 의 `food_categories` |
 | 웹 | 탐색의 "추천 식당" 칩(`web/src/app/explore/page.tsx`), 상세의 `web/src/components/NearbyRestaurants.tsx` |
@@ -129,4 +129,14 @@ python -m tools.make_sample_restaurants
 
 - 이 확인에서 찾아 고친 것: 식당 25곳의 주소가 번지뿐("23")이거나 비어 있었습니다. 길 이름이 없는 곳은 지역 이름(제주시 · 서귀포시 · 동부 · 서부)으로 바꾸고 로컬 · 운영 DB 에 다시 넣었습니다. 좌표와 100곳의 구성은 그대로입니다.
 - 좌표 대조는 분류마다 한 곳씩 다섯 곳만 했습니다. 100곳 모두를 하나씩 대조하지는 않았습니다.
+
+## 식당마다 다른 사진 (2026-11-26)
+
+처음에는 분류마다 사진 한 장을 함께 써서, 같은 분류의 식당 20곳이 모두 같은 그림이었습니다. 식당마다 다른 사진으로 바꿨습니다.
+
+![분류별 목록 — 한식 · 해산물 · 고기구이 · 국수 · 카페, 사진이 모두 다름](img/food_photos_sheet.jpg)
+
+- 위키미디어 공용에서 공개 라이선스(CC0 · 퍼블릭 도메인 · CC BY · CC BY-SA) 음식 사진을 분류마다 모아, 눈으로 보고 20장씩 골랐습니다. 상표나 가격표가 크게 보이는 것, 기내식처럼 식당 음식이 아닌 것, 서로 겹치는 것은 뺐습니다.
+- `tools/make_sample_restaurants.py` 가 분류 안에서 차례로 한 장씩 붙입니다. 테스트가 100곳의 사진 주소가 모두 다르고 파일과 출처가 있는지 검사합니다.
+- **그 식당의 실제 사진이 아닙니다.** 상세 화면의 소개 글과 "근처 추천 식당" 아래에 "같은 종류 음식의 예시 사진"이라고 적었습니다.
 
