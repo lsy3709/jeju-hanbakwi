@@ -4,7 +4,7 @@
 
 | 번호 | 제출 항목 | 파일 · 주소 | 설명 |
 |---|---|---|---|
-| 1 | 기능 구현 · 소개 영상 | [jeju_intro.mp4](jeju_intro.mp4) | 2분 29초. 배포된 웹을 실제 브라우저로 조작하며 녹화하고, 무료 음성 합성으로 해설과 자막을 붙임 |
+| 1 | 기능 구현 · 소개 영상 | [jeju_intro.mp4](jeju_intro.mp4) | 1분 47초. 배포된 웹을 실제 브라우저로 조작하며 녹화하고, 무료 음성 합성으로 해설과 자막을 붙임 |
 | 2 | 포트폴리오 | [jeju_portfolio.pdf](jeju_portfolio.pdf) | A4 31쪽. 개요 · 구조 · 기능 · 화면 · DB · 테스트 · 배포 |
 | 3 | Vercel 배포 주소와 QR 코드 | 웹 <https://jeju-hanbakwi-web.vercel.app> · 서버 <https://jeju-hanbakwi-api.vercel.app/docs> · [qr_web.png](qr_web.png) | QR 을 휴대폰 카메라로 찍으면 웹이 열림 |
 | 4 | 포트폴리오 pptx | [jeju_portfolio.pptx](jeju_portfolio.pptx) | 16:9, 38장. 발표할 때 화면에 띄우는 자료 |

@@ -227,6 +227,25 @@ def mux(raw, marks):
     subprocess.run(cmd, check=True)
 
 
+def tighten(lengths, marks):
+    """화면이 뜨기를 기다리는 무음 구간을 잘라 냅니다. 해설 앞 1.2초 ~ 해설 뒤 1.4초만 남깁니다."""
+    extra = {"night": 3.2, "result": 2.2}          # 화면 변화를 더 보여 줄 장면
+    keep = []
+    for name, at in marks:
+        a, b = max(0, at - 1.2), at + lengths[name] + extra.get(name, 1.4)
+        if keep and a <= keep[-1][1]:
+            keep[-1][1] = max(keep[-1][1], b)
+        else:
+            keep.append([a, b])
+    v = "".join(f"[0:v]trim={a:.2f}:{b:.2f},setpts=PTS-STARTPTS[v{i}];[0:a]atrim={a:.2f}:{b:.2f},asetpts=PTS-STARTPTS[a{i}];" for i, (a, b) in enumerate(keep))
+    graph = v + "".join(f"[v{i}][a{i}]" for i in range(len(keep))) + f"concat=n={len(keep)}:v=1:a=1[v][a]"
+    full = WORK / "full.mp4"
+    OUT.replace(full)
+    subprocess.run([FFMPEG, "-y", "-v", "error", "-i", str(full), "-filter_complex", graph, "-map", "[v]", "-map", "[a]",
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "23", "-preset", "medium", "-c:a", "aac", "-b:a", "128k",
+                    "-movflags", "+faststart", str(OUT)], check=True)
+
+
 def main():
     if WORK.exists():
         shutil.rmtree(WORK)
@@ -236,6 +255,8 @@ def main():
     raw, marks = record(lengths)
     json.dump({"web": WEB, "voice": VOICE, "marks": marks}, open(WORK / "marks.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     mux(raw, marks)
+    json.dump(lengths, open(WORK / "lengths.json", "w", encoding="utf-8"))
+    tighten(lengths, marks)
     print("만든 파일:", OUT, f"{OUT.stat().st_size / 1e6:.1f}MB")
 
 

@@ -26,7 +26,7 @@
 
 | 번호 | 무엇 | 어디 |
 |---|---|---|
-| 1 | 기능 구현 · 소개 영상 (2분 29초, 음성 해설 · 자막) | [portfolio/jeju_intro.mp4](portfolio/jeju_intro.mp4) |
+| 1 | 기능 구현 · 소개 영상 (1분 47초, 음성 해설 · 자막) | [portfolio/jeju_intro.mp4](portfolio/jeju_intro.mp4) |
 | 2 | 포트폴리오 (PDF 31쪽) | [portfolio/jeju_portfolio.pdf](portfolio/jeju_portfolio.pdf) |
 | 3 | Vercel 배포 주소와 QR 코드 | 웹 <https://jeju-hanbakwi-web.vercel.app> · 서버 <https://jeju-hanbakwi-api.vercel.app/docs> · [QR 그림](portfolio/qr_web.png) |
 | 4 | 포트폴리오 pptx (38장) | [portfolio/jeju_portfolio.pptx](portfolio/jeju_portfolio.pptx) |
