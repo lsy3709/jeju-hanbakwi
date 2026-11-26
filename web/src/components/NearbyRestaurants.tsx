@@ -36,7 +36,7 @@ export function NearbyRestaurants({ spotId }: { spotId: number }) {
           </li>
         ))}
       </ul>
-      <p className="text-xs text-muted">직선 거리가 가까운 순서입니다. 사진은 분류를 대표하는 예시 사진입니다.</p>
+      <p className="text-xs text-muted">직선 거리가 가까운 순서입니다. 사진은 그 식당이 아니라 같은 종류 음식의 예시 사진입니다.</p>
     </section>
   );
 }

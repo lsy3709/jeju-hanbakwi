@@ -7,7 +7,12 @@
   "address": "제주시  일주동로 26",
   "lat": 33.512345,
   "lng": 126.550145,
-  "phone": "+82 64 726 3150"
+  "phone": "+82 64 726 3150",
+  "photo": {
+   "file": "places/food/korean_01.jpg",
+   "credit": "Uwe Brodrecht · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:1667_-_Nordkorea_2015_-_von_K%C3%A4song_nach_Pj%C3%B6ngjang_(22967399002).jpg"
+  }
  },
  {
   "id": "n8441494525",
@@ -17,7 +22,12 @@
   "address": "서귀포시  중앙로48번길 17-1",
   "lat": 33.2494,
   "lng": 126.563641,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_02.jpg",
+   "credit": "Marufish from Alor Setar, Malaysia · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:2003_1114CZ_(2699639951).jpg"
+  }
  },
  {
   "id": "n8441490821",
@@ -27,7 +37,12 @@
   "address": "서귀포시  산성효자로 40",
   "lat": 33.45184,
   "lng": 126.907233,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_03.jpg",
+   "credit": "sangmins · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Haejangguk_(hangover_soup).jpg"
+  }
  },
  {
   "id": "n8441493773",
@@ -37,7 +52,12 @@
   "address": "서귀포시  하모항구로 44",
   "lat": 33.217854,
   "lng": 126.249928,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_04.jpg",
+   "credit": "Arumdaum · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Gugil_Ttaro_gukbap.jpg"
+  }
  },
  {
   "id": "n13953608525",
@@ -47,7 +67,12 @@
   "address": "제주시",
   "lat": 33.511631,
   "lng": 126.530367,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_05.jpg",
+   "credit": "최광모 · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:20150508%EC%B5%9C%EA%B4%91%EB%AA%A8DSC09689.JPG"
+  }
  },
  {
   "id": "n8441491603",
@@ -57,7 +82,12 @@
   "address": "서귀포시  남한로 1",
   "lat": 33.278996,
   "lng": 126.717948,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_06.jpg",
+   "credit": "Jinho Jung · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Hwangtae-haejang-guk.jpg"
+  }
  },
  {
   "id": "n8441494557",
@@ -67,7 +97,12 @@
   "address": "서귀포시  성산중앙로 59-1",
   "lat": 33.464798,
   "lng": 126.934717,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_07.jpg",
+   "credit": "Dr 방원장 · CC BY 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Gul-gukbap.jpg"
+  }
  },
  {
   "id": "n8441493032",
@@ -77,7 +112,12 @@
   "address": "서귀포시  사계남로216번길 32",
   "lat": 33.234034,
   "lng": 126.31098,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_08.jpg",
+   "credit": "최광모 · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:20150214-20150219%EC%B5%9C%EA%B4%91%EB%AA%A8C58.JPG"
+  }
  },
  {
   "id": "n4640136006",
@@ -87,7 +127,12 @@
   "address": "서귀포시  신북로 39",
   "lat": 33.532819,
   "lng": 126.618678,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_09.jpg",
+   "credit": "egg (Hong, Yun Seon) · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_soup-Bogeo_haejangguk-01.jpg"
+  }
  },
  {
   "id": "n8441984158",
@@ -97,7 +142,12 @@
   "address": "서귀포시  일주서로 968-5",
   "lat": 33.258389,
   "lng": 126.40708,
-  "phone": "+82 64 738 5551"
+  "phone": "+82 64 738 5551",
+  "photo": {
+   "file": "places/food/korean_10.jpg",
+   "credit": "Mar del Este · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_soup_Sundae_gukbap_01.jpg"
+  }
  },
  {
   "id": "n8441493786",
@@ -107,7 +157,12 @@
   "address": "서귀포시  민속해안로 633-9",
   "lat": 33.324712,
   "lng": 126.838491,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_11.jpg",
+   "credit": "egg (Hong, Yun Seon) · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_soup-Gukbap-01.jpg"
+  }
  },
  {
   "id": "n4200239830",
@@ -117,7 +172,12 @@
   "address": "서귀포시  산방로 378",
   "lat": 33.231498,
   "lng": 126.296278,
-  "phone": "+82 064-794-5558"
+  "phone": "+82 064-794-5558",
+  "photo": {
+   "file": "places/food/korean_12.jpg",
+   "credit": "Suez (sophia) · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Cuisine_of_North_Korea_01.jpg"
+  }
  },
  {
   "id": "n13959396239",
@@ -127,7 +187,12 @@
   "address": "제주시",
   "lat": 33.516914,
   "lng": 126.529101,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_13.jpg",
+   "credit": "by lwy · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_soup-Gulgukbap-01.jpg"
+  }
  },
  {
   "id": "n8441494141",
@@ -137,7 +202,12 @@
   "address": "서귀포시  동홍동로 38",
   "lat": 33.258236,
   "lng": 126.575228,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_14.jpg",
+   "credit": "Korea.net / Korean Culture and Information Service (Jeon Han · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Gimhaesi_City_41.jpg"
+  }
  },
  {
   "id": "n8441491019",
@@ -147,7 +217,12 @@
   "address": "서귀포시  성읍정의현로22번길 9-1",
   "lat": 33.384692,
   "lng": 126.802287,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_15.jpg",
+   "credit": "Jun Seita from Palo Alto, CA, U.S. · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Asiana_Airlines_NRT_to_ICN_Business_Class_Lunch-_Bibimbap_(8300647291).jpg"
+  }
  },
  {
   "id": "n8441484566",
@@ -157,7 +232,12 @@
   "address": "서귀포시  사계남로 169",
   "lat": 33.228478,
   "lng": 126.307794,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_16.jpg",
+   "credit": "pcamp · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_soup-Sundae_gukbap-01.jpg"
+  }
  },
  {
   "id": "n13959396232",
@@ -167,7 +247,12 @@
   "address": "제주시",
   "lat": 33.516753,
   "lng": 126.529172,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_17.jpg",
+   "credit": "Korea.net / Korean Culture and Information Service (Jeon Han · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:KORAIL_Gangjin_Gun_05.jpg"
+  }
  },
  {
   "id": "n8441493461",
@@ -177,7 +262,12 @@
   "address": "서귀포시  중정로61번길 8-1",
   "lat": 33.248638,
   "lng": 126.563135,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_18.jpg",
+   "credit": "Jirka Matousek · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bibim-bap_2.jpg"
+  }
  },
  {
   "id": "n8441493377",
@@ -187,7 +277,12 @@
   "address": "서귀포시  표선중앙로96번길 15-14",
   "lat": 33.325198,
   "lng": 126.83471,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_19.jpg",
+   "credit": "No machine-readable author provided. Warszk assumed (based o · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korea_style_meal.jpg"
+  }
  },
  {
   "id": "n8441492430",
@@ -197,7 +292,12 @@
   "address": "서귀포시  화순해안로 89",
   "lat": 33.240077,
   "lng": 126.335748,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/korean_20.jpg",
+   "credit": "Mar del Este This photo was taken with Samsung Galaxy S4 · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_cuisine_hanjeongsik_Damyang_South_Korea.jpg"
+  }
  },
  {
   "id": "n13964513277",
@@ -207,7 +307,12 @@
   "address": "제주시",
   "lat": 33.516053,
   "lng": 126.524912,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_01.jpg",
+   "credit": "최광모 · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:2015%EB%85%84_3%EC%9B%94_20%EC%9D%BC_%EB%B4%89%ED%8F%AC%EB%A8%B8%EA%B5%AC%EB%A6%AC%EC%A7%91_%EB%AC%BC%ED%9A%8C_DSC07477.jpg"
+  }
  },
  {
   "id": "n8441958284",
@@ -217,7 +322,12 @@
   "address": "서귀포시  칠십리로 77",
   "lat": 33.23993,
   "lng": 126.564364,
-  "phone": "+82 64 762 9595"
+  "phone": "+82 64 762 9595",
+  "photo": {
+   "file": "places/food/seafood_02.jpg",
+   "credit": "김형찬 · CC BY 2.0 kr · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jaridom-mulhoe.jpg"
+  }
  },
  {
   "id": "n8441493130",
@@ -227,7 +337,12 @@
   "address": "서귀포시  해맞이해안로 2636",
   "lat": 33.477979,
   "lng": 126.908291,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_03.jpg",
+   "credit": "사람냄새 · CC BY 2.0 kr · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeonbok-mulhoe_2.jpg"
+  }
  },
  {
   "id": "n8441492720",
@@ -237,7 +352,12 @@
   "address": "서귀포시  최남단해안로30번길 7",
   "lat": 33.217905,
   "lng": 126.252101,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_04.jpg",
+   "credit": "by Tong-Seob Kim at Flickr from Incheon, South Korea · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_cuisine-Jeju-Jari_mulhoe-Sliced_raw_damselfish_with_spicy_sauce-01.jpg"
+  }
  },
  {
   "id": "n13971576825",
@@ -247,7 +367,12 @@
   "address": "제주시",
   "lat": 33.517611,
   "lng": 126.520736,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_05.jpg",
+   "credit": "대경라이프 · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Mulhoe_1.jpg"
+  }
  },
  {
   "id": "n8441493810",
@@ -257,7 +382,12 @@
   "address": "서귀포시  부두로 29",
   "lat": 33.242428,
   "lng": 126.56516,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_06.jpg",
+   "credit": "대경라이프 · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Mulhoe_2.jpg"
+  }
  },
  {
   "id": "n8441492746",
@@ -267,7 +397,12 @@
   "address": "서귀포시  민속해안로 147",
   "lat": 33.307909,
   "lng": 126.815272,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_07.jpg",
+   "credit": "사람냄새 · CC BY 2.0 kr · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Mulhoe.jpg"
+  }
  },
  {
   "id": "n8441491922",
@@ -277,7 +412,12 @@
   "address": "서귀포시  사계북로41번길 178-3",
   "lat": 33.249082,
   "lng": 126.296081,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_08.jpg",
+   "credit": "by LWY at flickr · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean.cuisine-Hoe-01.jpg"
+  }
  },
  {
   "id": "n6698814887",
@@ -287,7 +427,12 @@
   "address": "제주시",
   "lat": 33.544037,
   "lng": 126.674272,
-  "phone": "+82 64 783 2111"
+  "phone": "+82 64 783 2111",
+  "photo": {
+   "file": "places/food/seafood_09.jpg",
+   "credit": "Gaël Chardon · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_cuisine-Hoe-03.jpg"
+  }
  },
  {
   "id": "n8441491853",
@@ -297,7 +442,12 @@
   "address": "서귀포시  남태해안로 211",
   "lat": 33.279914,
   "lng": 126.724742,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_10.jpg",
+   "credit": "Rhett Sutphin · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_cuisine-Hoe-04.jpg"
+  }
  },
  {
   "id": "n8441493794",
@@ -307,7 +457,12 @@
   "address": "서귀포시  민속해안로 585",
   "lat": 33.325044,
   "lng": 126.84329,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_11.jpg",
+   "credit": "by karendotcom127 · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean.cuisine-Saengseon_gui-01.jpg"
+  }
  },
  {
   "id": "n8441493152",
@@ -317,7 +472,12 @@
   "address": "서귀포시  하모항구로 48",
   "lat": 33.218114,
   "lng": 126.249968,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_12.jpg",
+   "credit": "Brücke-Osteuropa · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Haemultang.jpg"
+  }
  },
  {
   "id": "n13970743346",
@@ -327,7 +487,12 @@
   "address": "제주시",
   "lat": 33.513916,
   "lng": 126.526044,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_13.jpg",
+   "credit": "Jaydub666 · CC BY 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Home_Made_Haemultang.jpg"
+  }
  },
  {
   "id": "n8441958287",
@@ -337,7 +502,12 @@
   "address": "서귀포시  칠십리로 123",
   "lat": 33.243096,
   "lng": 126.567612,
-  "phone": "+82 64 733 7102"
+  "phone": "+82 64 733 7102",
+  "photo": {
+   "file": "places/food/seafood_14.jpg",
+   "credit": "by &lt;==Manji==&gt; at Flickr · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_grilled_abalone-Jeonbok_gui-01.jpg"
+  }
  },
  {
   "id": "n8441492692",
@@ -347,7 +517,12 @@
   "address": "서귀포시  일출로 233",
   "lat": 33.460409,
   "lng": 126.930842,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_15.jpg",
+   "credit": "Daniel Moskowitz · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Godeungeo-gui.jpg"
+  }
  },
  {
   "id": "w374211276",
@@ -357,7 +532,12 @@
   "address": "서귀포시  사계남로 167",
   "lat": 33.228346,
   "lng": 126.307521,
-  "phone": "+82 064-794-3639"
+  "phone": "+82 064-794-3639",
+  "photo": {
+   "file": "places/food/seafood_16.jpg",
+   "credit": "by david&amp;alina at Flickr · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_cuisine-Godeungeo_gui-01.jpg"
+  }
  },
  {
   "id": "n13945907383",
@@ -367,7 +547,12 @@
   "address": "제주시  관덕로9길 9-1",
   "lat": 33.514503,
   "lng": 126.5239,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_17.jpg",
+   "credit": "lazy fri13th · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Ganjang-gejang_1.jpg"
+  }
  },
  {
   "id": "n8441495076",
@@ -377,7 +562,12 @@
   "address": "서귀포시  대포로 169",
   "lat": 33.239119,
   "lng": 126.439209,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_18.jpg",
+   "credit": "Jordi Sanchez · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jogae-gui.jpg"
+  }
  },
  {
   "id": "n6055111985",
@@ -387,7 +577,12 @@
   "address": "서귀포시  민속해안로 578-2",
   "lat": 33.325003,
   "lng": 126.844289,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_19.jpg",
+   "credit": "bryan... · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jogae-gui_4.jpg"
+  }
  },
  {
   "id": "n8441491785",
@@ -397,7 +592,12 @@
   "address": "서귀포시  형제해안로 322",
   "lat": 33.206773,
   "lng": 126.290037,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/seafood_20.jpg",
+   "credit": "Korea.net / Korean Culture and Information Service · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:KOCIS_maeuntang,_spicy_fish_soup_(5035733642).jpg"
+  }
  },
  {
   "id": "n13987063718",
@@ -407,7 +607,12 @@
   "address": "제주시",
   "lat": 33.51679,
   "lng": 126.518992,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_01.jpg",
+   "credit": "毒島みるく · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Roasted_beef_ribs_on_rice_lunch_box_of_NewDays.jpg"
+  }
  },
  {
   "id": "n8441491107",
@@ -417,7 +622,12 @@
   "address": "서귀포시  태위로723번길 31-11",
   "lat": 33.281761,
   "lng": 126.721023,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_02.jpg",
+   "credit": "Judgefloro · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:6685Baliuag_Bulacan_Landmarks_during_the_2020_coronavirus_pandemic_07.jpg"
+  }
  },
  {
   "id": "n8441477409",
@@ -427,7 +637,12 @@
   "address": "서귀포시  환해장성로 629",
   "lat": 33.410021,
   "lng": 126.90808,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_03.jpg",
+   "credit": "Minseong Kim · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Beef_Bulgogi(BBQ).jpg"
+  }
  },
  {
   "id": "n8441494556",
@@ -437,7 +652,12 @@
   "address": "서귀포시  신화역사로 988-17",
   "lat": 33.308909,
   "lng": 126.349587,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_04.jpg",
+   "credit": "Debbie Tingzon · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bul-gogi.jpg"
+  }
  },
  {
   "id": "n13963323162",
@@ -447,7 +667,12 @@
   "address": "제주시",
   "lat": 33.516322,
   "lng": 126.526955,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_05.jpg",
+   "credit": "pelican from Tokyo, Japan · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bulgogi_(32834714011).jpg"
+  }
  },
  {
   "id": "n8441494485",
@@ -457,7 +682,12 @@
   "address": "서귀포시  동홍중앙로52번길 36-2",
   "lat": 33.255134,
   "lng": 126.575733,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_06.jpg",
+   "credit": "pelican from Tokyo, Japan · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bulgogi_(5019171427).jpg"
+  }
  },
  {
   "id": "n8441492319",
@@ -467,7 +697,12 @@
   "address": "서귀포시  서성일로 1047",
   "lat": 33.444757,
   "lng": 126.889301,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_07.jpg",
+   "credit": "국립국어원 · CC BY-SA 2.0 kr · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bulgogi_2.jpg"
+  }
  },
  {
   "id": "n8441492623",
@@ -477,7 +712,12 @@
   "address": "서귀포시  영서중로 5-1",
   "lat": 33.22114,
   "lng": 126.254181,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_08.jpg",
+   "credit": "anokarina · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bulgogi_5.jpg"
+  }
  },
  {
   "id": "n13955617622",
@@ -487,7 +727,12 @@
   "address": "제주시",
   "lat": 33.514636,
   "lng": 126.531524,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_09.jpg",
+   "credit": "anokarina · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bulgogi_6.jpg"
+  }
  },
  {
   "id": "n8441486779",
@@ -497,7 +742,12 @@
   "address": "서귀포시  서문로 38",
   "lat": 33.25115,
   "lng": 126.557132,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_10.jpg",
+   "credit": "stu_spivack · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bulgogi_8.jpg"
+  }
  },
  {
   "id": "n8441494209",
@@ -507,7 +757,12 @@
   "address": "서귀포시  고성오조로 94-1",
   "lat": 33.452117,
   "lng": 126.914319,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_11.jpg",
+   "credit": "Graham Hills · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bulgogi_9.jpg"
+  }
  },
  {
   "id": "n8441491290",
@@ -517,7 +772,12 @@
   "address": "서귀포시  상모로 248",
   "lat": 33.224433,
   "lng": 126.262551,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_12.jpg",
+   "credit": "Cinnamontrees · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bulgogi_cooked.jpg"
+  }
  },
  {
   "id": "n13964517401",
@@ -527,7 +787,12 @@
   "address": "제주시",
   "lat": 33.516141,
   "lng": 126.526516,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_13.jpg",
+   "credit": "Brücke-Osteuropa · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bulgogi_in_Seoul.jpg"
+  }
  },
  {
   "id": "n8441471598",
@@ -537,7 +802,12 @@
   "address": "서귀포시  중앙로42번길 16",
   "lat": 33.248446,
   "lng": 126.563488,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_14.jpg",
+   "credit": "by hellochris · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean.cuisine-Samgyeopsal-01.jpg"
+  }
  },
  {
   "id": "n4202200993",
@@ -547,7 +817,12 @@
   "address": "동부",
   "lat": 33.324885,
   "lng": 126.843923,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_15.jpg",
+   "credit": "jinsoo jang · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui.jpg"
+  }
  },
  {
   "id": "n8441492865",
@@ -557,7 +832,12 @@
   "address": "서귀포시  녹차분재로59번길 6",
   "lat": 33.290634,
   "lng": 126.300948,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_16.jpg",
+   "credit": "ProjectManhattan · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Samgyeopsal_2.jpg"
+  }
  },
  {
   "id": "n13942417446",
@@ -567,7 +847,12 @@
   "address": "제주시",
   "lat": 33.507689,
   "lng": 126.52938,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_17.jpg",
+   "credit": "star5112 (a flickr user) · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean.food-Galbi-01.jpg"
+  }
  },
  {
   "id": "n8441460604",
@@ -577,7 +862,12 @@
   "address": "서귀포시  대청로 41",
   "lat": 33.255789,
   "lng": 126.424173,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_18.jpg",
+   "credit": "ayustety (a flickr user) · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean.food-Galbi-03.jpg"
+  }
  },
  {
   "id": "n8441492697",
@@ -587,7 +877,12 @@
   "address": "서귀포시  한도로 124",
   "lat": 33.468493,
   "lng": 126.921314,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_19.jpg",
+   "credit": "mino park · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Moksal-gui_2.jpg"
+  }
  },
  {
   "id": "n8441489659",
@@ -597,7 +892,12 @@
   "address": "서귀포시  화순로 154-7",
   "lat": 33.248873,
   "lng": 126.333973,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/bbq_20.jpg",
+   "credit": "me · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_barbecue-Samgyeopsal-08.jpg"
+  }
  },
  {
   "id": "n4629230447",
@@ -607,7 +907,12 @@
   "address": "제주시  관덕로2길 24",
   "lat": 33.510965,
   "lng": 126.520954,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_01.jpg",
+   "credit": "Seefooddiet · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Gogi-guksu_2024.jpg"
+  }
  },
  {
   "id": "n8441494140",
@@ -617,7 +922,12 @@
   "address": "서귀포시  천지로 25",
   "lat": 33.250043,
   "lng": 126.560571,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_02.jpg",
+   "credit": "chomjong · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Kong-guksu_1.jpg"
+  }
  },
  {
   "id": "n8441491156",
@@ -627,7 +937,12 @@
   "address": "서귀포시  섭지코지로 63",
   "lat": 33.437022,
   "lng": 126.922445,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_03.jpg",
+   "credit": "최광모 · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:20150912%EC%B5%9C%EA%B4%91%EB%AA%A8DSC02772.JPG"
+  }
  },
  {
   "id": "n8441491549",
@@ -637,7 +952,12 @@
   "address": "서귀포시  상모로 322-1",
   "lat": 33.222496,
   "lng": 126.254926,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_04.jpg",
+   "credit": "신동혁 · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Gogi-guksu.jpg"
+  }
  },
  {
   "id": "n13964513286",
@@ -647,7 +967,12 @@
   "address": "제주시",
   "lat": 33.51634,
   "lng": 126.525215,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_05.jpg",
+   "credit": "chomjong · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Kong-guksu_2.jpg"
+  }
  },
  {
   "id": "n8441984122",
@@ -657,7 +982,12 @@
   "address": "서귀포시  일주동로 8599",
   "lat": 33.25441,
   "lng": 126.569346,
-  "phone": "+82 64 763 3331"
+  "phone": "+82 64 763 3331",
+  "photo": {
+   "file": "places/food/noodle_06.jpg",
+   "credit": "최광모 · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:20151003%EB%A7%89%EA%B5%AD%EC%88%98RX10DSC03107.jpg"
+  }
  },
  {
   "id": "n8441491334",
@@ -667,7 +997,12 @@
   "address": "서귀포시  원님로 737",
   "lat": 33.36114,
   "lng": 126.766224,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_07.jpg",
+   "credit": "Ksait · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Gogiguksu_gulmak.jpg"
+  }
  },
  {
   "id": "n8441984019",
@@ -677,7 +1012,12 @@
   "address": "서귀포시  산방로 53",
   "lat": 33.243485,
   "lng": 126.326864,
-  "phone": "+82 64 794 0015"
+  "phone": "+82 64 794 0015",
+  "photo": {
+   "file": "places/food/noodle_08.jpg",
+   "credit": "Uri Tours · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:PIFF_2014_Opening_Ceremony_Dinner_for_Festival_Delegates_(15170795648).jpg"
+  }
  },
  {
   "id": "n13993899134",
@@ -687,7 +1027,12 @@
   "address": "제주시",
   "lat": 33.514766,
   "lng": 126.520659,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_09.jpg",
+   "credit": "lazy fri13th · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Kong-guksu_3.jpg"
+  }
  },
  {
   "id": "n8441492360",
@@ -697,7 +1042,12 @@
   "address": "서귀포시  중앙로79번길 3",
   "lat": 33.251705,
   "lng": 126.560962,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_10.jpg",
+   "credit": "최광모 · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC03105.JPG"
+  }
  },
  {
   "id": "n8441493434",
@@ -707,7 +1057,12 @@
   "address": "서귀포시  표선관정로 100",
   "lat": 33.324093,
   "lng": 126.830761,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_11.jpg",
+   "credit": "채지형 · CC BY 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:%EC%A0%9C%EC%A3%BC%EB%8F%84_%EA%B3%A0%EA%B8%B0%EA%B5%AD%EC%88%98_12.jpg"
+  }
  },
  {
   "id": "n8441492390",
@@ -717,7 +1072,12 @@
   "address": "서귀포시  사계남로216번길 47",
   "lat": 33.234323,
   "lng": 126.309294,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_12.jpg",
+   "credit": "KKPCW · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:%E4%B8%B8%E6%BA%90%E5%86%B7%E9%BA%BA.jpg"
+  }
  },
  {
   "id": "n13948183396",
@@ -727,7 +1087,12 @@
   "address": "제주시",
   "lat": 33.510676,
   "lng": 126.524396,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_13.jpg",
+   "credit": "Hyeonyoung Lee 21 · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Kong-guksu_made_from_Paju_Jangdan_Beans.jpg"
+  }
  },
  {
   "id": "n8441494152",
@@ -737,7 +1102,12 @@
   "address": "서귀포시  동홍로 13",
   "lat": 33.249887,
   "lng": 126.567669,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_14.jpg",
+   "credit": "lazy fri13th · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Kong-guksu.jpg"
+  }
  },
  {
   "id": "n8441484598",
@@ -747,7 +1117,12 @@
   "address": "서귀포시  섭지코지로 10",
   "lat": 33.43866,
   "lng": 126.917779,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_15.jpg",
+   "credit": "최광모 · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC03108.JPG"
+  }
  },
  {
   "id": "n8441492875",
@@ -757,7 +1132,12 @@
   "address": "서귀포시  형제해안로 22",
   "lat": 33.228025,
   "lng": 126.30426,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_16.jpg",
+   "credit": "vedanti · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Kongguksu_(soybean_cold_noodle).jpg"
+  }
  },
  {
   "id": "n13969610247",
@@ -767,7 +1147,12 @@
   "address": "제주시",
   "lat": 33.513505,
   "lng": 126.526972,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_17.jpg",
+   "credit": "lazy fri13th · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Deul-gireum-mak-guksu_1.jpg"
+  }
  },
  {
   "id": "n8441491930",
@@ -777,7 +1162,12 @@
   "address": "서귀포시  천제연로207번길 1",
   "lat": 33.253148,
   "lng": 126.427187,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_18.jpg",
+   "credit": "lazy fri13th · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Deul-gireum-mak-guksu.jpg"
+  }
  },
  {
   "id": "n8441493083",
@@ -787,7 +1177,12 @@
   "address": "서귀포시  해맞이해안로 2690",
   "lat": 33.471968,
   "lng": 126.913083,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_19.jpg",
+   "credit": "by Junho Jung at Flickr from South Korea · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korea-Gangneung-Makguksu-Cold_buckwheat_noodle_dish-01.jpg"
+  }
  },
  {
   "id": "n8441493840",
@@ -797,7 +1192,12 @@
   "address": "서귀포시  동일하모로 229",
   "lat": 33.225885,
   "lng": 126.255823,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/noodle_20.jpg",
+   "credit": "pcamp · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_noodles-Makguksu-01.jpg"
+  }
  },
  {
   "id": "w375326311",
@@ -807,7 +1207,12 @@
   "address": "제주시  서해안로 516-0",
   "lat": 33.519899,
   "lng": 126.494272,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_01.jpg",
+   "credit": "Mykim0918 · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:%22a_cup_of_cpffee_at_munsan_coffee_cafe_2021_from145.jpg%22.jpg"
+  }
  },
  {
   "id": "n8442079673",
@@ -817,7 +1222,12 @@
   "address": "서귀포시  칠십리로 113",
   "lat": 33.242289,
   "lng": 126.566731,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_02.jpg",
+   "credit": "국립국어원 · CC BY-SA 2.0 kr · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bingsu_2.jpg"
+  }
  },
  {
   "id": "n4200321390",
@@ -827,7 +1237,12 @@
   "address": "동부",
   "lat": 33.535501,
   "lng": 126.839161,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_03.jpg",
+   "credit": "Kuba Bożanowski from Warsaw, Poland · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:And_another!_(3146040967).jpg"
+  }
  },
  {
   "id": "n8442080048",
@@ -837,7 +1252,12 @@
   "address": "서귀포시  하모상가로 42-1",
   "lat": 33.221501,
   "lng": 126.253494,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_04.jpg",
+   "credit": "Laliv g · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bingsu_dessert_Tel_Aviv.jpg"
+  }
  },
  {
   "id": "n13993899138",
@@ -847,7 +1267,12 @@
   "address": "제주시",
   "lat": 33.514651,
   "lng": 126.520511,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_05.jpg",
+   "credit": "森正洋デザイン研究所 (Mori Masahiro Design Studio, LLC.) · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:1958_CoffeeSet_Masahiro-Mori.jpg"
+  }
  },
  {
   "id": "n8441958295",
@@ -857,7 +1282,12 @@
   "address": "서귀포시  칠십리로 115",
   "lat": 33.242411,
   "lng": 126.56684,
-  "phone": "+82 64 732 5577"
+  "phone": "+82 64 732 5577",
+  "photo": {
+   "file": "places/food/cafe_06.jpg",
+   "credit": "Fastily · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Apple_latte_art_2_2024-02-02.jpg"
+  }
  },
  {
   "id": "n4200238203",
@@ -867,7 +1297,12 @@
   "address": "동부",
   "lat": 33.524514,
   "lng": 126.861858,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_07.jpg",
+   "credit": "Gerard van de Bruinhorst · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:ASC_Leiden_-_Rwanda_2021_-_056_-_A_decorative_white_tree_of_cream_in_a_cup_of_coffee_-_Kigali.jpg"
+  }
  },
  {
   "id": "n6711414985",
@@ -877,7 +1312,12 @@
   "address": "제주시  금능길 89",
   "lat": 33.389234,
   "lng": 126.232369,
-  "phone": "+82 64 796 5195"
+  "phone": "+82 64 796 5195",
+  "photo": {
+   "file": "places/food/cafe_08.jpg",
+   "credit": "Peachyeung316 · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:A_Cappuccino_at_Amante.jpg"
+  }
  },
  {
   "id": "n14023371788",
@@ -887,7 +1327,12 @@
   "address": "제주시",
   "lat": 33.511897,
   "lng": 126.523566,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_09.jpg",
+   "credit": "Tmannya · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bingsu.jpg"
+  }
  },
  {
   "id": "n10705713498",
@@ -897,7 +1342,12 @@
   "address": "서귀포시  칠십리로 655",
   "lat": 33.251199,
   "lng": 126.615279,
-  "phone": "+82507-1409-1115"
+  "phone": "+82507-1409-1115",
+  "photo": {
+   "file": "places/food/cafe_10.jpg",
+   "credit": "Photograph by Mike Peel (www.mikepeel.net). · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:At_Vienna_2025_480.jpg"
+  }
  },
  {
   "id": "n4202246089",
@@ -907,7 +1357,12 @@
   "address": "동부",
   "lat": 33.493255,
   "lng": 126.89858,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_11.jpg",
+   "credit": "Peachyeung316 · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:A_cup_of_coffee_in_Mohk.jpg"
+  }
  },
  {
   "id": "n5181595022",
@@ -917,7 +1372,12 @@
   "address": "제주시  한림로 361",
   "lat": 33.395351,
   "lng": 126.242136,
-  "phone": "+82 64 745 5161"
+  "phone": "+82 64 745 5161",
+  "photo": {
+   "file": "places/food/cafe_12.jpg",
+   "credit": "Infrogmation of New Orleans · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Black_Sesame_Bingsu_Terrytown_LA.JPG"
+  }
  },
  {
   "id": "n13980652211",
@@ -927,7 +1387,12 @@
   "address": "제주시",
   "lat": 33.515796,
   "lng": 126.520331,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_13.jpg",
+   "credit": "Athena Lam thecupandtheroad · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Athena_Lam_2016_(Unsplash).jpg"
+  }
  },
  {
   "id": "n2500291958",
@@ -937,7 +1402,12 @@
   "address": "서귀포시  중문관광로110번길 32",
   "lat": 33.251135,
   "lng": 126.41259,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_14.jpg",
+   "credit": "Geun young Kim · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Cheese-bingsu.jpg"
+  }
  },
  {
   "id": "n4200238208",
@@ -947,7 +1417,12 @@
   "address": "동부",
   "lat": 33.557761,
   "lng": 126.755233,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_15.jpg",
+   "credit": "Shixart1985 · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:A_person_holds_a_cup_of_cappuccino_featuring_intricate_latte_art,_sitting_at_a_caf%C3%A9_table.jpg"
+  }
  },
  {
   "id": "n8442036392",
@@ -957,7 +1432,12 @@
   "address": "서귀포시  형제해안로 322",
   "lat": 33.206791,
   "lng": 126.290058,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_16.jpg",
+   "credit": "CYAN · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Chocolate_bingsu_0a.jpg"
+  }
  },
  {
   "id": "n13969610279",
@@ -967,7 +1447,12 @@
   "address": "제주시",
   "lat": 33.513905,
   "lng": 126.526733,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_17.jpg",
+   "credit": "Koperczak (talk) 12:35, 8 March 2009 (UTC) · Public domain · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:19th_century_tea-_and_coffee-cups_anaglyph.jpg"
+  }
  },
  {
   "id": "n8442066409",
@@ -977,7 +1462,12 @@
   "address": "서귀포시  천제연로 95",
   "lat": 33.254998,
   "lng": 126.415906,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_18.jpg",
+   "credit": "Guillaume Blum · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:BC_trip_(9533284911).jpg"
+  }
  },
  {
   "id": "n8442079530",
@@ -987,7 +1477,12 @@
   "address": "서귀포시  일출로 80",
   "lat": 33.449738,
   "lng": 126.920638,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "file": "places/food/cafe_19.jpg",
+   "credit": "bryan... from Taipei, Taiwan · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Food_(31881044841).jpg"
+  }
  },
  {
   "id": "w374197968",
@@ -997,6 +1492,11 @@
   "address": "서귀포시  산방로 208",
   "lat": 33.236443,
   "lng": 126.312917,
-  "phone": "+82 064-792-1254"
+  "phone": "+82 064-792-1254",
+  "photo": {
+   "file": "places/food/cafe_20.jpg",
+   "credit": "Pemba.mpimaji · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bem_Vindo_1.jpg"
+  }
  }
 ]
