@@ -227,3 +227,33 @@ def test_admin_spot_validation(client, login):
     assert client.patch("/admin/spots/9999", json={"hidden": True}).status_code == 404
     # 화면이 보낸 번호나 출처로는 못 바꿈(모르는 칸은 무시)
     assert client.patch("/admin/spots/1", json={"id": 5, "source": "x", "hidden": True}).json()["id"] == 1
+
+
+def test_admin_changes_spot_photo(client, login):
+    """같은 사진을 쓰던 곳을 한 곳씩 다른 사진으로 바꿀 수 있어야 합니다(사진 · 출처를 함께)."""
+    login(ADMIN)
+    photo = {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Example.jpg",
+        "image_credit": "누군가 · CC BY-SA 4.0 · Wikimedia Commons",
+        "image_source_url": "https://commons.wikimedia.org/wiki/File:Example.jpg",
+    }
+    edited = client.patch("/admin/spots/1", json=photo).json()
+    assert {key: edited[key] for key in photo} == photo
+    assert client.get("/spots/1").json()["image_credit"] == photo["image_credit"]   # 보는 쪽에도 바로 반영
+
+    # 서버 사진 폴더 안의 파일은 이 서버 주소를 붙여 돌려줍니다
+    local = client.patch("/admin/spots/1", json={"image_url": "/photos/S500.jpg"}).json()
+    assert local["image_url"].endswith("/photos/S500.jpg") and local["image_url"].startswith("http")
+
+    # 새로 넣을 때도 출처를 함께 적을 수 있습니다
+    created = client.post("/admin/spots", json={"title": "사진 있는 곳", "category": "관광지", "area": "동부", **photo}).json()
+    assert created["image_source_url"] == photo["image_source_url"]
+
+
+def test_admin_rejects_bad_photo_address(client, login):
+    login(ADMIN)
+    for bad in ["javascript:alert(1)", "http://example.com/a.jpg", "/photos/../.env", "/etc/passwd", "/photos/a.exe", "https://"]:
+        assert client.patch("/admin/spots/1", json={"image_url": bad}).status_code == 422, bad
+    assert client.patch("/admin/spots/1", json={"image_source_url": "javascript:alert(1)"}).status_code == 422
+    assert client.patch("/admin/spots/1", json={"image_credit": "가" * 201}).status_code == 422
+    assert client.patch("/admin/spots/1", json={"image_url": None}).status_code == 422   # 빈 값으로 지우기는 막음(기존 규칙)

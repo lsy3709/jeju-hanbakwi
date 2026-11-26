@@ -190,6 +190,11 @@ class AdminSpotPage(BaseModel):
     total: int | None = None
 
 
+# 사진 주소: 바깥 사진(https://...) 이거나, 이 서버의 사진 폴더 안 파일(/photos/S001.jpg)만 받습니다.
+# 폴더 이름 칸에 점(.)을 못 쓰게 해서 /photos/../ 처럼 폴더 밖으로 나가는 주소를 막습니다.
+PHOTO_URL = r"^(https://\S+|/photos/[\w-]+(/[\w-]+)*\.(jpg|jpeg|png|webp))$"
+
+
 # 관리자가 새 여행지를 넣을 때 받는 모양. 좌표를 제주 근처로, 사진 주소를 https 로 제한해 잘못된 값을 막습니다.
 class SpotCreate(BaseModel):
     title: str = Field(min_length=1, max_length=60)
@@ -202,7 +207,9 @@ class SpotCreate(BaseModel):
     indoor: bool = False
     lat: float | None = Field(default=None, ge=32.5, le=34.5)    # 제주 근처만
     lng: float | None = Field(default=None, ge=125.5, le=127.5)
-    image_url: str | None = Field(default=None, max_length=300, pattern=r"^https://")
+    image_url: str | None = Field(default=None, max_length=300, pattern=PHOTO_URL)
+    image_credit: str | None = Field(default=None, max_length=200)     # 저작자 · 라이선스
+    image_source_url: str | None = Field(default=None, max_length=300, pattern=r"^https://")
 
 
 class SpotPatch(BaseModel):
@@ -216,6 +223,10 @@ class SpotPatch(BaseModel):
     theme_tags: list[str] | None = Field(default=None, max_length=5)
     indoor: bool | None = None
     hidden: bool | None = None
+    # 사진도 바꿀 수 있습니다. 여러 곳이 같은 사진을 쓰고 있을 때 한 곳씩 다른 사진으로 고치는 용도입니다.
+    image_url: str | None = Field(default=None, max_length=300, pattern=PHOTO_URL)
+    image_credit: str | None = Field(default=None, max_length=200)
+    image_source_url: str | None = Field(default=None, max_length=300, pattern=r"^https://")
 
 
 class UsageSummary(BaseModel):
