@@ -362,7 +362,7 @@ Supabase 무료 프로젝트(서울)와 Vercel 프로젝트 둘(서버 · 웹)�
 | 모델 | 블렌더 5.3 으로 만듦 — 구 · 원기둥 열두 개(기둥 몸통 · 어깨 · 머리 · 벙거지 · 눈 · 코 · 입 · 손)를 합치고 현무암 재질을 입혀 glb 로 내보냄. `blender --background --python tools/make_model_blender.py`, 원본은 `tools/dolhareubang.blend` | 스크립트 실행(키 1.000m, 229KB), 블렌더 렌더로 모양 확인 | ✅ 웹 · 앱(크롬 실행)의 지도 위에 보임. 캡처는 `docs/3d-map.md` |
 | 앱 | 탐색의 보는 방식에 "3D" 추가. 웹의 `/embed/map3d` 를 웹뷰(`webview_flutter`)로 띄우고 고른 필터를 주소로 넘김. 웹 주소는 `env.json` 의 `WEB_URL`(`resolveWebUrl`) | analyze 0 · 테스트 125건 · 디버그 apk 빌드 | ✅ 크롬 실행: 3D 지도와 테마 필터(오름 → 핀 10개) / ✅ 에뮬레이터(Pixel 4, 로컬 서버 · 로컬 웹): 지형 · 모델 · 핀 |
 
-- **판타지 지도(2026-11-26 추가)**: 탐색의 네 번째 보기(`view=fantasy`). 실제 높이 자료(`tools/jeju_height.json`)로 제주도 전체를 블렌더 모델(`fantasy_jeju.glb`, 2.4MB)로 만들고 Three.js 로 띄움. 앱은 `/embed/map3d?style=fantasy` 를 웹뷰로. 검사: 웹 lint · 타입 · 테스트 106건 · 빌드, 앱 analyze 0 · 테스트 126건, 서버 테스트 154건. 화면: ✅ 웹(넓은 화면 · 폭 390)에서 모델 · 핀 20개 · 핀 고르기("새별오름 · 자세히") · 테마 필터, ✅ 앱 크롬 실행 / ⏳ 에뮬레이터 · 실제 폰 · 배포 주소.
+- **판타지 지도(2026-11-26 추가)**: 탐색의 네 번째 보기(`view=fantasy`). 실제 높이 자료(`tools/jeju_height.json`)로 제주도 전체를 블렌더 모델(`fantasy_jeju.glb`, 2.4MB)로 만들고 Three.js 로 띄움. 앱은 `/embed/map3d?style=fantasy` 를 웹뷰로. 검사: 웹 lint · 타입 · 테스트 106건 · 빌드, 앱 analyze 0 · 테스트 126건, 서버 테스트 154건. 화면: ✅ 웹(넓은 화면 · 폭 390)에서 모델 · 핀 20개 · 핀 고르기("새별오름 · 자세히") · 테마 필터, ✅ 앱 크롬 실행, ✅ 배포 주소(Vercel)의 웹 / ⏳ 에뮬레이터 · 실제 폰.
 - `maplibre-gl` 은 5 버전을 씁니다. 6 버전은 Next.js(Turbopack) 개발 서버에서 워커 파일을 못 불러와 땅이 평평하게 나왔습니다.
 - 에뮬레이터의 웹뷰는 웹을 `10.0.2.2:3000` 으로 엽니다. 그래서 ① `web/next.config.ts` 의 `allowedDevOrigins` ② 웹이 서버를 `10.0.2.2:8000` 으로 바꿔 부르는 규칙(`web/src/lib/apiUrl.ts`) ③ 서버 CORS 의 `10.0.2.2` 허용, 세 가지를 넣었습니다.
 - 앱의 3D 화면에서는 핀을 누르면 이름만 보입니다(상세 화면으로 넘어가지 않음).
