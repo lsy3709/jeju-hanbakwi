@@ -17,7 +17,13 @@
   "address": "서귀포시  태평로 436",
   "lat": 33.245551,
   "lng": 126.566675,
-  "phone": "+82-064-766-4200"
+  "phone": "+82-064-766-4200",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Jeju_Island_%2853854655369%29.jpg/960px-Jeju_Island_%2853854655369%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53854655369).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w572405708",
@@ -27,7 +33,13 @@
   "address": "",
   "lat": 33.322524,
   "lng": 126.844807,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Hallasan_Mountain_from_Pyoseon_-_panoramio.jpg/960px-Hallasan_Mountain_from_Pyoseon_-_panoramio.jpg",
+   "credit": "Cho's · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Hallasan_Mountain_from_Pyoseon_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12629967486",
@@ -37,7 +49,13 @@
   "address": "",
   "lat": 33.43283,
   "lng": 126.276209,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/%EA%B8%88%EC%95%85%EC%98%A4%EB%A6%84_%EC%A0%95%EC%83%81_%EB%B6%84%ED%99%94%EA%B5%AC.jpg/960px-%EA%B8%88%EC%95%85%EC%98%A4%EB%A6%84_%EC%A0%95%EC%83%81_%EB%B6%84%ED%99%94%EA%B5%AC.jpg",
+   "credit": "Liszt uhm · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:%EA%B8%88%EC%95%85%EC%98%A4%EB%A6%84_%EC%A0%95%EC%83%81_%EB%B6%84%ED%99%94%EA%B5%AC.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368953808",
@@ -47,7 +65,13 @@
   "address": "",
   "lat": 33.498933,
   "lng": 126.524401,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Marado_Island_View.jpg/960px-Marado_Island_View.jpg",
+   "credit": "Rémi Cormier · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Marado_Island_View.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w250715018",
@@ -57,7 +81,13 @@
   "address": "",
   "lat": 33.252308,
   "lng": 126.407731,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Jungmun-dong%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Jungmun-dong%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jungmun-dong,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n10179197517",
@@ -67,7 +97,13 @@
   "address": "서귀포시  성산등용로17번길 5",
   "lat": 33.46466,
   "lng": 126.932574,
-  "phone": "82647822500"
+  "phone": "82647822500",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Jeju_Island_%EC%A0%9C%EC%A3%BC%EB%8F%84.jpg/960px-Jeju_Island_%EC%A0%9C%EC%A3%BC%EB%8F%84.jpg",
+   "credit": "Justin De La Ornellas from China Town, Hawaii · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_%EC%A0%9C%EC%A3%BC%EB%8F%84.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368662902",
@@ -77,7 +113,13 @@
   "address": "",
   "lat": 33.433627,
   "lng": 126.396587,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Historic_Site_of_Anti-Mongolian_Struggle_excavation.jpg/960px-Historic_Site_of_Anti-Mongolian_Struggle_excavation.jpg",
+   "credit": "Chipmunkdavis · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Historic_Site_of_Anti-Mongolian_Struggle_excavation.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368954034",
@@ -87,7 +129,13 @@
   "address": "",
   "lat": 33.483155,
   "lng": 126.489977,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Doryeong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Doryeong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Doryeong-ro,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368954112",
@@ -97,7 +145,13 @@
   "address": "",
   "lat": 33.246116,
   "lng": 126.581478,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Jeju_Island_%2853854555108%29.jpg/960px-Jeju_Island_%2853854555108%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53854555108).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n4242434951",
@@ -107,7 +161,13 @@
   "address": "서귀포시  한도로 269-37",
   "lat": 33.468886,
   "lng": 126.935665,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Seongsan-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Seongsan-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seongsan-ri,_Seongsan-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368663843",
@@ -117,7 +177,13 @@
   "address": "",
   "lat": 33.47325,
   "lng": 126.353533,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Naedo-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Naedo-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Naedo-dong,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368662706",
@@ -127,7 +193,13 @@
   "address": "",
   "lat": 33.434288,
   "lng": 126.432772,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Historic_Site_of_Anti-Mongolian_Struggle_inner_fortress.jpg/960px-Historic_Site_of_Anti-Mongolian_Struggle_inner_fortress.jpg",
+   "credit": "Chipmunkdavis · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Historic_Site_of_Anti-Mongolian_Struggle_inner_fortress.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w250711104",
@@ -137,7 +209,13 @@
   "address": "",
   "lat": 33.249001,
   "lng": 126.408289,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Jungmun-dong%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Jungmun-dong%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jungmun-dong,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n5850115879",
@@ -147,7 +225,13 @@
   "address": "서귀포시  서성일로 726-11",
   "lat": 33.429773,
   "lng": 126.862077,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Goseong-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%286%29.jpg/960px-Goseong-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%286%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Goseong-ri,_Seongsan-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(6).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368662955",
@@ -157,7 +241,13 @@
   "address": "",
   "lat": 33.447643,
   "lng": 126.305316,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Pyeonghwaro(1135)%2C_Jeju_(%EC%A0%9C%EC%A3%BC_%ED%8F%89%ED%99%94%EB%A1%9C(1135%EB%B2%88_%EB%8F%84%EB%A1%9C))_-_panoramio.jpg?width=960",
+   "credit": "골뱅이 · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Pyeonghwaro(1135),_Jeju_(%EC%A0%9C%EC%A3%BC_%ED%8F%89%ED%99%94%EB%A1%9C(1135%EB%B2%88_%EB%8F%84%EB%A1%9C))_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w372946259",
@@ -167,7 +257,13 @@
   "address": "",
   "lat": 33.499234,
   "lng": 126.512961,
-  "phone": "+82647525820"
+  "phone": "+82647525820",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Yongdami-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Yongdami-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Yongdami-dong,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "r3276925",
@@ -177,7 +273,13 @@
   "address": "",
   "lat": 33.249852,
   "lng": 126.408177,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Jungmun-dong%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg/960px-Jungmun-dong%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jungmun-dong,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(2).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368664139",
@@ -187,7 +289,13 @@
   "address": "",
   "lat": 33.39009,
   "lng": 126.830815,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Samdal-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Samdal-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Samdal-ri,_Seongsan-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n4899888587",
@@ -197,7 +305,13 @@
   "address": "",
   "lat": 33.474222,
   "lng": 126.358701,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Naedo-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg/960px-Naedo-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Naedo-dong,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(2).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w374052020",
@@ -207,7 +321,13 @@
   "address": "",
   "lat": 33.483943,
   "lng": 126.489552,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Yeonsam-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Yeonsam-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Yeonsam-ro,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368953908",
@@ -217,7 +337,13 @@
   "address": "",
   "lat": 33.248046,
   "lng": 126.560285,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Jeju_Island_%2853853400712%29.jpg/960px-Jeju_Island_%2853853400712%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53853400712).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368662496",
@@ -227,7 +353,13 @@
   "address": "",
   "lat": 33.510942,
   "lng": 126.84772,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/e/e9/%EC%84%B8%ED%99%94%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5.JPG",
+   "credit": "Bohyunlee · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:%EC%84%B8%ED%99%94%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5.JPG",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w375166144",
@@ -237,7 +369,13 @@
   "address": "",
   "lat": 33.302401,
   "lng": 126.293964,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Sinhwayeoksa-ro%2C_Andeok-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Sinhwayeoksa-ro%2C_Andeok-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Sinhwayeoksa-ro,_Andeok-myeon,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n4636870917",
@@ -257,7 +395,13 @@
   "address": "",
   "lat": 33.243413,
   "lng": 126.55481,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Oedolgae_%28%EC%99%B8%EB%8F%8C%EA%B0%9C%29_-_panoramio.jpg/960px-Oedolgae_%28%EC%99%B8%EB%8F%8C%EA%B0%9C%29_-_panoramio.jpg",
+   "credit": "골뱅이 · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Oedolgae_(%EC%99%B8%EB%8F%8C%EA%B0%9C)_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368601319",
@@ -267,7 +411,13 @@
   "address": "",
   "lat": 33.338002,
   "lng": 126.848343,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/ShineVille_Luxury_Resort_in_Pyoseon_-_panoramio.jpg/960px-ShineVille_Luxury_Resort_in_Pyoseon_-_panoramio.jpg",
+   "credit": "Cho's · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:ShineVille_Luxury_Resort_in_Pyoseon_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w375025742",
@@ -277,7 +427,13 @@
   "address": "서귀포시  화순해안로 67",
   "lat": 33.24106,
   "lng": 126.333711,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Ieodo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Ieodo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Ieodo-ro,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w596713081",
@@ -287,7 +443,13 @@
   "address": "제주시  함덕20길 33-1",
   "lat": 33.53834,
   "lng": 126.668166,
-  "phone": "+82 64 783 7173"
+  "phone": "+82 64 783 7173",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Jeju_Island_%28145095039%29.jpeg/960px-Jeju_Island_%28145095039%29.jpeg",
+   "credit": "Ji Won Eum · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(145095039).jpeg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w375034892",
@@ -297,7 +459,13 @@
   "address": "서귀포시  이어도로 171",
   "lat": 33.239198,
   "lng": 126.4401,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Daepo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Daepo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Daepo-ro,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n4781525322",
@@ -307,7 +475,13 @@
   "address": "",
   "lat": 33.471815,
   "lng": 126.781417,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Nohyeong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Nohyeong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Nohyeong-ro,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "r20670430",
@@ -317,7 +491,13 @@
   "address": "신창1길 20",
   "lat": 33.347272,
   "lng": 126.180876,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Jeju_Island_%2853853396487%29.jpg/960px-Jeju_Island_%2853853396487%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53853396487).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w375480866",
@@ -327,7 +507,13 @@
   "address": "",
   "lat": 33.453726,
   "lng": 126.620923,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Roe_Deer_Observation_Center%2C_Jeju_(%EC%A0%9C%EC%A3%BC_%EB%85%B8%EB%A3%A8%EC%83%9D%ED%83%9C%EA%B4%80%EC%B0%B0%EC%9B%90)_-_panoramio_(4).jpg?width=960",
+   "credit": "골뱅이 · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Roe_Deer_Observation_Center,_Jeju_(%EC%A0%9C%EC%A3%BC_%EB%85%B8%EB%A3%A8%EC%83%9D%ED%83%9C%EA%B4%80%EC%B0%B0%EC%9B%90)_-_panoramio_(4).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w375046956",
@@ -337,7 +523,13 @@
   "address": "",
   "lat": 33.242626,
   "lng": 126.555435,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Waterfall_in_Seogwipo.jpg",
+   "credit": "Kevin Miller from South Bend, IN · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Waterfall_in_Seogwipo.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n5792988552",
@@ -347,7 +539,13 @@
   "address": "서귀포시  일출로 248",
   "lat": 33.460811,
   "lng": 126.932514,
-  "phone": "+82 10 9648 0317"
+  "phone": "+82 10 9648 0317",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Seongsan_Ilchulbong%2C_Jeju_Island.jpg/960px-Seongsan_Ilchulbong%2C_Jeju_Island.jpg",
+   "credit": "Justin De La Ornellas · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seongsan_Ilchulbong,_Jeju_Island.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w374380204",
@@ -357,7 +555,13 @@
   "address": "",
   "lat": 33.219538,
   "lng": 126.251297,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Korea-Jejudo-Hallasan-06.jpg/960px-Korea-Jejudo-Hallasan-06.jpg",
+   "credit": "Gilad Rom · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korea-Jejudo-Hallasan-06.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n5789787099",
@@ -367,7 +571,13 @@
   "address": "samogil or sam-o road 9",
   "lat": 33.499443,
   "lng": 126.517403,
-  "phone": "+82647245506"
+  "phone": "+82647245506",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Jeju_Fortress_Site_04.JPG/960px-Jeju_Fortress_Site_04.JPG",
+   "credit": "Thddbwnd · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Fortress_Site_04.JPG",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w375050868",
@@ -377,7 +587,13 @@
   "address": "",
   "lat": 33.2452,
   "lng": 126.564384,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Jeju_Island_%2853854729160%29.jpg/960px-Jeju_Island_%2853854729160%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53854729160).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368601302",
@@ -387,7 +603,13 @@
   "address": "",
   "lat": 33.309903,
   "lng": 126.830945,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_%281%29.jpg/960px-Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_%281%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seongeupjeonguihyeon-ro,_Pyoseon-myeon,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_(1).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w548729216",
@@ -397,7 +619,13 @@
   "address": "서귀포시  마라로 73",
   "lat": 33.117488,
   "lng": 126.266089,
-  "phone": "+82 50-7974-0834"
+  "phone": "+82 50-7974-0834",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Marado_Lighthouse.jpg/960px-Marado_Lighthouse.jpg",
+   "credit": "https://www.flickr.com/photos/87306261@N00/ · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Marado_Lighthouse.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n4350712593",
@@ -407,7 +635,13 @@
   "address": "서광로 1781-5, Ido 2-dong, 이도2동 1781-5 4F, 제주 시내 278",
   "lat": 33.500014,
   "lng": 126.526159,
-  "phone": "+8207041085387"
+  "phone": "+8207041085387",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Jeju_Fortress_Site_07.JPG/960px-Jeju_Fortress_Site_07.JPG",
+   "credit": "Thddbwnd · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Fortress_Site_07.JPG",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w375034883",
@@ -417,7 +651,13 @@
   "address": "서귀포시  대포로 132",
   "lat": 33.239156,
   "lng": 126.434965,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Daepo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Daepo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Daepo-ro,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w1389761600",
@@ -427,7 +667,13 @@
   "address": "",
   "lat": 33.401133,
   "lng": 126.90361,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Goseong-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%288%29.jpg/960px-Goseong-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%288%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Goseong-ri,_Seongsan-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(8).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w374199038",
@@ -437,7 +683,13 @@
   "address": "서귀포시  사계남로 217",
   "lat": 33.232488,
   "lng": 126.308289,
-  "phone": "+82 064-792-2533"
+  "phone": "+82 064-792-2533",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Bomunsa_Temple_01.jpg/960px-Bomunsa_Temple_01.jpg",
+   "credit": "Bernard Gagnon · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bomunsa_Temple_01.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w371635505",
@@ -457,7 +709,13 @@
   "address": "",
   "lat": 33.246279,
   "lng": 126.563601,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Jeongbang_Falls.jpg/960px-Jeongbang_Falls.jpg",
+   "credit": "Badara25.ba This photo was taken with iPhone 6S Plus · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeongbang_Falls.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368851045",
@@ -467,7 +725,13 @@
   "address": "",
   "lat": 33.323993,
   "lng": 126.830817,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_(1).jpg?width=960",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seongeupjeonguihyeon-ro,_Pyoseon-myeon,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(1).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12492136177",
@@ -477,7 +741,13 @@
   "address": "제주시  한수풀로 58",
   "lat": 33.418135,
   "lng": 126.26907,
-  "phone": "+82 64 796 0069"
+  "phone": "+82 64 796 0069",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Jeju_Island_%2853853394142%29.jpg/960px-Jeju_Island_%2853853394142%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53853394142).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12492136188",
@@ -487,7 +757,13 @@
   "address": "제주시  중앙로 373",
   "lat": 33.488966,
   "lng": 126.539664,
-  "phone": "+82 64 1899 6265"
+  "phone": "+82 64 1899 6265",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Jeju_Youngji_School.jpg/960px-Jeju_Youngji_School.jpg",
+   "credit": "Nt · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Youngji_School.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12492136186",
@@ -497,7 +773,13 @@
   "address": "서귀포시  1100로 453-95",
   "lat": 33.286018,
   "lng": 126.444144,
-  "phone": "+82 64 730 1421"
+  "phone": "+82 64 730 1421",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Cheonjeyeon_Waterfall_%2814524096932%29.jpg/960px-Cheonjeyeon_Waterfall_%2814524096932%29.jpg",
+   "credit": "Norton Ip from Hong Kong · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Cheonjeyeon_Waterfall_(14524096932).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368849834",
@@ -507,7 +789,13 @@
   "address": "",
   "lat": 33.32531,
   "lng": 126.832722,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seongeupjeonguihyeon-ro,_Pyoseon-myeon,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368850734",
@@ -517,7 +805,13 @@
   "address": "",
   "lat": 33.414313,
   "lng": 126.263818,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Jeju_Island_%2853853393722%29.jpg/960px-Jeju_Island_%2853853393722%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53853393722).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12492136181",
@@ -527,7 +821,13 @@
   "address": "제주시  번영로 957",
   "lat": 33.47591,
   "lng": 126.63918,
-  "phone": "+82 64 759 9960"
+  "phone": "+82 64 759 9960",
+  "photo": {
+   "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Roe_Deer_Observation_Center%2C_Jeju_(%EC%A0%9C%EC%A3%BC_%EB%85%B8%EB%A3%A8%EC%83%9D%ED%83%9C%EA%B4%80%EC%B0%B0%EC%9B%90)_-_panoramio_(5).jpg?width=960",
+   "credit": "골뱅이 · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Roe_Deer_Observation_Center,_Jeju_(%EC%A0%9C%EC%A3%BC_%EB%85%B8%EB%A3%A8%EC%83%9D%ED%83%9C%EA%B4%80%EC%B0%B0%EC%9B%90)_-_panoramio_(5).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w1305869088",
@@ -537,7 +837,13 @@
   "address": "서귀포시  일주동로 8638",
   "lat": 33.254464,
   "lng": 126.565437,
-  "phone": "+82 64 762 8001"
+  "phone": "+82 64 762 8001",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Jeju_Island_%2853853399857%29.jpg/960px-Jeju_Island_%2853853399857%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53853399857).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368851091",
@@ -547,7 +853,13 @@
   "address": "",
   "lat": 33.446793,
   "lng": 126.91459,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Goseongdongseo-ro56beon-gil%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Goseongdongseo-ro56beon-gil%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Goseongdongseo-ro56beon-gil,_Seongsan-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368850529",
@@ -557,7 +869,13 @@
   "address": "",
   "lat": 33.222554,
   "lng": 126.255821,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Sangmo-ri%2C_Daejeong-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Sangmo-ri%2C_Daejeong-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Sangmo-ri,_Daejeong-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12492136178",
@@ -567,7 +885,13 @@
   "address": "제주시  산천단남길 10",
   "lat": 33.444791,
   "lng": 126.560414,
-  "phone": "+82 64 720 2222"
+  "phone": "+82 64 720 2222",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Jeju_City_Hall_2.JPG/960px-Jeju_City_Hall_2.JPG",
+   "credit": "Jjw · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_City_Hall_2.JPG",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w370378985",
@@ -577,7 +901,13 @@
   "address": "서귀포시  장수로 47",
   "lat": 33.255524,
   "lng": 126.563727,
-  "phone": "+82 64 730 3000"
+  "phone": "+82 64 730 3000",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Seogwipo_city_Ilex_rotunda.jpg/960px-Seogwipo_city_Ilex_rotunda.jpg",
+   "credit": "Trainholic · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seogwipo_city_Ilex_rotunda.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368850707",
@@ -587,7 +917,13 @@
   "address": "",
   "lat": 33.520318,
   "lng": 126.859233,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Jeju_Island_course_1_Olleh.jpg/960px-Jeju_Island_course_1_Olleh.jpg",
+   "credit": "Rjblaze93 · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_course_1_Olleh.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368850805",
@@ -597,7 +933,13 @@
   "address": "",
   "lat": 33.349434,
   "lng": 126.182642,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Yeondae_at_Jeju.jpg/960px-Yeondae_at_Jeju.jpg",
+   "credit": "Jjw · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Yeondae_at_Jeju.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12492136189",
@@ -607,7 +949,13 @@
   "address": "제주시  번영로 957",
   "lat": 33.475891,
   "lng": 126.639159,
-  "phone": "+82 64 756 6680"
+  "phone": "+82 64 756 6680",
+  "photo": {
+   "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Roe_Deer_Observation_Center%2C_Jeju_(%EC%A0%9C%EC%A3%BC_%EB%85%B8%EB%A3%A8%EC%83%9D%ED%83%9C%EA%B4%80%EC%B0%B0%EC%9B%90)_-_panoramio_(2).jpg?width=960",
+   "credit": "골뱅이 · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Roe_Deer_Observation_Center,_Jeju_(%EC%A0%9C%EC%A3%BC_%EB%85%B8%EB%A3%A8%EC%83%9D%ED%83%9C%EA%B4%80%EC%B0%B0%EC%9B%90)_-_panoramio_(2).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w370379063",
@@ -617,7 +965,13 @@
   "address": "서귀포시  동문로 1",
   "lat": 33.252783,
   "lng": 126.562302,
-  "phone": "+82 64 730 9015"
+  "phone": "+82 64 730 9015",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Jeju_Island_%2853854654469%29.jpg/960px-Jeju_Island_%2853854654469%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53854654469).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017345",
@@ -637,7 +991,13 @@
   "address": "서귀포시  태위로 634",
   "lat": 33.277674,
   "lng": 126.714333,
-  "phone": "+82 64 764 5784"
+  "phone": "+82 64 764 5784",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Jeju_Island_%2853854664004%29.jpg/960px-Jeju_Island_%2853854664004%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53854664004).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017438",
@@ -647,7 +1007,13 @@
   "address": "제주시  구좌로 42",
   "lat": 33.523283,
   "lng": 126.85588,
-  "phone": "+82 64 783 2360"
+  "phone": "+82 64 783 2360",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Jeju_Island_Olleh_Course_one.jpg/960px-Jeju_Island_Olleh_Course_one.jpg",
+   "credit": "Rjblaze93 · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_Olleh_Course_one.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017209",
@@ -657,7 +1023,13 @@
   "address": "제주시  한림중앙로 4",
   "lat": 33.41448,
   "lng": 126.264597,
-  "phone": "+82 64 796 9001"
+  "phone": "+82 64 796 9001",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Hallim_Park%2C_Jeju_-_Halim2611.jpg/960px-Hallim_Park%2C_Jeju_-_Halim2611.jpg",
+   "credit": "lumoplank · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Hallim_Park,_Jeju_-_Halim2611.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017376",
@@ -667,7 +1039,13 @@
   "address": "제주시  용담로 46",
   "lat": 33.512754,
   "lng": 126.50764,
-  "phone": "+82 64 712 0259"
+  "phone": "+82 64 712 0259",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/The_Outside_Gate_of_Jeju_Mok_Office.JPG/960px-The_Outside_Gate_of_Jeju_Mok_Office.JPG",
+   "credit": "Thddbwnd · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:The_Outside_Gate_of_Jeju_Mok_Office.JPG",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12461992384",
@@ -677,7 +1055,13 @@
   "address": "서귀포시  동문로 5",
   "lat": 33.252328,
   "lng": 126.562033,
-  "phone": "+82 64 762 6050"
+  "phone": "+82 64 762 6050",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Jeju_Island_%2853853400422%29.jpg/960px-Jeju_Island_%2853853400422%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53853400422).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017423",
@@ -687,7 +1071,13 @@
   "address": "서귀포시  일출로 4",
   "lat": 33.447114,
   "lng": 126.913297,
-  "phone": "+82 64 782 5417"
+  "phone": "+82 64 782 5417",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Jeju_Island_%EC%84%B1%EC%82%B0%EA%B3%B5%EC%9B%90_Seongsan_Ilchilbong.jpg/960px-Jeju_Island_%EC%84%B1%EC%82%B0%EA%B3%B5%EC%9B%90_Seongsan_Ilchilbong.jpg",
+   "credit": "Rjblaze93 · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_%EC%84%B1%EC%82%B0%EA%B3%B5%EC%9B%90_Seongsan_Ilchilbong.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12461992341",
@@ -697,7 +1087,13 @@
   "address": "서귀포시  하모상가로 27",
   "lat": 33.221625,
   "lng": 126.251789,
-  "phone": "+82 64 794 0719"
+  "phone": "+82 64 794 0719",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Choenamdanhaean-ro%2C_Daejeong-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_%281%29.jpg/960px-Choenamdanhaean-ro%2C_Daejeong-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_%281%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Choenamdanhaean-ro,_Daejeong-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_(1).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017221",
@@ -707,7 +1103,13 @@
   "address": "제주시  하귀로 35",
   "lat": 33.480348,
   "lng": 126.400996,
-  "phone": "+82 64 713 2927"
+  "phone": "+82 64 713 2927",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Historic_Site_of_Anti-Mongolian_Struggle_monument.jpg/960px-Historic_Site_of_Anti-Mongolian_Struggle_monument.jpg",
+   "credit": "Chipmunkdavis · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Historic_Site_of_Anti-Mongolian_Struggle_monument.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12461992359",
@@ -717,7 +1119,13 @@
   "address": "서귀포시  천제연로 210-1",
   "lat": 33.251476,
   "lng": 126.427037,
-  "phone": "+82 64 739 0381"
+  "phone": "+82 64 739 0381",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Cheonjeyeon_Waterfall_%2814338693447%29.jpg/960px-Cheonjeyeon_Waterfall_%2814338693447%29.jpg",
+   "credit": "Norton Ip from Hong Kong · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Cheonjeyeon_Waterfall_(14338693447).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017214",
@@ -727,7 +1135,13 @@
   "address": "서귀포시  표선관정로 97",
   "lat": 33.324339,
   "lng": 126.830864,
-  "phone": "+82 64 787 5242"
+  "phone": "+82 64 787 5242",
+  "photo": {
+   "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_(2).jpg?width=960",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seongeupjeonguihyeon-ro,_Pyoseon-myeon,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(2).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017210",
@@ -737,7 +1151,13 @@
   "address": "제주시  한림중앙로 1",
   "lat": 33.414584,
   "lng": 126.264873,
-  "phone": "+82 64 796 2567"
+  "phone": "+82 64 796 2567",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spirited_Garden_06.jpg/960px-Spirited_Garden_06.jpg",
+   "credit": "Bernard Gagnon · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Spirited_Garden_06.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017277",
@@ -747,7 +1167,13 @@
   "address": "제주시  도령로 1",
   "lat": 33.486804,
   "lng": 126.479304,
-  "phone": "+82 64 744 0369"
+  "phone": "+82 64 744 0369",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Nohyeong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Nohyeong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Nohyeong-ro,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12461992392",
@@ -757,7 +1183,13 @@
   "address": "서귀포시  일주동로 8648-12",
   "lat": 33.254566,
   "lng": 126.564407,
-  "phone": "+82 64 733 4457"
+  "phone": "+82 64 733 4457",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Seogwipo_Maeil_Olle_Market_09.jpg/960px-Seogwipo_Maeil_Olle_Market_09.jpg",
+   "credit": "Seefooddiet · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seogwipo_Maeil_Olle_Market_09.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017427",
@@ -767,7 +1199,13 @@
   "address": "서귀포시  동류암로36번길 23",
   "lat": 33.449602,
   "lng": 126.915094,
-  "phone": "+82 64 783 0606"
+  "phone": "+82 64 783 0606",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Jeju_Island_%2853854291811%29.jpg/960px-Jeju_Island_%2853854291811%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53854291811).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12461992340",
@@ -777,7 +1215,13 @@
   "address": "서귀포시  하모중앙로 76",
   "lat": 33.221429,
   "lng": 126.251818,
-  "phone": "+82 64 792 7545"
+  "phone": "+82 64 792 7545",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Jeju_Typical_country_house_Jeju.jpg/960px-Jeju_Typical_country_house_Jeju.jpg",
+   "credit": "Sgroey · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Typical_country_house_Jeju.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017312",
@@ -787,7 +1231,13 @@
   "address": "제주시  삼무로 46",
   "lat": 33.489638,
   "lng": 126.491531,
-  "phone": "+82 64 743 2098"
+  "phone": "+82 64 743 2098",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Yeon-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Yeon-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Yeon-dong,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12461992372",
@@ -797,7 +1247,13 @@
   "address": "서귀포시  중정로 70",
   "lat": 33.247915,
   "lng": 126.563846,
-  "phone": "+82 64 803 0550"
+  "phone": "+82 64 803 0550",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Seogwipo_Maeil_Olle_Market_02.jpg/960px-Seogwipo_Maeil_Olle_Market_02.jpg",
+   "credit": "Seefooddiet · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seogwipo_Maeil_Olle_Market_02.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12462017217",
@@ -807,7 +1263,13 @@
   "address": "서귀포시  표선중앙로80번길 1",
   "lat": 33.326034,
   "lng": 126.832454,
-  "phone": "+82 64 787 0060"
+  "phone": "+82 64 787 0060",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seongeupjeonguihyeon-ro,_Pyoseon-myeon,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12461992380",
@@ -817,7 +1279,13 @@
   "address": "제주시  두신로 75",
   "lat": 33.349849,
   "lng": 126.182807,
-  "phone": "+82 64 772 3799"
+  "phone": "+82 64 772 3799",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Jeju_Island_%2853853396417%29.jpg/960px-Jeju_Island_%2853853396417%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_(53853396417).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368950161",
@@ -837,7 +1305,13 @@
   "address": "서귀포시  일주동로 9213",
   "lat": 33.24882,
   "lng": 126.508501,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/%EC%98%AC%EB%A0%88%EA%B8%B8%EC%9D%98_%ED%92%8D%EA%B2%BD.jpg/960px-%EC%98%AC%EB%A0%88%EA%B8%B8%EC%9D%98_%ED%92%8D%EA%B2%BD.jpg",
+   "credit": "Byun Gyuwon · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:%EC%98%AC%EB%A0%88%EA%B8%B8%EC%9D%98_%ED%92%8D%EA%B2%BD.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079527",
@@ -847,7 +1321,13 @@
   "address": "서귀포시  표선중앙로 90",
   "lat": 33.325677,
   "lng": 126.833437,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Seoseongil-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Seoseongil-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seoseongil-ro,_Pyoseon-myeon,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442036344",
@@ -857,7 +1337,13 @@
   "address": "서귀포시  형제해안로 322-1",
   "lat": 33.206745,
   "lng": 126.289828,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Jeju_Volcanic_rock_fence_and_home_in_Jeju.jpg/960px-Jeju_Volcanic_rock_fence_and_home_in_Jeju.jpg",
+   "credit": "Sgroey · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Volcanic_rock_fence_and_home_in_Jeju.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n4656476965",
@@ -867,7 +1353,13 @@
   "address": "",
   "lat": 33.455762,
   "lng": 126.562781,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Hallasan_National_Park_1.jpg/960px-Hallasan_National_Park_1.jpg",
+   "credit": "Gary Cycles · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Hallasan_National_Park_1.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w373856860",
@@ -877,7 +1369,13 @@
   "address": "",
   "lat": 33.251058,
   "lng": 126.561459,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Seogwipo_Maeil_Olle_Market_12.jpg/960px-Seogwipo_Maeil_Olle_Market_12.jpg",
+   "credit": "Seefooddiet · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seogwipo_Maeil_Olle_Market_12.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442066381",
@@ -887,7 +1385,13 @@
   "address": "서귀포시  성읍정의현로 110",
   "lat": 33.392159,
   "lng": 126.80044,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_%282%29.jpg/960px-Seongeupjeonguihyeon-ro%2C_Pyoseon-myeon%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_%282%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seongeupjeonguihyeon-ro,_Pyoseon-myeon,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_(2).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079074",
@@ -897,7 +1401,13 @@
   "address": "서귀포시  일주서로 1357",
   "lat": 33.262794,
   "lng": 126.369843,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/September_Asia_Jeju_Island_Corea_Chinese_Sea_-_Master_Asia_Photography_2012_-_panoramio_%285%29.jpg/960px-September_Asia_Jeju_Island_Corea_Chinese_Sea_-_Master_Asia_Photography_2012_-_panoramio_%285%29.jpg",
+   "credit": "pictures Jettcom · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:September_Asia_Jeju_Island_Corea_Chinese_Sea_-_Master_Asia_Photography_2012_-_panoramio_(5).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n12739155759",
@@ -907,7 +1417,13 @@
   "address": "제주시  태성로 20",
   "lat": 33.50119,
   "lng": 126.548363,
-  "phone": "0809995425"
+  "phone": "0809995425",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Jeju_Dongbu_Police_Station.JPG/960px-Jeju_Dongbu_Police_Station.JPG",
+   "credit": "Abasaa · Public domain · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Dongbu_Police_Station.JPG",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079370",
@@ -917,7 +1433,13 @@
   "address": "서귀포시  중산간동로 8004",
   "lat": 33.264692,
   "lng": 126.561685,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Seogwipo_Maeil_Olle_Market_15.jpg/960px-Seogwipo_Maeil_Olle_Market_15.jpg",
+   "credit": "Seefooddiet · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seogwipo_Maeil_Olle_Market_15.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442066378",
@@ -927,7 +1449,13 @@
   "address": "서귀포시  표선중앙로 34",
   "lat": 33.329558,
   "lng": 126.830312,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/704-3_Haye-dong%2C_Seogwipo%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-704-3_Haye-dong%2C_Seogwipo%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "Maksim Safiullin · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:704-3_Haye-dong,_Seogwipo,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442075416",
@@ -937,7 +1465,13 @@
   "address": "서귀포시  동일하모로149번길 5",
   "lat": 33.227297,
   "lng": 126.248578,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Jeju_Zen_hideaway_and_Sanbangsan_Jeju.jpg/960px-Jeju_Zen_hideaway_and_Sanbangsan_Jeju.jpg",
+   "credit": "Sgroey · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Zen_hideaway_and_Sanbangsan_Jeju.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n13947179743",
@@ -947,7 +1481,13 @@
   "address": "40",
   "lat": 33.508612,
   "lng": 126.526246,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Jeju_Fortress_Site_08.JPG/960px-Jeju_Fortress_Site_08.JPG",
+   "credit": "Thddbwnd · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Fortress_Site_08.JPG",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079547",
@@ -957,7 +1497,13 @@
   "address": "서귀포시  천제연로213번길 44",
   "lat": 33.255023,
   "lng": 126.4283,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Cheonjeyeon_Waterfall_%2814523695834%29.jpg/960px-Cheonjeyeon_Waterfall_%2814523695834%29.jpg",
+   "credit": "Norton Ip from Hong Kong · CC BY-SA 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Cheonjeyeon_Waterfall_(14523695834).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079421",
@@ -967,7 +1513,13 @@
   "address": "서귀포시  섭지코지로26번길 6",
   "lat": 33.43755,
   "lng": 126.920342,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Seopjikoji-ro%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%284%29.jpg/960px-Seopjikoji-ro%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%284%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seopjikoji-ro,_Seongsan-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(4).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079047",
@@ -977,7 +1529,13 @@
   "address": "서귀포시  한창로 273",
   "lat": 33.284349,
   "lng": 126.353606,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Daepo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%286%29.jpg/960px-Daepo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%286%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Daepo-ro,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(6).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368950113",
@@ -987,7 +1545,13 @@
   "address": "",
   "lat": 33.472641,
   "lng": 126.462767,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Nohyeong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%281%29.jpg/960px-Nohyeong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%281%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Nohyeong-ro,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(1).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079411",
@@ -997,7 +1561,13 @@
   "address": "서귀포시  중문관광로 224",
   "lat": 33.241321,
   "lng": 126.424643,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/ICC_Jeju_in_Seogwipo_-_panoramio.jpg/960px-ICC_Jeju_in_Seogwipo_-_panoramio.jpg",
+   "credit": "Cho's · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:ICC_Jeju_in_Seogwipo_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079844",
@@ -1007,7 +1577,13 @@
   "address": "서귀포시  일주동로 6347-17",
   "lat": 33.305596,
   "lng": 126.792078,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Gallery_Dumoak_%2853854692594%29.jpg/960px-Gallery_Dumoak_%2853854692594%29.jpg",
+   "credit": "David Lee from Redmond, WA, USA · CC BY 2.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Gallery_Dumoak_(53854692594).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442066351",
@@ -1017,7 +1593,13 @@
   "address": "",
   "lat": 33.250449,
   "lng": 126.28424,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Gwangmyeongsa_01.jpg/960px-Gwangmyeongsa_01.jpg",
+   "credit": "Bernard Gagnon · CC0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Gwangmyeongsa_01.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368950153",
@@ -1027,7 +1609,13 @@
   "address": "",
   "lat": 33.507608,
   "lng": 126.540458,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Samseong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg/960px-Samseong-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Samseong-ro,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079076",
@@ -1037,7 +1625,13 @@
   "address": "서귀포시  태평로 534",
   "lat": 33.251574,
   "lng": 126.574336,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Seogwipo_Maeil_Olle_Market_10.jpg/960px-Seogwipo_Maeil_Olle_Market_10.jpg",
+   "credit": "Seefooddiet · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seogwipo_Maeil_Olle_Market_10.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079921",
@@ -1047,7 +1641,13 @@
   "address": "서귀포시  동류암로 48",
   "lat": 33.449109,
   "lng": 126.915599,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Jeju_Island_%EC%84%B1%EC%82%B0%EA%B3%B5%EC%9B%90_Seongsan_park.jpg/960px-Jeju_Island_%EC%84%B1%EC%82%B0%EA%B3%B5%EC%9B%90_Seongsan_park.jpg",
+   "credit": "Rjblaze93 · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Island_%EC%84%B1%EC%82%B0%EA%B3%B5%EC%9B%90_Seongsan_park.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n8442079542",
@@ -1057,7 +1657,13 @@
   "address": "서귀포시  화순중앙로 94",
   "lat": 33.244036,
   "lng": 126.335971,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Korean_beer%2C_soju_and_makgeolli.jpg/960px-Korean_beer%2C_soju_and_makgeolli.jpg",
+   "credit": "Sgroey · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Korean_beer,_soju_and_makgeolli.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w550343242",
@@ -1077,7 +1683,13 @@
   "address": "",
   "lat": 33.228427,
   "lng": 126.477373,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Ieodo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg/960px-Ieodo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Ieodo-ro,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(2).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n2502664128",
@@ -1087,7 +1699,13 @@
   "address": "",
   "lat": 33.492818,
   "lng": 126.951602,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%EC%9A%B0%EB%8F%84_%EC%82%B0_%EC%9C%84%EC%97%90%EC%84%9C_%EC%95%84%EB%9E%98%EB%A5%BC_%EB%B0%94%EB%9D%BC%EB%B3%B4%EB%A9%B0.jpg?width=960",
+   "credit": "Liszt uhm · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:%EC%9A%B0%EB%8F%84_%EC%82%B0_%EC%9C%84%EC%97%90%EC%84%9C_%EC%95%84%EB%9E%98%EB%A5%BC_%EB%B0%94%EB%9D%BC%EB%B3%B4%EB%A9%B0.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n1658582303",
@@ -1097,7 +1715,13 @@
   "address": "",
   "lat": 33.216412,
   "lng": 126.250314,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Jeju_Zen_hideaway_pool_panorama_Sanbangsan_Jeju.jpg/960px-Jeju_Zen_hideaway_pool_panorama_Sanbangsan_Jeju.jpg",
+   "credit": "Sgroey · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Zen_hideaway_pool_panorama_Sanbangsan_Jeju.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w246689253",
@@ -1107,7 +1731,13 @@
   "address": "제주시  서광로 174",
   "lat": 33.49976,
   "lng": 126.514849,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Yongdami-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%285%29.jpg/960px-Yongdami-dong%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%285%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Yongdami-dong,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(5).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n368736808",
@@ -1117,7 +1747,13 @@
   "address": "",
   "lat": 33.248423,
   "lng": 126.50807,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Ilchul-ro%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg/960px-Ilchul-ro%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Ilchul-ro,_Seongsan-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(2).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n10258963825",
@@ -1127,7 +1763,13 @@
   "address": "제주시",
   "lat": 33.497041,
   "lng": 126.911575,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/September_Asia_Jeju_Island_Corea_Chinese_Sea_-_Master_Asia_Photography_2012_-_panoramio_%2840%29.jpg/960px-September_Asia_Jeju_Island_Corea_Chinese_Sea_-_Master_Asia_Photography_2012_-_panoramio_%2840%29.jpg",
+   "credit": "pictures Jettcom · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:September_Asia_Jeju_Island_Corea_Chinese_Sea_-_Master_Asia_Photography_2012_-_panoramio_(40).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n3738265319",
@@ -1137,7 +1779,13 @@
   "address": "",
   "lat": 33.235413,
   "lng": 126.334677,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/%EB%B9%84%EC%96%91%EB%8F%84-%EC%A0%9C%EC%A3%BC%EB%8F%84.jpg/960px-%EB%B9%84%EC%96%91%EB%8F%84-%EC%A0%9C%EC%A3%BC%EB%8F%84.jpg",
+   "credit": "jbl4430 · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:%EB%B9%84%EC%96%91%EB%8F%84-%EC%A0%9C%EC%A3%BC%EB%8F%84.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "r14745474",
@@ -1147,7 +1795,13 @@
   "address": "제주시  임항로 191",
   "lat": 33.5261,
   "lng": 126.544561,
-  "phone": "+82 64 720 8590"
+  "phone": "+82 64 720 8590",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Imhang-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg/960px-Imhang-ro%2C_Jeju-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%282%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Imhang-ro,_Jeju-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(2).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n4738211522",
@@ -1157,7 +1811,13 @@
   "address": "서귀포시  이어도로 640",
   "lat": 33.228162,
   "lng": 126.484473,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Jeju-navalbase1.jpg/960px-Jeju-navalbase1.jpg",
+   "credit": "The original uploader was Pudmaker at Korean Wikipedia. · CC BY-SA 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju-navalbase1.jpg",
+   "note": "사진은 이 곳을 찍은 사진입니다."
+  }
  },
  {
   "id": "n2455282127",
@@ -1167,7 +1827,13 @@
   "address": "서귀포시",
   "lat": 33.473296,
   "lng": 126.934541,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Seongsan-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%287%29.jpg/960px-Seongsan-ri%2C_Seongsan-eup%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%287%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seongsan-ri,_Seongsan-eup,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(7).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n3776252034",
@@ -1177,7 +1843,13 @@
   "address": "",
   "lat": 33.209693,
   "lng": 126.259159,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Daepo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%2829%29.jpg/960px-Daepo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov_%2829%29.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Daepo-ro,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov_(29).jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "w246599475",
@@ -1187,7 +1859,13 @@
   "address": "",
   "lat": 33.519486,
   "lng": 126.535123,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Jeju_Costral_Ferry_Terminal.JPG/960px-Jeju_Costral_Ferry_Terminal.JPG",
+   "credit": "Jjw · CC BY-SA 4.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jeju_Costral_Ferry_Terminal.JPG",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  },
  {
   "id": "n3738251471",
@@ -1197,6 +1875,12 @@
   "address": "",
   "lat": 33.227596,
   "lng": 126.475777,
-  "phone": ""
+  "phone": "",
+  "photo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Ieodo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg/960px-Ieodo-ro%2C_Seogwipo-si%2C_Jeju-do%2C_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "credit": "song songroov · CC BY 3.0 · Wikimedia Commons",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Ieodo-ro,_Seogwipo-si,_Jeju-do,_South_Korea_-_panoramio_-_song_songroov.jpg",
+   "note": "사진은 이 곳이 아니라 근처에서 찍은 예시 사진입니다."
+  }
  }
 ]

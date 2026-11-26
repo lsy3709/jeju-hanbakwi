@@ -131,10 +131,12 @@ def to_place_row(raw: dict) -> dict | None:
         "address": _text(raw, "address"),
         "lat": float(lat),
         "lng": float(lng),
-        "image_url": "/photos/" + photo["file"],
+        # 사진이 바깥 주소(url)면 그대로, 우리 서버의 파일(file)이면 /photos/ 아래 주소로.
+        "image_url": photo.get("url") or "/photos/" + photo["file"],
         "image_credit": photo["credit"],
         "image_source_url": photo["source_url"],
-        "overview": f"{area}에 있는 {word}입니다." + (f" 전화 {phone}" if phone else "") + (" 사진은 이 식당이 아니라 같은 종류 음식의 예시 사진입니다." if raw.get("photo") else " 사진은 분류를 대표하는 예시 사진입니다."),
+        # 사진에 안내 글(note)이 있으면 그것을 씁니다(예: 근처에서 찍은 사진). 없으면 식당 · 편의 시설의 기본 문구.
+        "overview": f"{area}에 있는 {word}입니다." + (f" 전화 {phone}" if phone else "") + " " + (photo.get("note") or ("사진은 이 식당이 아니라 같은 종류 음식의 예시 사진입니다." if raw.get("photo") and category in FOOD_PHOTOS else "사진은 분류를 대표하는 예시 사진입니다.")),
         "one_liner": f"{area}의 {word}",
         "theme_tags": [],
         "indoor": indoor,

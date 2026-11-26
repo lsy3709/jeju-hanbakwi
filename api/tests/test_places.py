@@ -80,3 +80,23 @@ def test_spots_api_serves_places_by_category(client, repo):
     assert client.get("/spots").json()["total"] == 68
     body = client.get("/spots", params={"category": "약국"}).json()
     assert body["total"] == 1 and body["items"][0]["image_url"].endswith("/photos/places/pharmacy.jpg")
+
+
+def test_to_place_row_uses_the_photo_given_with_the_place():
+    """편의 시설도 곳마다 사진을 줄 수 있습니다. 바깥 사진 주소(url)면 그대로 쓰고, 안내 글은 식당 문구가 아니어야 합니다."""
+    photo = {"url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/960px-X.jpg",
+             "credit": "누군가 · CC0 · Wikimedia Commons", "source_url": "https://commons.wikimedia.org/wiki/File:X.jpg"}
+    row = to_place_row({"id": "n1", "title": "어느약국", "category": "약국", "lat": 33.5, "lng": 126.5, "photo": photo})
+    assert row["image_url"] == photo["url"]
+    assert row["image_credit"] == photo["credit"] and row["image_source_url"] == photo["source_url"]
+    assert "예시 사진" in row["overview"] and "식당" not in row["overview"] and "음식" not in row["overview"]
+
+
+def test_every_sample_place_has_its_own_photo():
+    """sample_places.json 의 120곳은 사진 주소가 모두 달라야 하고, 출처가 있어야 합니다."""
+    import json
+    from pathlib import Path
+    places = json.loads((Path(__file__).parent.parent / "data" / "sample_places.json").read_text(encoding="utf-8"))
+    rows = [to_place_row(place) for place in places]
+    assert len({row["image_url"] for row in rows}) == len(rows) == 120
+    assert all(row["image_credit"] and row["image_source_url"].startswith("https://commons.wikimedia.org/wiki/File:") for row in rows)
