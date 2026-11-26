@@ -126,7 +126,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               FilterMenu(
                 label: '분류',
                 value: c.category,
-                options: c.meta?.categories ?? const [],
+                options: c.meta?.allCategories ?? const [],
                 onChanged: c.setCategory,
               ),
               SegmentedButton<bool?>(

@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
-from constants import AREAS, CATEGORIES, THEMES
+from constants import AREAS, CATEGORIES, PLACE_CATEGORIES, THEMES
 from repo import get_repo
 from schemas import Meta, Spot, SpotList
 from services.paging import cut_page
@@ -13,7 +13,7 @@ router = APIRouter(tags=["관광지"])
 
 @router.get("/meta", response_model=Meta)
 def meta():
-    return {"themes": THEMES, "areas": AREAS, "categories": CATEGORIES}
+    return {"themes": THEMES, "areas": AREAS, "categories": CATEGORIES, "place_categories": PLACE_CATEGORIES}
 
 
 @router.get("/spots", response_model=SpotList)

@@ -18,7 +18,7 @@ import { chip } from "@/components/ui";
 import { useAsync } from "@/hooks/useAsync";
 import { useSpotSearch } from "@/hooks/useSpotSearch";
 import { getMeta } from "@/lib/api";
-import { exploreHref, hasActiveFilter, parseExploreQuery } from "@/lib/exploreFilters";
+import { categoryOptions, exploreHref, hasActiveFilter, parseExploreQuery } from "@/lib/exploreFilters";
 
 // useSearchParams 를 쓰는 화면은 Suspense 로 감싸야 빌드가 통과합니다.
 export default function ExplorePage() {
@@ -53,9 +53,27 @@ function Explore() {
 
       {meta.data && <ThemeChips themes={meta.data.themes} selected={theme} onSelect={(t) => update({ theme: t })} />}
 
+      {/* 편의 시설: 여행 중에 찾는 곳(숙소 · 병원 · 약국 …). 누르면 그 분류만 보여 주고, 다시 누르면 풉니다. */}
+      {(meta.data?.place_categories?.length ?? 0) > 0 && (
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="편의 시설">
+          <span className="text-sm text-muted">편의 시설</span>
+          {meta.data?.place_categories?.map((name) => (
+            <button
+              key={name}
+              type="button"
+              aria-pressed={category === name}
+              onClick={() => update({ category: category === name ? "" : name })}
+              className={chip(category === name)}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center gap-3">
         <FilterSelect label="지역" value={area} options={meta.data?.areas ?? []} onChange={(v) => update({ area: v })} />
-        <FilterSelect label="분류" value={category} options={meta.data?.categories ?? []} onChange={(v) => update({ category: v })} />
+        <FilterSelect label="분류" value={category} options={categoryOptions(meta.data)} onChange={(v) => update({ category: v })} />
         <div className="flex gap-2" role="group" aria-label="실내 실외">
           {[
             { label: "전체", value: "" },

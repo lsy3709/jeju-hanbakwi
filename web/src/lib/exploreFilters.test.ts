@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { exploreHref, hasActiveFilter, parseExploreQuery } from "./exploreFilters";
+import { categoryOptions, exploreHref, hasActiveFilter, parseExploreQuery } from "./exploreFilters";
 
 const parse = (query: string) => parseExploreQuery(new URLSearchParams(query));
 
@@ -44,6 +44,20 @@ describe("parseExploreQuery (주소 쿼리 → 필터)", () => {
   });
   it("view 는 필터가 아니므로 hasActiveFilter 에 영향이 없다", () => {
     expect(hasActiveFilter(parse("view=map").filters)).toBe(false);
+  });
+});
+
+describe("categoryOptions (분류 드롭다운의 선택지)", () => {
+  it("여행지 분류 뒤에 편의 시설 분류를 잇는다", () => {
+    expect(categoryOptions({ themes: [], areas: [], categories: ["관광지"], place_categories: ["숙소", "약국"] })).toEqual([
+      "관광지",
+      "숙소",
+      "약국",
+    ]);
+  });
+  it("편의 시설 분류가 없는 옛 서버여도 동작한다", () => {
+    expect(categoryOptions({ themes: [], areas: [], categories: ["관광지"] })).toEqual(["관광지"]);
+    expect(categoryOptions(null)).toEqual([]);
   });
 });
 

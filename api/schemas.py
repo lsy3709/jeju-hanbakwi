@@ -35,6 +35,7 @@ class Meta(BaseModel):
     themes: list[str]
     areas: list[str]
     categories: list[str]
+    place_categories: list[str] = []  # 편의 시설 분류(숙소 · 병원 · 약국 …). 골랐을 때만 목록에 나옵니다
 
 
 class WeatherDay(BaseModel):

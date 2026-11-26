@@ -19,14 +19,24 @@ from pathlib import Path
 import httpx
 
 from config import settings
-from transform import CATEGORY_BY_TYPE, to_spot_row
+from transform import CATEGORY_BY_TYPE, to_place_row, to_spot_row
 
 SAMPLE_FILE = Path(__file__).parent.parent / "data" / "sample_spots.json"
+PLACES_FILE = Path(__file__).parent.parent / "data" / "sample_places.json"
 JEJU_AREA_CODE = "39"  # TourAPI 의 지역 번호: 39 = 제주도
 
 
 def load_sample() -> list[dict]:
     return json.loads(SAMPLE_FILE.read_text(encoding="utf-8"))
+
+
+def load_places() -> list[dict]:
+    """편의 시설 샘플(숙소 · 게스트하우스 · 병원 · 약국 · 편의점 · 교통). tools/make_sample_places.py 가 만든 파일."""
+    return json.loads(PLACES_FILE.read_text(encoding="utf-8"))
+
+
+def to_place_rows(raw_items: list[dict]) -> list[dict]:
+    return [row for row in (to_place_row(item) for item in raw_items) if row is not None]
 
 
 def call_tour_api(operation: str, params: dict) -> list[dict]:
@@ -90,11 +100,25 @@ def to_rows(raw_items: list[dict], source: str) -> tuple[list[dict], int]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="관광 데이터 가져오기")
     parser.add_argument("--sample", action="store_true", help="샘플 데이터를 넣습니다")
+    parser.add_argument("--places", action="store_true", help="편의 시설 샘플(숙소 · 병원 · 약국 · 편의점 · 교통)을 넣습니다")
     parser.add_argument("--types", default="12,14,15,28,38,39", help="받을 콘텐츠 유형(쉼표로 구분)")
     parser.add_argument("--limit", type=int, default=100, help="유형마다 받을 최대 건수")
     parser.add_argument("--overview", type=int, default=0, help="소개 글을 받을 건수(0 이면 받지 않음)")
     parser.add_argument("--dry-run", action="store_true", help="DB 에 넣지 않고 결과만 봅니다")
     args = parser.parse_args()
+
+    if args.places:
+        rows = to_place_rows(load_places())
+        print(f"편의 시설 {len(rows)}건 (분류를 골랐을 때만 목록에 나옵니다)")
+        for name in sorted({row["category"] for row in rows}):
+            print(f"  - {name}: {sum(1 for row in rows if row['category'] == name)}건")
+        if args.dry_run:
+            print("(--dry-run: DB 에 넣지 않았습니다)")
+            return 0
+        from repo import get_repo
+
+        print(f"DB 에 {get_repo().upsert_spots(rows)}건을 넣었습니다(이미 있던 것은 새 값으로 고침).")
+        return 0
 
     if args.sample:
         source, raw_items = "sample", load_sample()

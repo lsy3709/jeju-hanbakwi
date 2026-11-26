@@ -21,6 +21,7 @@ from functools import lru_cache
 from supabase import Client, create_client
 
 from config import settings
+from constants import PLACE_CATEGORIES
 
 
 @lru_cache
@@ -67,6 +68,9 @@ class SupabaseRepo:
             query = query.eq("area", area)
         if category:
             query = query.eq("category", category)
+        elif not include_hidden:
+            # 분류를 고르지 않았으면 편의 시설(숙소 · 병원 …)은 뺍니다. 홈 추천과 AI 일정에 약국이 섞이면 안 되니까요.
+            query = query.not_.in_("category", PLACE_CATEGORIES)
         if indoor is not None:
             query = query.eq("indoor", indoor)
         if not include_hidden:

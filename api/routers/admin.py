@@ -12,7 +12,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from auth import get_admin_user
-from constants import AREAS, CATEGORIES, THEMES
+from constants import AREAS, CATEGORIES, PLACE_CATEGORIES, THEMES
 from repo import get_repo
 from schemas import AdminSpot, AdminSpotPage, AdminUser, AdminUserPage, AdminUserPatch, SpotCreate, SpotPatch, UsageReport, User
 from services import usage
@@ -56,7 +56,7 @@ def set_suspended(
 
 def check_choices(category: str | None, area: str | None, theme_tags: list[str] | None) -> None:
     """정해 둔 선택지(constants.py) 밖의 값이 들어오면 422. 화면의 필터와 어긋나지 않게 합니다."""
-    if category is not None and category not in CATEGORIES:
+    if category is not None and category not in CATEGORIES + PLACE_CATEGORIES:
         raise HTTPException(status_code=422, detail="분류는 정해 둔 목록에서만 고를 수 있습니다.")
     if area is not None and area not in AREAS:
         raise HTTPException(status_code=422, detail="지역은 정해 둔 목록에서만 고를 수 있습니다.")

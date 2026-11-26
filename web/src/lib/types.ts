@@ -33,7 +33,8 @@ export type ItineraryDay = {
 
 export type Itinerary = ItineraryDay[];
 
-export type Meta = { themes: string[]; areas: string[]; categories: string[] };
+/** place_categories 는 편의 시설 분류(숙소 · 병원 · 약국 …). 골랐을 때만 목록에 나옵니다. 옛 서버에는 없을 수 있어 선택 값입니다. */
+export type Meta = { themes: string[]; areas: string[]; categories: string[]; place_categories?: string[] };
 
 /**
  * 커서 방식으로 나눠 받는 목록의 한 묶음(docs/api.md "목록을 나눠 받기").

@@ -82,11 +82,18 @@ class Meta {
   final List<String> areas;
   final List<String> categories;
 
-  const Meta({required this.themes, required this.areas, required this.categories});
+  /// 편의 시설 분류(숙소 · 병원 · 약국 …). 골랐을 때만 목록에 나옵니다. 옛 서버에는 없을 수 있습니다.
+  final List<String> placeCategories;
+
+  const Meta({required this.themes, required this.areas, required this.categories, this.placeCategories = const []});
+
+  /// 분류 메뉴의 선택지: 여행지 분류 뒤에 편의 시설 분류를 잇습니다.
+  List<String> get allCategories => [...categories, ...placeCategories];
 
   factory Meta.fromJson(Map<String, dynamic> json) => Meta(
         themes: (json['themes'] as List).cast<String>(),
         areas: (json['areas'] as List).cast<String>(),
         categories: (json['categories'] as List).cast<String>(),
+        placeCategories: ((json['place_categories'] as List?) ?? const []).cast<String>(),
       );
 }

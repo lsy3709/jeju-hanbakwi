@@ -10,6 +10,24 @@ import 'package:jeju_hanbakwi/models/weather.dart';
 import 'support.dart';
 
 void main() {
+  group('Meta (선택지)', () {
+    test('편의 시설 분류를 읽고, 분류 메뉴에는 여행지 분류 뒤에 잇는다', () {
+      final meta = Meta.fromJson({
+        'themes': ['바다'],
+        'areas': ['제주시'],
+        'categories': ['관광지'],
+        'place_categories': ['숙소', '약국'],
+      });
+      expect(meta.placeCategories, ['숙소', '약국']);
+      expect(meta.allCategories, ['관광지', '숙소', '약국']);
+    });
+    test('편의 시설 분류가 없는 옛 서버여도 읽힌다', () {
+      final meta = Meta.fromJson({'themes': <String>[], 'areas': <String>[], 'categories': ['관광지']});
+      expect(meta.placeCategories, isEmpty);
+      expect(meta.allCategories, ['관광지']);
+    });
+  });
+
   group('Spot.fromJson', () {
     test('모든 필드를 읽는다', () {
       final spot = Spot.fromJson(spotJson(imageUrl: 'https://example.com/a.jpg'));

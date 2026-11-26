@@ -1,6 +1,6 @@
 // 탐색 화면의 "주소 쿼리 ↔ 필터" 변환을 모은 순수 함수입니다. (React 와 무관해서 테스트하기 쉬워요)
 import { buildQuery, spotsQuery } from "./format";
-import type { SpotsParams } from "./types";
+import type { Meta, SpotsParams } from "./types";
 
 /** 주소 쿼리를 읽어 낸 결과. 입력칸·버튼의 선택 표시에 쓰는 글자(q, theme …)와 서버에 보낼 filters 를 함께 둡니다. */
 export type ExploreState = {
@@ -62,6 +62,11 @@ export function exploreHref(pathname: string, state: ExploreState, changes: Reco
     ...changes,
   };
   return `${pathname}${buildQuery(next)}`;
+}
+
+/** 분류 드롭다운의 선택지: 여행지 분류 뒤에 편의 시설 분류(숙소 · 병원 · 약국 …)를 잇습니다. */
+export function categoryOptions(meta: Meta | null): string[] {
+  return meta ? [...meta.categories, ...(meta.place_categories ?? [])] : [];
 }
 
 /** 걸려 있는 필터가 하나라도 있는지("필터 지우기" 버튼을 보일지 정할 때). */
