@@ -29,4 +29,17 @@ void main() {
       expect(resolveApiUrl(' http://localhost:8000/ ', isWeb: true), 'http://localhost:8000');
     });
   });
+
+  group('resolveWebUrl (3D 지도를 띄울 웹 주소)', () {
+    test('비어 있으면 웹(크롬)은 localhost:3000, 에뮬레이터는 10.0.2.2:3000', () {
+      expect(resolveWebUrl('', isWeb: true), 'http://localhost:3000');
+      expect(resolveWebUrl('', isWeb: false), 'http://10.0.2.2:3000');
+    });
+    test('크롬인데 10.0.2.2 가 적혀 있으면 localhost 로 바꾼다', () {
+      expect(resolveWebUrl('http://10.0.2.2:3000', isWeb: true), 'http://localhost:3000');
+    });
+    test('배포 주소는 그대로 쓰고 끝의 / 는 뗀다', () {
+      expect(resolveWebUrl('https://jeju-hanbakwi-web.vercel.app/', isWeb: false), 'https://jeju-hanbakwi-web.vercel.app');
+    });
+  });
 }

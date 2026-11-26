@@ -29,7 +29,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,
     # 개발 중에는 localhost 의 어떤 포트든 허용 (Flutter 웹은 실행할 때마다 포트가 바뀝니다)
-    allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:\d+)?",
+    # 10.0.2.2 는 안드로이드 에뮬레이터에서 본 내 PC — 앱이 웹의 3D 지도 화면을 웹뷰로 띄울 때 이 주소에서 요청이 옵니다.
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1|10\.0\.2\.2)(:\d+)?",
     allow_methods=["*"],
     allow_headers=["*"],
 )

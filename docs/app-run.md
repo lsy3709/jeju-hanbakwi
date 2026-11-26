@@ -179,10 +179,25 @@ flutter run -d chrome --dart-define-from-file=env.json --dart-define=API_URL=htt
 
 ---
 
+## 3D 지도 (탐색 → 3D)
+
+앱의 3D 지도는 **웹에서 만든 화면(`/embed/map3d`)을 웹뷰로 띄운 것**입니다. 그래서 서버와 함께 **웹도 켜져 있어야** 보입니다.
+
+```bash
+cd web
+npm run dev
+```
+
+웹 주소는 `env.json` 의 `WEB_URL` 에서 읽습니다. 규칙은 `API_URL` 과 같습니다 — `http://10.0.2.2:3000`(처음 그대로)이면
+에뮬레이터는 그 주소를, 크롬은 `http://localhost:3000` 을 엽니다. 배포한 웹을 쓰려면 `https://<내 웹>.vercel.app` 으로 바꿉니다.
+
+---
+
 ## 7. 막힐 때
 
 | 증상 | 원인 | 해결 |
 |---|---|---|
+| 3D 를 눌렀는데 빈 화면이거나 "연결할 수 없음" | 웹(Next.js)이 꺼져 있거나 `WEB_URL` 이 틀림 | `http://localhost:3000/embed/map3d` 가 브라우저에서 열리는지 보고, `env.json` 의 `WEB_URL` 확인 |
 | "서버에 연결할 수 없어요" (모든 환경) | 서버가 꺼져 있음 | `http://localhost:8000/status` 가 열리는지 보고, 안 열리면 서버부터 켭니다 |
 | 크롬 실행에서만 "서버에 연결할 수 없어요" | 옛 코드(이 수정 전)는 `env.json` 의 `10.0.2.2` 를 크롬에서도 그대로 불렀음 | 최신 `main` 을 받거나, `flutter run -d chrome ... --dart-define=API_URL=http://localhost:8000` |
 | 에뮬레이터에서만 "서버에 연결할 수 없어요" | `API_URL` 을 `localhost` 로 바꿔 둠 | `env.json` 의 `API_URL` 을 `http://10.0.2.2:8000` 으로(또는 빈 값 `""`) |

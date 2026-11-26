@@ -3,6 +3,7 @@
 // 주소·응답 모양은 docs/api.md 를 따릅니다.
 // 화면 → 훅(hooks/) → 이 파일 → 서버 순으로 부릅니다. 이 파일은 errorDetail.ts(오류 글 만들기)와 format.ts(주소 뒤 쿼리 만들기)를 씁니다.
 // 낱말 풀이: 쿼리 = 주소 뒤 "?theme=바다" 처럼 붙는 조건, 토큰 = 로그인했다는 증명 문자열, 헤더 = 요청에 덧붙이는 부가 정보입니다.
+import { resolveApiUrl } from "./apiUrl";
 import { detailText } from "./errorDetail";
 import { buildQuery, spotsQuery } from "./format";
 import type {
@@ -30,8 +31,12 @@ import type {
 } from "./types";
 
 // 서버 주소는 환경변수 NEXT_PUBLIC_API_URL 에서 읽습니다. 개발·배포마다 서버 주소가 달라서 코드에 박지 않고 밖에서 넣습니다.
-// (NEXT_PUBLIC_ 으로 시작해야 브라우저 코드에서 읽을 수 있어서, 비밀 값은 넣지 않습니다.) 끝의 / 는 주소가 겹치지 않게 떼고, 값이 없으면 내 컴퓨터의 서버(8000번)를 씁니다.
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+// (NEXT_PUBLIC_ 으로 시작해야 브라우저 코드에서 읽을 수 있어서, 비밀 값은 넣지 않습니다.) 값이 없을 때의 기본 주소와 고르는 규칙은 lib/apiUrl.ts 에 있습니다.
+// 서버에서 미리 그릴 때는 window 가 없어서 null 을 넘깁니다. 고르는 규칙은 lib/apiUrl.ts 에 있습니다.
+export const API_URL = resolveApiUrl(
+  process.env.NEXT_PUBLIC_API_URL,
+  typeof window === "undefined" ? null : window.location.hostname,
+);
 
 /** 서버가 오류를 돌려줬을 때(또는 서버에 닿지 못했을 때) 던지는 오류. */
 export class ApiError extends Error {

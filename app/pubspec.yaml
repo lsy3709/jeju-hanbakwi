@@ -40,6 +40,8 @@ dependencies:
   # 내 AI 키를 기기 보안 저장소(안드로이드 Keystore · iOS Keychain)에 두는 데 씁니다.
   flutter_secure_storage: ^9.2.4
   latlong2: ^0.10.1
+  webview_flutter: ^4.13.1
+  webview_flutter_web: ^0.2.3+4
 
 dev_dependencies:
   flutter_test:
