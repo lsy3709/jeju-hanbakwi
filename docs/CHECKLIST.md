@@ -372,6 +372,8 @@ Supabase 무료 프로젝트(서울)와 Vercel 프로젝트 둘(서버 · 웹)�
 
 ## 실측 테스트 — 배포 서버 · 배포 웹 · 앱 (2026-11-26)
 
+화면 캡처와 화면별 표는 [live-test.md](live-test.md)에 따로 정리했습니다.
+
 편의 시설 · 3D 지도 · 판타지 지도를 넣은 뒤, 배포된 주소(`jeju-hanbakwi-api.vercel.app`, `jeju-hanbakwi-web.vercel.app`)와 운영 DB 로 다시 돌려 보았습니다.
 
 | 대상 | 방법 | 결과 |
