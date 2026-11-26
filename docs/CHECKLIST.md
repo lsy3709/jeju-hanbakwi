@@ -358,7 +358,7 @@ Supabase 무료 프로젝트(서울)와 Vercel 프로젝트 둘(서버 · 웹)�
 | 구분 | 한 일 | 검사 | 화면 확인 |
 |---|---|---|---|
 | 웹 | MapLibre GL JS 로 땅의 높낮이(AWS Terrain Tiles)와 그림자를 그리고, Three.js 로 돌하르방 모델(`web/public/models/dolhareubang.glb`)을 한라산에 세움. 계산 · 설정은 `web/src/lib/map3d.ts`, 화면은 `SpotMap3D.tsx` | lint · 타입 · 테스트 93건 · 빌드 | ✅ 로컬(서버 + 로컬 DB 68건): 한라산과 오름의 굴곡, 모델, 핀 20개, 핀을 누르면 "자세히" 링크. 폭 375 에서도 확인 |
-| 모델 | `python tools/make_model.py` 로 만듦(윤곽선을 한 바퀴 돌리는 방식). 블렌더에서 만든 glb 로 덮어쓸 수 있음 | — | ✅ 지도 위에 보임 / ⏳ 블렌더로 만든 모델로 바꾸기 |
+| 모델 | 블렌더 5.3 으로 만듦 — 구 · 원기둥을 합쳐 몸통 · 머리 · 모자 · 눈 · 코 · 손을 만들고 현무암 재질을 입혀 glb 로 내보냄. `blender --background --python tools/make_model_blender.py`, 원본은 `tools/dolhareubang.blend` | 스크립트 실행(키 1.000m, 181KB) | ✅ 지도 위에 보임(작아서 얼굴은 확대해야 보임) |
 | 앱 | 탐색의 보는 방식에 "3D" 추가. 웹의 `/embed/map3d` 를 웹뷰(`webview_flutter`)로 띄우고 고른 필터를 주소로 넘김. 웹 주소는 `env.json` 의 `WEB_URL`(`resolveWebUrl`) | analyze 0 · 테스트 125건 · 디버그 apk 빌드 | ✅ 크롬 실행: 3D 지도와 테마 필터(오름 → 핀 10개) / ✅ 에뮬레이터(Pixel 4, 로컬 서버 · 로컬 웹): 지형 · 모델 · 핀 |
 
 - `maplibre-gl` 은 5 버전을 씁니다. 6 버전은 Next.js(Turbopack) 개발 서버에서 워커 파일을 못 불러와 땅이 평평하게 나왔습니다.
